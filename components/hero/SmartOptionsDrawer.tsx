@@ -2,14 +2,11 @@
 
 import React, { useState } from "react";
 import {
-  Sparkles,
   Sliders,
   Clock,
-  UserCheck,
   Check,
   Tag,
   MessageSquare,
-  RefreshCw,
 } from "lucide-react";
 import { GENRE_LIST, CREATOR_PERSONAS } from "@/lib/constants";
 import { CreatorPersona } from "@/types/studio";

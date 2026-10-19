@@ -5,22 +5,16 @@ import {
   Calendar,
   Smartphone,
   CheckCircle2,
-  Clock,
   Sparkles,
-  Share2,
-  Send,
   RefreshCw,
-  Sliders,
-  ChevronDown,
   Globe,
-  Bell,
   Check,
 } from "lucide-react";
-import { ScheduleEvent, MobileApprovalBot } from "@/types/studio";
+import { MobileApprovalBot } from "@/types/studio";
 import { SCHEDULE_EVENTS, MOCK_APPROVAL_BOT } from "@/lib/constants";
 
 export function SocialCalendarApproval() {
-  const [events, setEvents] = useState<ScheduleEvent[]>(SCHEDULE_EVENTS);
+  const events = SCHEDULE_EVENTS;
   const [approvalBot, setApprovalBot] = useState<MobileApprovalBot>(MOCK_APPROVAL_BOT);
   const [approvalMode, setApprovalMode] = useState<"bot-approval" | "full-autopilot">("bot-approval");
   const [selectedTimezone, setSelectedTimezone] = useState("IST (UTC+5:30)");

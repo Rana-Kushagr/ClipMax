@@ -4,14 +4,9 @@ import React, { useState } from "react";
 import {
   DollarSign,
   Scissors,
-  Sparkles,
-  ShieldCheck,
-  TrendingUp,
   Percent,
   Check,
-  ArrowRight,
   Zap,
-  Info,
 } from "lucide-react";
 import { BountyCampaign } from "@/types/studio";
 import { BOUNTY_CAMPAIGNS } from "@/lib/constants";

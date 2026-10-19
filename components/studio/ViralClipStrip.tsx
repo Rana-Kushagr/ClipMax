@@ -6,18 +6,37 @@ import {
   Scissors,
   Play,
   Pause,
-  Sparkles,
-  Share2,
-  CheckCircle2,
   Clock,
   Eye,
   Columns,
-  Tag,
-  Maximize2,
   Film,
 } from "lucide-react";
 import { VideoClip, CaptionPresetId } from "@/types/studio";
 import { INITIAL_CLIPS, CAPTION_STYLES } from "@/lib/constants";
+
+function getScoreColor(score: number): string {
+  if (score >= 90) return "text-accent border-accent bg-accent/10";
+  if (score >= 80) return "text-warning border-warning bg-warning/10";
+  return "text-primary border-primary bg-primary/10";
+}
+
+function renderSpeakerBadge(type: "solo" | "split" | "switching") {
+  if (type === "split") {
+    return (
+      <span className="flex items-center gap-1 text-primary">
+        <Columns className="w-3 h-3" /> Split
+      </span>
+    );
+  }
+  if (type === "switching") {
+    return (
+      <span className="flex items-center gap-1 text-warning">
+        <Film className="w-3 h-3" /> Auto
+      </span>
+    );
+  }
+  return <span>Solo</span>;
+}
 
 interface ViralClipStripProps {
   onEditClip: (clip: VideoClip) => void;
@@ -76,12 +95,7 @@ export function ViralClipStrip({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         {clips.map((clip) => {
           const isPlaying = playingClipId === clip.id;
-          const scoreColor =
-            clip.viralityScore >= 90
-              ? "text-accent border-accent bg-accent/10"
-              : clip.viralityScore >= 80
-              ? "text-warning border-warning bg-warning/10"
-              : "text-primary border-primary bg-primary/10";
+          const scoreColor = getScoreColor(clip.viralityScore);
 
           return (
             <div
@@ -113,17 +127,7 @@ export function ViralClipStrip({
 
                   {/* Speaker Layout Indicator (Top-Right) */}
                   <div className="absolute top-2 right-2 z-10 p-1 rounded-md bg-canvas-deep/80 backdrop-blur-sm text-[10px] font-mono text-text-muted">
-                    {clip.speakerType === "split" ? (
-                      <span className="flex items-center gap-1 text-primary">
-                        <Columns className="w-3 h-3" /> Split
-                      </span>
-                    ) : clip.speakerType === "switching" ? (
-                      <span className="flex items-center gap-1 text-warning">
-                        <Film className="w-3 h-3" /> Auto
-                      </span>
-                    ) : (
-                      <span>Solo</span>
-                    )}
+                    {renderSpeakerBadge(clip.speakerType)}
                   </div>
                 </div>
 
@@ -195,16 +199,18 @@ export function ViralClipStrip({
                           setEditingTitleId(null);
                         }
                       }}
-                      autoFocus
                       className="w-full text-xs font-semibold bg-surface-subtle border border-primary px-1.5 py-0.5 rounded text-white"
+                      aria-label="Edit clip title"
                     />
                   ) : (
-                    <h4
+                    <button
+                      type="button"
                       onClick={() => setEditingTitleId(clip.id)}
-                      className="text-xs font-bold text-text-primary line-clamp-2 leading-snug cursor-pointer hover:text-primary transition-colors title='Click to rename title'"
+                      className="w-full text-left text-xs font-bold text-text-primary line-clamp-2 leading-snug hover:text-primary transition-colors"
+                      title="Click to rename title"
                     >
                       {clip.title}
-                    </h4>
+                    </button>
                   )}
                 </div>
 

@@ -3,14 +3,10 @@
 import React, { useState, useEffect } from "react";
 import {
   X,
-  Maximize2,
-  Sliders,
   Check,
   RotateCcw,
-  Sparkles,
   Columns,
   User,
-  Users,
   Film,
 } from "lucide-react";
 import { VideoClip } from "@/types/studio";

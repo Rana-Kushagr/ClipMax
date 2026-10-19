@@ -2,16 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import {
-  Sparkles,
   Link2,
   UploadCloud,
-  CheckCircle2,
   Youtube,
   Tv,
   HardDrive,
-  Film,
   Zap,
-  ArrowRight,
   ShieldCheck,
   Loader2,
   FileVideo,

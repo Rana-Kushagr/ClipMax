@@ -6,9 +6,6 @@ import {
   Subtitles,
   Columns,
   Calendar,
-  Sparkles,
-  Download,
-  CheckCircle2,
 } from "lucide-react";
 import { ViralClipStrip } from "./ViralClipStrip";
 import { CaptionStyleTester } from "./CaptionStyleTester";

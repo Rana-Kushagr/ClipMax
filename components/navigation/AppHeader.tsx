@@ -4,12 +4,10 @@ import React, { useState } from "react";
 import {
   Scissors,
   Zap,
-  Film,
   Sparkles,
   Info,
   DollarSign,
   Calendar,
-  Layers,
   HelpCircle,
   Menu,
   X,

@@ -9,7 +9,7 @@ import { InteractiveStudioShowcase } from "@/components/studio/InteractiveStudio
 import { BountyAndPricingSection } from "@/components/marketplace/BountyAndPricingSection";
 import { StudioFooter } from "@/components/footer/StudioFooter";
 import { BountyCampaign } from "@/types/studio";
-import { CheckCircle2, Zap } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 
 export default function ClipMaxHome() {
   const [viewMode, setViewMode] = useState<WorkspaceViewMode>("clip-edit");

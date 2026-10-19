@@ -2,16 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import {
-  Sparkles,
   Subtitles,
   Check,
-  Type,
-  Maximize,
-  Sliders,
-  Play,
-  RotateCcw,
 } from "lucide-react";
-import { CaptionPresetId, CaptionStyle } from "@/types/studio";
+import { CaptionPresetId } from "@/types/studio";
 import { CAPTION_STYLES } from "@/lib/constants";
 
 interface CaptionStyleTesterProps {

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Scissors, ShieldCheck, Film, Zap, Heart } from "lucide-react";
+import { Scissors, ShieldCheck } from "lucide-react";
 
 export function StudioFooter() {
   return (

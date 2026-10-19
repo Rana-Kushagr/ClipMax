@@ -10,12 +10,9 @@ import {
   VolumeX,
   Sparkles,
   Scissors,
-  Share2,
   DollarSign,
   Smartphone,
-  CheckCircle,
   ArrowUpRight,
-  TrendingUp,
 } from "lucide-react";
 
 interface ScrollMotionGuideProps {
@@ -358,7 +355,7 @@ export function ScrollMotionGuide({
                           : "bg-surface text-text-muted"
                       }`}
                     >
-                      {ch.step}
+                      <Icon className="w-3.5 h-3.5" />
                     </div>
                     <span className="font-display font-bold text-xs text-text-primary">
                       {ch.title}
