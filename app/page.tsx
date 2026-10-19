@@ -9,7 +9,7 @@ import { InteractiveStudioShowcase } from "@/components/studio/InteractiveStudio
 import { BountyAndPricingSection } from "@/components/marketplace/BountyAndPricingSection";
 import { StudioFooter } from "@/components/footer/StudioFooter";
 import { BountyCampaign } from "@/types/studio";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, X } from "lucide-react";
 
 export default function ClipMaxHome() {
   const [viewMode, setViewMode] = useState<WorkspaceViewMode>("clip-edit");
@@ -41,14 +41,14 @@ export default function ClipMaxHome() {
 
   const handleClipsGenerated = () => {
     setActiveStudioTab("clips");
-    showNotification("✨ 6 Ranked 9:16 Viral Shorts generated! Scored with Whisper-v3 diarization.");
+    showNotification("6 Ranked 9:16 Viral Shorts generated. Scored with Whisper-v3 diarization.");
   };
 
   const handleLoadSamplePodcast = () => {
     setStudioMode("studio");
     setSelectedPersona("rogan");
     setPromptQuery("Find intense philosophical debates and mind-bending AI arguments");
-    showNotification("🎙️ Sample Podcast Loaded: 'The Future of AI with Sam Altman & Lex Fridman' (2h 14m)");
+    showNotification("Sample Loaded: The Future of AI with Sam Altman & Lex Fridman (2h 14m)");
     const elem = document.getElementById("studio-command");
     if (elem) elem.scrollIntoView({ behavior: "smooth" });
   };
@@ -61,7 +61,7 @@ export default function ClipMaxHome() {
   const handleClipCampaign = (campaign: BountyCampaign) => {
     setStudioMode("studio");
     setPromptQuery(`Extract high retention moments for ${campaign.brand}: ${campaign.hookGuide}`);
-    showNotification(`✂️ Campaign Footage Loaded: "${campaign.brand} - ${campaign.title}" (Pool: $${campaign.totalPool.toLocaleString()})`);
+    showNotification(`Campaign Footage Loaded: ${campaign.brand} - ${campaign.title} (Pool: $${campaign.totalPool.toLocaleString()})`);
     const elem = document.getElementById("studio-command");
     if (elem) elem.scrollIntoView({ behavior: "smooth" });
   };
@@ -72,8 +72,8 @@ export default function ClipMaxHome() {
   };
 
   return (
-    <div className="relative min-h-screen bg-canvas text-text-primary selection:bg-primary/20 selection:text-primary">
-      {/* 3-Layer Signature Background */}
+    <div className="relative min-h-screen bg-canvas text-text-primary selection:bg-accent/20 selection:text-white">
+      {/* 4-Layer Signature Cinema Background */}
       <CinemaStageBackground isInputActive={isInputActive} />
 
       {/* Global Notification Toast */}
@@ -81,18 +81,19 @@ export default function ClipMaxHome() {
         <div
           role="status"
           aria-live="polite"
-          className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-surface-strong border border-accent/40 shadow-2xl flex items-center gap-3 text-xs text-white backdrop-blur-md max-w-md animate-bounce"
+          className="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-lg bg-surface-elevated hairline-border border-white/20 shadow-2xl flex items-center gap-3 text-xs text-text-primary backdrop-blur-md max-w-md transition-all duration-200"
         >
-          <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center shrink-0">
-            <CheckCircle2 className="w-4 h-4 text-accent" />
+          <div className="w-6 h-6 rounded-md bg-emerald/15 flex items-center justify-center shrink-0">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald" />
           </div>
           <div className="flex-1 font-medium">{globalToast}</div>
           <button
             type="button"
             onClick={() => setGlobalToast(null)}
-            className="text-text-muted hover:text-white font-mono text-xs px-1"
+            className="text-text-muted hover:text-white p-1"
+            aria-label="Close notification"
           >
-            ✕
+            <X className="w-3.5 h-3.5" />
           </button>
         </div>
       )}

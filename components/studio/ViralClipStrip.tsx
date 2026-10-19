@@ -14,24 +14,28 @@ import {
 import { VideoClip, CaptionPresetId } from "@/types/studio";
 import { INITIAL_CLIPS, CAPTION_STYLES } from "@/lib/constants";
 
-function getScoreColor(score: number): string {
-  if (score >= 90) return "text-accent border-accent bg-accent/10";
-  if (score >= 80) return "text-warning border-warning bg-warning/10";
-  return "text-primary border-primary bg-primary/10";
+function getScoreBadge(score: number) {
+  if (score >= 90) {
+    return "bg-emerald text-black border-transparent font-bold";
+  }
+  if (score >= 80) {
+    return "bg-amber-400 text-black border-transparent font-bold";
+  }
+  return "bg-white/20 text-white border-transparent font-bold";
 }
 
 function renderSpeakerBadge(type: "solo" | "split" | "switching") {
   if (type === "split") {
     return (
-      <span className="flex items-center gap-1 text-primary">
-        <Columns className="w-3 h-3" /> Split
+      <span className="flex items-center gap-1 text-white/90">
+        <Columns className="w-3 h-3 text-accent" /> Split
       </span>
     );
   }
   if (type === "switching") {
     return (
-      <span className="flex items-center gap-1 text-warning">
-        <Film className="w-3 h-3" /> Auto
+      <span className="flex items-center gap-1 text-white/90">
+        <Film className="w-3 h-3 text-warning" /> Auto
       </span>
     );
   }
@@ -66,48 +70,48 @@ export function ViralClipStrip({
   return (
     <div className="space-y-6 select-none" aria-label="Generated Viral Clips Strip">
       {/* Top Strip Header & Project Context */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-border">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 hairline-b">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse-subtle" />
-            <h3 className="font-display font-extrabold text-xl text-text-primary">
+            <span className="w-2 h-2 rounded-full bg-emerald" />
+            <h3 className="font-display font-semibold text-lg text-text-primary">
               Ranked 9:16 Viral Shorts
             </h3>
-            <span className="px-2 py-0.5 rounded-md bg-accent-subtle text-accent border border-accent/20 text-xs font-mono font-bold">
+            <span className="px-2 py-0.5 rounded bg-surface-subtle text-emerald hairline-border text-xs font-mono font-medium">
               6 Viral Clips Found in 28s
             </span>
           </div>
-          <p className="text-xs text-text-secondary mt-1">
+          <p className="text-xs text-text-muted mt-1 font-sans">
             Scored with Whisper-v3 diarization, hook climax ranking, and kinetic auto-subtitles.
           </p>
         </div>
 
         {/* Output-Only Guarantee Badge */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-subtle border border-border text-xs font-mono text-text-muted">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-subtle hairline-border text-xs font-mono text-text-muted">
           <span>Credit Rule:</span>
-          <span className="text-accent font-semibold">
+          <span className="text-emerald font-semibold">
             0 Credits Burned Previewing
           </span>
         </div>
       </div>
 
-      {/* 6-Card 9:16 Vertical Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+      {/* 6-Card 9:16 Vertical Hairline Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5">
         {clips.map((clip) => {
           const isPlaying = playingClipId === clip.id;
-          const scoreColor = getScoreColor(clip.viralityScore);
+          const scoreBadgeClass = getScoreBadge(clip.viralityScore);
 
           return (
             <div
               key={clip.id}
-              className={`rounded-2xl bg-surface border transition-all duration-200 flex flex-col justify-between overflow-hidden relative group hover:border-border-strong hover:shadow-2xl ${
-                isPlaying ? "ring-2 ring-primary/40 border-primary" : "border-border"
+              className={`rounded-xl bg-surface-subtle hairline-border transition-all duration-200 flex flex-col justify-between overflow-hidden relative group hover:border-white/30 hover:shadow-2xl ${
+                isPlaying ? "border-white/40 ring-1 ring-white/20" : ""
               }`}
             >
               {/* Vertical 9:16 Video Stage Preview */}
               <div className="relative aspect-[9/16] w-full bg-canvas-deep overflow-hidden flex flex-col">
                 {/* Top Half: Speaker / Context B-Roll */}
-                <div className="h-1/2 w-full relative overflow-hidden bg-surface-subtle">
+                <div className="h-1/2 w-full relative overflow-hidden bg-surface">
                   <img
                     src={clip.thumbnail}
                     alt={clip.title}
@@ -115,40 +119,40 @@ export function ViralClipStrip({
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-60" />
 
-                  {/* Virality Score Badge (Top-Left) */}
+                  {/* Solid Virality Score Badge (Top-Left) */}
                   <div
-                    className={`absolute top-2 left-2 z-10 px-2 py-0.5 rounded-md border font-mono font-extrabold text-xs flex items-center gap-1 shadow-lg ${scoreColor}`}
+                    className={`absolute top-2 left-2 z-10 px-2 py-0.5 rounded font-mono text-[11px] flex items-center gap-1 shadow-md ${scoreBadgeClass}`}
                   >
-                    <span>{clip.viralityScore}</span>
-                    <span className="text-[9px] uppercase font-sans font-bold">
+                    <span className="tabular-nums">{clip.viralityScore}</span>
+                    <span className="text-[9px] uppercase font-sans">
                       {clip.tier}
                     </span>
                   </div>
 
                   {/* Speaker Layout Indicator (Top-Right) */}
-                  <div className="absolute top-2 right-2 z-10 p-1 rounded-md bg-canvas-deep/80 backdrop-blur-sm text-[10px] font-mono text-text-muted">
+                  <div className="absolute top-2 right-2 z-10 px-1.5 py-0.5 rounded bg-black/80 backdrop-blur-sm text-[10px] font-mono text-text-secondary">
                     {renderSpeakerBadge(clip.speakerType)}
                   </div>
                 </div>
 
                 {/* Bottom Half: Centered Speaker + Kinetic Animated Captions */}
-                <div className="h-1/2 w-full relative bg-surface p-2 flex flex-col justify-between items-center text-center border-t border-white/[0.04]">
+                <div className="h-1/2 w-full relative bg-surface p-2 flex flex-col justify-between items-center text-center hairline-t">
                   {/* Play / Pause Toggle Button */}
                   <button
                     type="button"
                     onClick={() => setPlayingClipId(isPlaying ? null : clip.id)}
-                    className="w-10 h-10 rounded-full bg-primary/20 border border-primary/40 text-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-transform shadow-lg my-auto"
+                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 hairline-border text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-md my-auto"
                     aria-label={isPlaying ? "Pause clip preview" : "Play clip preview"}
                   >
                     {isPlaying ? (
-                      <Pause className="w-4 h-4 fill-current" />
+                      <Pause className="w-3.5 h-3.5 fill-current" />
                     ) : (
-                      <Play className="w-4 h-4 fill-current ml-0.5" />
+                      <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                     )}
                   </button>
 
                   {/* Live Kinetic Caption Word Overlay */}
-                  <div className="w-full px-1 py-2">
+                  <div className="w-full px-1 py-1.5">
                     <div
                       className={`text-[11px] leading-tight transition-all ${activeCaption.fontClass}`}
                       style={{ color: activeCaption.textColor }}
@@ -158,7 +162,7 @@ export function ViralClipStrip({
                         style={{
                           backgroundColor:
                             activeCaption.id === "clean-studio"
-                              ? "rgba(17,23,38,0.8)"
+                              ? "rgba(14,16,21,0.85)"
                               : undefined,
                           color: activeCaption.highlightColor,
                         }}
@@ -170,19 +174,19 @@ export function ViralClipStrip({
                   </div>
 
                   {/* Duration pill */}
-                  <div className="flex items-center justify-between w-full text-[10px] font-mono text-text-muted border-t border-border/50 pt-1">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> {clip.durationFormatted}
+                  <div className="flex items-center justify-between w-full text-[10px] font-mono text-text-muted hairline-t pt-1">
+                    <span className="flex items-center gap-1 tabular-nums">
+                      <Clock className="w-3 h-3 text-text-muted" /> {clip.durationFormatted}
                     </span>
-                    <span className="flex items-center gap-1 text-accent font-semibold">
-                      <Eye className="w-3 h-3" /> {clip.estimatedViews}
+                    <span className="flex items-center gap-1 text-emerald font-mono font-medium">
+                      <Eye className="w-3 h-3 text-text-muted" /> {clip.estimatedViews}
                     </span>
                   </div>
                 </div>
               </div>
 
               {/* Card Meta & Control Actions */}
-              <div className="p-3 bg-surface space-y-2 border-t border-border">
+              <div className="p-3 bg-surface space-y-2 hairline-t">
                 {/* Editable Title */}
                 <div>
                   {editingTitleId === clip.id ? (
@@ -199,14 +203,14 @@ export function ViralClipStrip({
                           setEditingTitleId(null);
                         }
                       }}
-                      className="w-full text-xs font-semibold bg-surface-subtle border border-primary px-1.5 py-0.5 rounded text-white"
+                      className="w-full text-xs font-semibold bg-surface-subtle hairline-border px-1.5 py-0.5 rounded text-white font-sans"
                       aria-label="Edit clip title"
                     />
                   ) : (
                     <button
                       type="button"
                       onClick={() => setEditingTitleId(clip.id)}
-                      className="w-full text-left text-xs font-bold text-text-primary line-clamp-2 leading-snug hover:text-primary transition-colors"
+                      className="w-full text-left text-xs font-semibold text-text-primary line-clamp-2 leading-snug hover:text-white transition-colors font-sans"
                       title="Click to rename title"
                     >
                       {clip.title}
@@ -219,7 +223,7 @@ export function ViralClipStrip({
                   <button
                     type="button"
                     onClick={() => onExportClip(clip)}
-                    className="flex-1 py-2 px-2 rounded-xl bg-accent hover:bg-accent-hover text-slate-950 font-display font-extrabold text-[11px] shadow-sm flex items-center justify-center gap-1 transition-all active:scale-95"
+                    className="flex-1 py-1.5 px-2 rounded-md bg-primary hover:bg-white text-primary-obsidian font-semibold text-[11px] shadow-sm flex items-center justify-center gap-1 transition-all active:scale-95"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Download 1080p</span>
@@ -228,7 +232,7 @@ export function ViralClipStrip({
                   <button
                     type="button"
                     onClick={() => onEditClip(clip)}
-                    className="p-2 rounded-xl bg-surface-subtle hover:bg-surface-strong border border-border text-text-secondary hover:text-white transition-colors"
+                    className="p-1.5 rounded-md bg-surface-elevated hover:bg-white/10 hairline-border text-text-secondary hover:text-white transition-colors"
                     title="Edit smart crop, captions, or aspect ratio"
                     aria-label={`Edit ${clip.title}`}
                   >

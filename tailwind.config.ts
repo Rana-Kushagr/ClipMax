@@ -10,26 +10,31 @@ const config: Config = {
     extend: {
       colors: {
         canvas: {
-          deep: "#07090E",
-          DEFAULT: "#0B0F17",
+          deep: "#050608",
+          DEFAULT: "#08090C",
         },
         surface: {
-          DEFAULT: "#111726",
-          subtle: "#161F33",
-          strong: "#1E2942",
-          glass: "rgba(17, 23, 38, 0.78)",
+          DEFAULT: "#0E1015",
+          subtle: "#14171F",
+          elevated: "#1A1E29",
+          glass: "rgba(14, 16, 21, 0.78)",
         },
         border: {
-          DEFAULT: "rgba(148, 163, 184, 0.14)",
-          strong: "rgba(59, 130, 246, 0.45)",
+          DEFAULT: "rgba(255, 255, 255, 0.07)",
+          strong: "rgba(255, 255, 255, 0.16)",
         },
         primary: {
+          DEFAULT: "#F4F4F6",
+          hover: "#FFFFFF",
+          obsidian: "#08090C",
+        },
+        accent: {
           DEFAULT: "#3B82F6",
           hover: "#2563EB",
           pressed: "#1D4ED8",
           subtle: "rgba(59, 130, 246, 0.14)",
         },
-        accent: {
+        emerald: {
           DEFAULT: "#10B981",
           hover: "#059669",
           pressed: "#047857",
@@ -44,14 +49,15 @@ const config: Config = {
           subtle: "rgba(239, 68, 68, 0.15)",
         },
         text: {
-          primary: "#F8FAFC",
-          secondary: "#CBD5E1",
-          muted: "#94A3B8",
+          primary: "#F4F4F6",
+          secondary: "#A1A1AA",
+          muted: "#71717A",
         },
       },
       fontFamily: {
-        display: ["var(--font-manrope)", "sans-serif"],
-        sans: ["var(--font-inter)", "sans-serif"],
+        display: ["var(--font-display)", "sans-serif"],
+        editorial: ["var(--font-editorial)", "serif"],
+        sans: ["var(--font-sans)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
       },
       borderRadius: {
@@ -90,3 +96,4 @@ const config: Config = {
 };
 
 export default config;
+

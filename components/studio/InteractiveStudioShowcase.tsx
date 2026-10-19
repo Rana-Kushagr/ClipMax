@@ -53,33 +53,37 @@ export function InteractiveStudioShowcase({
   return (
     <section
       id="playgrounds"
-      className="relative z-10 py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8"
+      className="relative z-10 py-16 px-4 sm:px-6 max-w-[1240px] mx-auto space-y-8"
       aria-label="Interactive Studio Workspaces"
     >
-      {/* Studio Navigation Tabs */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Studio Navigation Tabs with Editorial Heading */}
+      <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
         <div>
-          <span className="text-xs font-mono uppercase tracking-wider text-primary font-bold">
+          <span className="text-xs font-mono uppercase tracking-wider text-text-muted font-medium">
             Studio Workspaces
           </span>
-          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-white">
-            The 4 Live Creator Playgrounds
+          <h2 className="font-display font-bold text-2xl sm:text-3xl text-text-primary tracking-tight mt-1">
+            Cinema-grade AI studio,{" "}
+            <span className="font-editorial italic font-normal text-text-primary">
+              built for retention
+            </span>
+            .
           </h2>
         </div>
 
         {/* Tab switcher buttons */}
-        <div className="p-1 rounded-2xl bg-surface border border-border flex items-center gap-1 overflow-x-auto max-w-full">
+        <div className="p-1 rounded-lg bg-surface-subtle hairline-border flex items-center gap-1 overflow-x-auto max-w-full">
           <button
             type="button"
             onClick={() => setActiveStudioTab("clips")}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all shrink-0 ${
+            className={`px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-all shrink-0 ${
               activeStudioTab === "clips"
-                ? "bg-primary text-white shadow-md"
-                : "text-text-secondary hover:text-white hover:bg-surface-subtle"
+                ? "bg-surface-elevated text-white font-semibold hairline-border shadow-sm"
+                : "text-text-secondary hover:text-white"
             }`}
           >
-            <Scissors className="w-3.5 h-3.5" />
-            <span>1. Viral 9:16 Strip</span>
+            <Scissors className="w-3.5 h-3.5 text-text-muted" />
+            <span>Viral 9:16 Strip</span>
           </button>
 
           <button
@@ -88,42 +92,42 @@ export function InteractiveStudioShowcase({
               setSelectedClipForCrop(INITIAL_CLIPS[0]);
               setIsCropModalOpen(true);
             }}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all shrink-0 text-text-secondary hover:text-white hover:bg-surface-subtle`}
+            className="px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-all shrink-0 text-text-secondary hover:text-white"
           >
-            <Columns className="w-3.5 h-3.5" />
-            <span>2. Smart Reframe Modal</span>
+            <Columns className="w-3.5 h-3.5 text-text-muted" />
+            <span>Smart Reframe Modal</span>
           </button>
 
           <button
             type="button"
             onClick={() => setActiveStudioTab("captions")}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all shrink-0 ${
+            className={`px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-all shrink-0 ${
               activeStudioTab === "captions"
-                ? "bg-accent text-slate-950 font-bold shadow-md"
-                : "text-text-secondary hover:text-white hover:bg-surface-subtle"
+                ? "bg-surface-elevated text-white font-semibold hairline-border shadow-sm"
+                : "text-text-secondary hover:text-white"
             }`}
           >
-            <Subtitles className="w-3.5 h-3.5" />
-            <span>3. Kinetic Captions</span>
+            <Subtitles className="w-3.5 h-3.5 text-text-muted" />
+            <span>Kinetic Captions</span>
           </button>
 
           <button
             type="button"
             onClick={() => setActiveStudioTab("schedule")}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all shrink-0 ${
+            className={`px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-all shrink-0 ${
               activeStudioTab === "schedule"
-                ? "bg-primary text-white shadow-md"
-                : "text-text-secondary hover:text-white hover:bg-surface-subtle"
+                ? "bg-surface-elevated text-white font-semibold hairline-border shadow-sm"
+                : "text-text-secondary hover:text-white"
             }`}
           >
-            <Calendar className="w-3.5 h-3.5" />
-            <span>4. Schedule & Bot</span>
+            <Calendar className="w-3.5 h-3.5 text-text-muted" />
+            <span>Schedule & Bot</span>
           </button>
         </div>
       </div>
 
-      {/* Render Active Playground */}
-      <div className="rounded-3xl bg-surface/70 border border-border-strong p-4 sm:p-6 shadow-2xl backdrop-blur-xl">
+      {/* Render Active Playground in Flat Hairline Container */}
+      <div className="rounded-xl bg-surface hairline-border p-4 sm:p-6 shadow-2xl backdrop-blur-xl">
         {activeStudioTab === "clips" && (
           <ViralClipStrip
             onEditClip={handleEditClip}

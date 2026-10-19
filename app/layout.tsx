@@ -1,41 +1,40 @@
 import type { Metadata } from "next";
-import { Manrope, Inter, IBM_Plex_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Instrument_Serif, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const manrope = Manrope({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   weight: ["600", "700", "800"],
-  variable: "--font-manrope",
+  variable: "--font-display",
+  display: "swap",
+});
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+  variable: "--font-editorial",
   display: "swap",
 });
 
 const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
-  variable: "--font-inter",
+  variable: "--font-sans",
   display: "swap",
 });
 
-const ibmPlexMono = IBM_Plex_Mono({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "600"],
   variable: "--font-mono",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "ClipMax — AI Video Clipping Studio & Clipper Bounty Marketplace",
+  title: "ClipMax — Studio AI Video Clipper & Bounty Marketplace",
   description:
-    "Turn long videos & livestreams into ranked 9:16 viral shorts with kinetic captions, 1-click mobile bot approval, and pay-per-view brand bounties.",
-  keywords: [
-    "AI Video Clipping",
-    "TikTok Shorts",
-    "OpusClip Alternative",
-    "Vugola AI",
-    "Content Repurposing",
-    "Viral Moment Detection",
-    "Video Bounties",
-  ],
+    "Turn one long video into viral, reframed vertical shorts in one click. Scored 0–100 for virality, auto-scheduled across platforms, or monetized for verified per-view cash bounties.",
 };
 
 export default function RootLayout({
@@ -46,9 +45,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${inter.variable} ${ibmPlexMono.variable} dark`}
+      className={`${plusJakartaSans.variable} ${instrumentSerif.variable} ${inter.variable} ${jetbrainsMono.variable} dark`}
     >
-      <body className="min-h-screen bg-canvas text-slate-100 antialiased selection:bg-primary/20 selection:text-primary">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
+      <body className="min-h-screen bg-canvas text-text-primary antialiased selection:bg-accent/20 selection:text-white">
         {children}
       </body>
     </html>

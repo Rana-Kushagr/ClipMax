@@ -1,238 +1,178 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
 
 interface CinemaStageBackgroundProps {
   isInputActive?: boolean;
 }
 
 export function CinemaStageBackground({ isInputActive = false }: CinemaStageBackgroundProps) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
-
-    // Reduced motion check
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    const handleResize = () => {
-      if (!canvas) return;
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
     };
 
-    window.addEventListener("resize", handleResize);
-
-    // 5 harmonic audio-waveform lines (Cobalt and Emerald)
-    const harmonicWaves = [
-      { color: "rgba(59, 130, 246, 0.24)", freq: 0.007, baseAmp: 30, speed: 0.02, phase: 0 },
-      { color: "rgba(16, 185, 129, 0.20)", freq: 0.011, baseAmp: 22, speed: 0.025, phase: 1.2 },
-      { color: "rgba(59, 130, 246, 0.18)", freq: 0.005, baseAmp: 38, speed: 0.015, phase: 2.5 },
-      { color: "rgba(16, 185, 129, 0.16)", freq: 0.014, baseAmp: 18, speed: 0.03, phase: 3.8 },
-      { color: "rgba(99, 102, 241, 0.18)", freq: 0.009, baseAmp: 26, speed: 0.018, phase: 4.9 },
-    ];
-
-    // Peak viral markers along the wave
-    const clipPeakMarkers = [
-      { xPct: 0.18, label: "94 VIRAL" },
-      { xPct: 0.35, label: "98 VIRAL" },
-      { xPct: 0.52, label: "92 VIRAL" },
-      { xPct: 0.72, label: "88 HIGH" },
-      { xPct: 0.88, label: "85 HIGH" },
-    ];
-
-    let time = 0;
-    let isVisible = true;
-
-    // IntersectionObserver to pause loop when canvas is scrolled out of view
-    const observer = new IntersectionObserver(([entry]) => {
-      isVisible = entry.isIntersecting;
-    });
-    observer.observe(canvas);
-
-    const render = () => {
-      if (!isVisible || prefersReducedMotion) {
-        animationFrameId = requestAnimationFrame(render);
-        return;
-      }
-
-      ctx.clearRect(0, 0, width, height);
-
-      // Deep multi-depth stage radial spotlight
-      const radialGradient = ctx.createRadialGradient(
-        width / 2,
-        height * 0.32,
-        40,
-        width / 2,
-        height * 0.36,
-        width * 0.75
-      );
-      radialGradient.addColorStop(0, "rgba(22, 31, 51, 0.55)");
-      radialGradient.addColorStop(0.5, "rgba(11, 15, 23, 0.85)");
-      radialGradient.addColorStop(1, "rgba(7, 9, 14, 1)");
-
-      ctx.fillStyle = radialGradient;
-      ctx.fillRect(0, 0, width, height);
-
-      time += isInputActive ? 0.045 : 0.02;
-      const centerY = height * 0.38;
-
-      // Draw 5 Harmonic Waveform Lines
-      harmonicWaves.forEach((wave, idx) => {
-        ctx.beginPath();
-        ctx.strokeStyle = wave.color;
-        ctx.lineWidth = isInputActive ? 1.5 : 1;
-
-        const effectiveAmp = isInputActive ? wave.baseAmp * 1.5 : wave.baseAmp;
-        const effectiveFreq = isInputActive ? wave.freq * 1.3 : wave.freq;
-
-        for (let x = 0; x < width; x += 8) {
-          const envelope = Math.sin((x / width) * Math.PI); // Pinches at gutters
-          const y =
-            centerY +
-            Math.sin(x * effectiveFreq + time * wave.speed + wave.phase) *
-              effectiveAmp *
-              envelope;
-
-          if (x === 0) {
-            ctx.moveTo(x, y);
-          } else {
-            ctx.lineTo(x, y);
-          }
-        }
-        ctx.stroke();
-
-        // Highlight peak clip markers on primary wave
-        if (idx === 0) {
-          clipPeakMarkers.forEach((marker) => {
-            const markerX = width * marker.xPct;
-            const markerEnvelope = Math.sin((markerX / width) * Math.PI);
-            const markerY =
-              centerY +
-              Math.sin(markerX * effectiveFreq + time * wave.speed + wave.phase) *
-                effectiveAmp *
-                markerEnvelope;
-
-            // Draw glowing marker point
-            ctx.beginPath();
-            ctx.fillStyle = isInputActive ? "#10B981" : "#3B82F6";
-            ctx.arc(markerX, markerY, isInputActive ? 3.5 : 2.5, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Glow ring
-            ctx.beginPath();
-            ctx.strokeStyle = isInputActive
-              ? "rgba(16, 185, 129, 0.4)"
-              : "rgba(59, 130, 246, 0.3)";
-            ctx.lineWidth = 1;
-            ctx.arc(markerX, markerY, isInputActive ? 7 : 5, 0, Math.PI * 2);
-            ctx.stroke();
-          });
-        }
-      });
-
-      animationFrameId = requestAnimationFrame(render);
-    };
-
-    render();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      observer.disconnect();
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [isInputActive]);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div
       className="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none"
       aria-hidden="true"
     >
-      {/* Layer 1: Living Harmonic Waveform Canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+      {/* Layer 1: Bespoke 16:9 Cinema Studio Photograph Base */}
+      <div
+        className="absolute inset-0 w-full h-[120vh] -top-10 transition-transform duration-300 ease-out will-change-transform"
+        style={{
+          transform: `translate3d(0, ${scrollY * 0.12}px, 0)`,
+        }}
+      >
+        <Image
+          src="/hero-bg.webp"
+          alt="Cinema Stage Studio Background"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-top opacity-45"
+        />
+      </div>
 
-      {/* Layer 2: Architectural SMPTE Timecode Rulers & 9:16 Safe Frame Guides */}
-      <div className="hidden lg:flex fixed left-5 top-24 bottom-12 flex-col justify-between text-[10px] font-mono text-text-muted/60 select-none z-10 border-l border-white/[0.06] pl-2.5">
+      {/* Layer 2: Multi-Stop Studio Vignette Scrim */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 75% 55% at 50% 24%, rgba(8, 9, 12, 0.38) 0%, rgba(8, 9, 12, 0.86) 68%, #08090C 100%), linear-gradient(180deg, rgba(8, 9, 12, 0.2) 0%, #08090C 92%)",
+        }}
+      />
+
+      {/* Layer 3: Oversized Embossed CLIPMAX Studio Watermark */}
+      <div className="absolute top-[18%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-center pointer-events-none">
+        <span
+          className="font-display font-black text-[clamp(4.5rem,14vw,12rem)] tracking-[-0.05em] text-white/[0.03] uppercase whitespace-nowrap studio-emboss"
+          style={{
+            maskImage:
+              "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 65%, rgba(0,0,0,0) 100%)",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 65%, rgba(0,0,0,0) 100%)",
+          }}
+        >
+          CLIPMAX
+        </span>
+      </div>
+
+      {/* Layer 4: Architectural 1240px Hairline Rails & Corner Crosshairs */}
+      <div className="relative max-w-[1240px] h-full mx-auto border-l border-r border-white/[0.06] hidden md:block">
+        {/* Top left and right corner crosshair ticks */}
+        <div className="absolute top-20 -left-[5px] text-[10px] font-mono text-white/20 select-none leading-none">
+          +
+        </div>
+        <div className="absolute top-20 -right-[5px] text-[10px] font-mono text-white/20 select-none leading-none">
+          +
+        </div>
+        <div className="absolute top-1/2 -left-[5px] text-[10px] font-mono text-white/20 select-none leading-none">
+          +
+        </div>
+        <div className="absolute top-1/2 -right-[5px] text-[10px] font-mono text-white/20 select-none leading-none">
+          +
+        </div>
+        <div className="absolute bottom-20 -left-[5px] text-[10px] font-mono text-white/20 select-none leading-none">
+          +
+        </div>
+        <div className="absolute bottom-20 -right-[5px] text-[10px] font-mono text-white/20 select-none leading-none">
+          +
+        </div>
+      </div>
+
+      {/* Left Cinema Studio Broadcast Rail */}
+      <div className="hidden xl:flex fixed left-6 top-28 bottom-12 flex-col justify-between text-[10px] font-mono text-text-muted/60 select-none z-10 border-l border-white/[0.06] pl-3">
         <div className="space-y-1">
-          <div className="text-primary font-semibold tracking-wider flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-danger animate-pulse-subtle inline-block" />
+          <div className="text-white/80 font-medium tracking-wider flex items-center gap-1.5">
+            <span
+              className={`w-1.5 h-1.5 rounded-full inline-block ${
+                isInputActive ? "bg-accent animate-pulse" : "bg-emerald"
+              }`}
+            />
             <span>SMPTE 00:00:00:00</span>
           </div>
           <div>29.97 FPS NTSC DROP</div>
-          <div className="text-text-muted/50">TIMELINE SCAN: READY</div>
+          <div className="text-text-muted/40">TIMELINE: ARRI RAW</div>
         </div>
 
-        {/* 9:16 safe-zone vertical crop corner bracket */}
+        {/* 9:16 safe-zone vertical crop bracket */}
         <div className="py-4 space-y-2 border-y border-white/[0.04] my-auto">
           <div className="text-[9px] text-text-muted/70 tracking-widest uppercase">
             9:16 SAFE ZONE
           </div>
-          <div className="w-12 h-20 border border-dashed border-primary/30 rounded-sm relative flex items-center justify-center">
-            <span className="text-[8px] text-accent font-bold">1080×1920</span>
-            <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-accent" />
-            <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-accent" />
-            <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-accent" />
-            <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-accent" />
+          <div className="w-12 h-20 border border-dashed border-white/20 rounded-sm relative flex items-center justify-center bg-white/[0.01]">
+            <span className="text-[8px] text-white/70 font-mono">1080×1920</span>
+            <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-white/40" />
+            <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/40" />
+            <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-white/40" />
+            <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-white/40" />
           </div>
-          <div className="text-[9px] text-accent/80 font-semibold">CROP LOCKED</div>
+          <div className="text-[9px] text-accent font-medium">AUTOFRAME ON</div>
         </div>
 
-        <div className="space-y-1 text-text-muted/50">
-          <div>PEAK BUFFER: 64MB</div>
-          <div>LATENCY: 18ms</div>
-          <div className="text-accent/80">OUTPUT-ONLY METER</div>
+        <div className="space-y-1 text-text-muted/40">
+          <div>BUFFER: 64MB HW</div>
+          <div>LATENCY: 14ms</div>
+          <div className="text-emerald">OUTPUT-ONLY METER</div>
         </div>
       </div>
 
-      <div className="hidden lg:flex fixed right-5 top-24 bottom-12 flex-col justify-between items-end text-[10px] font-mono text-text-muted/60 select-none z-10 border-r border-white/[0.06] pr-2.5 text-right">
+      {/* Right Cinema Studio Broadcast Rail */}
+      <div className="hidden xl:flex fixed right-6 top-28 bottom-12 flex-col justify-between items-end text-[10px] font-mono text-text-muted/60 select-none z-10 border-r border-white/[0.06] pr-3 text-right">
         <div className="space-y-1">
-          <div className="text-accent font-semibold tracking-wider">
+          <div className="text-white/80 font-medium tracking-wider">
             VIRAL HARMONICS
           </div>
           <div>DIARIZATION ACTIVE</div>
-          <div className="text-text-muted/50">WHISPER-V3 DUAL</div>
+          <div className="text-text-muted/40">WHISPER-V3 DUAL</div>
         </div>
 
-        {/* Live Audio dB Ticks */}
+        {/* Studio Peak Audio Meter */}
         <div className="py-4 space-y-1.5 my-auto flex flex-col items-end">
           <div className="text-[9px] text-text-muted/70 tracking-widest">
             AUDIO PEAK
           </div>
-          <div className="flex items-end gap-1 h-16">
-            <div className="w-1 h-12 bg-surface-subtle rounded-t overflow-hidden flex flex-col justify-end">
-              <div className="w-full h-8 bg-gradient-to-t from-accent via-accent/80 to-warning" />
+          <div className="flex items-end gap-1 h-14">
+            <div className="w-1 h-10 bg-surface-subtle rounded-t overflow-hidden flex flex-col justify-end">
+              <div className="w-full h-6 bg-gradient-to-t from-accent to-emerald" />
             </div>
-            <div className="w-1 h-12 bg-surface-subtle rounded-t overflow-hidden flex flex-col justify-end">
-              <div className="w-full h-10 bg-gradient-to-t from-accent via-primary to-warning" />
+            <div className="w-1 h-10 bg-surface-subtle rounded-t overflow-hidden flex flex-col justify-end">
+              <div className="w-full h-8 bg-gradient-to-t from-accent via-emerald to-warning" />
             </div>
           </div>
-          <div className="text-[8px] text-text-muted/60">-12dB / 0dB PEAK</div>
+          <div className="text-[8px] text-text-muted/50">-12dB TRUE PEAK</div>
         </div>
 
-        <div className="space-y-1 text-text-muted/50">
+        <div className="space-y-1 text-text-muted/40">
           <div>AV1 / H.265 HW</div>
           <div>WATERMARK: NONE</div>
-          <div className="text-primary font-medium">100% ROLLOVER</div>
+          <div className="text-accent font-medium">100% ROLLOVER</div>
         </div>
       </div>
 
-      {/* Layer 3: Oversized Embossed CLIPMAX Studio Watermark */}
-      <div className="absolute top-[22%] left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.035] font-display font-extrabold text-[clamp(4.5rem,15vw,14rem)] tracking-tighter text-white whitespace-nowrap pointer-events-none studio-emboss">
-        CLIPMAX
+      {/* Layer 5: Film Grain Overlay (inline SVG feTurbulence) */}
+      <div className="fixed inset-0 pointer-events-none opacity-[0.035] mix-blend-overlay z-30">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <filter id="film-grain">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.75"
+              numOctaves="3"
+              stitchTiles="stitch"
+            />
+            <feColorMatrix type="saturate" values="0" />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#film-grain)" />
+        </svg>
       </div>
-
-      {/* Subtle Studio Reticle Grid */}
-      <div className="absolute inset-0 studio-grid-subtle opacity-30" />
     </div>
   );
 }

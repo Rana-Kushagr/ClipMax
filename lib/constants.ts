@@ -228,7 +228,7 @@ export const BOUNTY_CAMPAIGNS: BountyCampaign[] = [
     id: "bounty-1",
     brand: "NordVPN",
     brandCategory: "Cybersecurity & Privacy",
-    logo: "🛡️",
+    logo: "NORD",
     title: "Cyber Security Fails & Geoblock Bypass Clips",
     payoutPerK: 3.5, // $3.50 per 1000 views
     totalPool: 15000,
@@ -243,7 +243,7 @@ export const BOUNTY_CAMPAIGNS: BountyCampaign[] = [
     id: "bounty-2",
     brand: "Shopify Creators",
     brandCategory: "E-Commerce & Dropshipping",
-    logo: "🛍️",
+    logo: "SHOP",
     title: "Zero to $100k Store Breakdown Interviews",
     payoutPerK: 4.2, // $4.20 per 1000 views
     totalPool: 25000,
@@ -258,7 +258,7 @@ export const BOUNTY_CAMPAIGNS: BountyCampaign[] = [
     id: "bounty-3",
     brand: "Notion AI",
     brandCategory: "Productivity & Operations",
-    logo: "📓",
+    logo: "NTN",
     title: "Second Brain Workspaces & Workflow Automation",
     payoutPerK: 3.8, // $3.80 per 1000 views
     totalPool: 18000,

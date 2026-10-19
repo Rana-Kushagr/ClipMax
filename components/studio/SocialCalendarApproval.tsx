@@ -9,6 +9,11 @@ import {
   RefreshCw,
   Globe,
   Check,
+  Music,
+  Video,
+  Camera,
+  Zap,
+  X,
 } from "lucide-react";
 import { MobileApprovalBot } from "@/types/studio";
 import { SCHEDULE_EVENTS, MOCK_APPROVAL_BOT } from "@/lib/constants";
@@ -24,16 +29,16 @@ export function SocialCalendarApproval() {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
   const platforms = [
-    { id: "all", name: "All Platforms", icon: "🌐" },
-    { id: "tiktok", name: "TikTok", icon: "🎵" },
-    { id: "youtube", name: "YouTube Shorts", icon: "▶️" },
-    { id: "instagram", name: "IG Reels", icon: "📸" },
-    { id: "x", name: "X / Twitter", icon: "𝕏" },
+    { id: "all", name: "All Networks", icon: Globe },
+    { id: "tiktok", name: "TikTok", icon: Music },
+    { id: "youtube", name: "YouTube", icon: Video },
+    { id: "instagram", name: "Reels", icon: Camera },
+    { id: "x", name: "X / Twitter", icon: Zap },
   ];
 
   const handleApprovePost = () => {
     setApprovalBot((prev) => ({ ...prev, status: "approved" }));
-    setToastMessage("✓ Approved! Published to TikTok & YouTube Shorts with verified OAuth 2.0 token.");
+    setToastMessage("Approved. Published to TikTok & YouTube Shorts with verified OAuth token.");
     setTimeout(() => setToastMessage(null), 4000);
   };
 
@@ -44,12 +49,12 @@ export function SocialCalendarApproval() {
       clipTitle: "Why 99% of Solopreneurs Are Working Too Hard in 2026",
       score: 97,
     }));
-    setToastMessage("↻ Hook regenerated: 'Why 99% of Solopreneurs Are Working Too Hard in 2026' (Virality: 97). New preview generated.");
+    setToastMessage("Hook regenerated: 'Why 99% of Solopreneurs Are Working Too Hard in 2026' (Virality: 97).");
     setTimeout(() => setToastMessage(null), 4000);
   };
 
   const handleAutoFillTimes = () => {
-    setToastMessage("⚡ Auto-Filled! Calculated peak creator audience engagement times across IST & US view clusters.");
+    setToastMessage("Auto-Filled: Calculated peak audience engagement slots across global view clusters.");
     setTimeout(() => setToastMessage(null), 4000);
   };
 
@@ -57,34 +62,35 @@ export function SocialCalendarApproval() {
     <div className="space-y-6 select-none" aria-label="Social Scheduler and Mobile Approval">
       {/* Toast Alert Feedback */}
       {toastMessage && (
-        <div className="p-3 rounded-xl bg-accent text-slate-950 font-bold text-xs flex items-center justify-between shadow-xl animate-bounce">
+        <div className="p-3 rounded-lg bg-surface-elevated hairline-border border-white/20 text-white font-medium text-xs flex items-center justify-between shadow-xl transition-all">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 fill-slate-950 text-accent" />
+            <CheckCircle2 className="w-4 h-4 text-emerald" />
             <span>{toastMessage}</span>
           </div>
           <button
             type="button"
             onClick={() => setToastMessage(null)}
-            className="text-slate-900 hover:text-black font-mono text-xs px-2"
+            className="text-text-muted hover:text-white p-1"
+            aria-label="Close message"
           >
-            ✕
+            <X className="w-3.5 h-3.5" />
           </button>
         </div>
       )}
 
       {/* Top Profile & Scheduler Bar */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-border">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 hairline-b">
         <div>
           <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-primary" />
-            <h3 className="font-display font-extrabold text-xl text-text-primary">
+            <Calendar className="w-4 h-4 text-white" />
+            <h3 className="font-display font-semibold text-lg text-text-primary">
               Autonomous Social Calendar & Mobile Approval
             </h3>
-            <span className="px-2 py-0.5 rounded-md bg-accent-subtle text-accent border border-accent/20 text-xs font-mono font-bold">
-              EasySlice Killer
+            <span className="px-2 py-0.5 rounded bg-surface-subtle text-text-secondary hairline-border text-xs font-mono">
+              Auto Schedule Engine
             </span>
           </div>
-          <p className="text-xs text-text-secondary mt-1">
+          <p className="text-xs text-text-muted mt-1 font-sans">
             Never post blindly. Receive a 10-second mobile push preview before your scheduled shorts hit social feeds.
           </p>
         </div>
@@ -92,8 +98,8 @@ export function SocialCalendarApproval() {
         {/* Timezone and Autopilot Switcher */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Timezone selector */}
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-subtle border border-border text-xs font-mono text-text-secondary">
-            <Globe className="w-3.5 h-3.5 text-primary" />
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface-subtle hairline-border text-xs font-mono text-text-secondary">
+            <Globe className="w-3.5 h-3.5 text-text-muted" />
             <select
               value={selectedTimezone}
               onChange={(e) => setSelectedTimezone(e.target.value)}
@@ -107,28 +113,28 @@ export function SocialCalendarApproval() {
           </div>
 
           {/* Autopilot vs Mobile Bot Approval Toggle */}
-          <div className="p-1 rounded-pill bg-surface-subtle border border-border flex items-center text-xs">
+          <div className="p-0.5 rounded-md bg-surface-subtle hairline-border flex items-center text-xs">
             <button
               type="button"
               onClick={() => setApprovalMode("bot-approval")}
-              className={`px-3 py-1 rounded-pill font-medium transition-all ${
+              className={`px-3 py-1 rounded transition-all font-medium ${
                 approvalMode === "bot-approval"
-                  ? "bg-accent text-slate-950 font-bold shadow-sm"
+                  ? "bg-surface-elevated text-white font-semibold hairline-border shadow-sm"
                   : "text-text-muted hover:text-white"
               }`}
             >
-              📱 1-Click Mobile Bot
+              Mobile Bot Mode
             </button>
             <button
               type="button"
               onClick={() => setApprovalMode("full-autopilot")}
-              className={`px-3 py-1 rounded-pill font-medium transition-all ${
+              className={`px-3 py-1 rounded transition-all font-medium ${
                 approvalMode === "full-autopilot"
-                  ? "bg-primary text-white font-bold shadow-sm"
+                  ? "bg-surface-elevated text-white font-semibold hairline-border shadow-sm"
                   : "text-text-muted hover:text-white"
               }`}
             >
-              ⚡ Full Autopilot
+              Full Autopilot
             </button>
           </div>
         </div>
@@ -136,59 +142,59 @@ export function SocialCalendarApproval() {
 
       {/* Main Grid: Left Mobile Bot Preview + Right Weekly Calendar */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Interactive Telegram / WhatsApp Bot Approval Card (EasySlice Killer) */}
-        <div className="lg:col-span-5 rounded-2xl bg-surface border border-border p-5 space-y-4 shadow-xl flex flex-col justify-between">
+        {/* Left Column: Interactive Mobile Bot Approval Card */}
+        <div className="lg:col-span-5 rounded-xl bg-surface-subtle hairline-border p-5 space-y-4 shadow-xl flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-border">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-accent/20 border border-accent/40 flex items-center justify-center text-accent">
-                  <Smartphone className="w-4 h-4" />
+            <div className="flex items-center justify-between pb-3 hairline-b">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-md bg-surface hairline-border flex items-center justify-center text-text-secondary">
+                  <Smartphone className="w-4 h-4 text-emerald" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-white leading-tight">
+                  <div className="text-xs font-semibold text-white leading-tight">
                     ClipMax Telegram Bot
                   </div>
-                  <div className="text-[10px] font-mono text-accent">
+                  <div className="text-[10px] font-mono text-emerald">
                     ● Connected to @creator_clips
                   </div>
                 </div>
               </div>
-              <span className="text-[10px] font-mono text-text-muted">
+              <span className="text-[10px] font-mono text-text-muted tabular-nums">
                 12:42 PM
               </span>
             </div>
 
             {/* Simulated Chat Message Bubble */}
-            <div className="mt-4 p-3.5 rounded-2xl bg-surface-subtle border border-border-strong space-y-3">
+            <div className="mt-4 p-3.5 rounded-lg bg-surface hairline-border space-y-3">
               <div className="flex items-center justify-between text-[11px] font-mono text-text-muted">
                 <span>NEW VIRAL CLIP READY</span>
-                <span className="px-1.5 py-0.5 rounded bg-accent/20 text-accent font-bold">
+                <span className="px-1.5 py-0.5 rounded bg-white/10 text-emerald font-semibold tabular-nums">
                   SCORE: {approvalBot.score}
                 </span>
               </div>
 
-              <div className="text-xs font-bold text-white leading-snug">
+              <div className="text-xs font-semibold text-white leading-snug font-sans">
                 "{approvalBot.clipTitle}"
               </div>
 
               {/* 10-Second Clip Preview Thumbnail */}
-              <div className="relative aspect-video w-full rounded-xl bg-canvas-deep overflow-hidden border border-white/[0.06]">
+              <div className="relative aspect-video w-full rounded-md bg-canvas-deep overflow-hidden hairline-border">
                 <img
                   src={approvalBot.thumbnail}
                   alt={approvalBot.clipTitle}
                   className="w-full h-full object-cover filter brightness-75"
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white">
+                  <div className="w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm hairline-border flex items-center justify-center text-white">
                     ▶
                   </div>
                 </div>
-                <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/70 text-[10px] font-mono text-white">
+                <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/80 text-[10px] font-mono text-white tabular-nums">
                   Preview: {approvalBot.clipDuration}
                 </div>
               </div>
 
-              <p className="text-[11px] text-text-secondary leading-relaxed">
+              <p className="text-[11px] text-text-secondary leading-relaxed font-sans">
                 Scheduled to post to <strong>TikTok</strong> and <strong>YouTube Shorts</strong> at 02:45 PM. What would you like to do?
               </p>
 
@@ -198,20 +204,20 @@ export function SocialCalendarApproval() {
                   type="button"
                   onClick={handleApprovePost}
                   disabled={approvalBot.status === "approved"}
-                  className={`py-2 px-3 rounded-xl font-display font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 ${
+                  className={`py-2 px-3 rounded-md font-semibold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-95 ${
                     approvalBot.status === "approved"
-                      ? "bg-accent/20 text-accent border border-accent/40 cursor-default"
-                      : "bg-accent hover:bg-accent-hover text-slate-950"
+                      ? "bg-emerald/20 text-emerald hairline-border cursor-default"
+                      : "bg-primary hover:bg-white text-primary-obsidian"
                   }`}
                 >
-                  <Check className="w-3.5 h-3.5 stroke-[3]" />
-                  <span>{approvalBot.status === "approved" ? "Published ✓" : "Approve & Post"}</span>
+                  <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span>{approvalBot.status === "approved" ? "Published" : "Approve & Post"}</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleRegenerateHook}
-                  className="py-2 px-3 rounded-xl bg-surface-strong hover:bg-surface border border-border text-text-secondary hover:text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95"
+                  className="py-2 px-3 rounded-md bg-surface-elevated hover:bg-white/10 hairline-border text-text-secondary hover:text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   <span>Regenerate Hook</span>
@@ -220,42 +226,45 @@ export function SocialCalendarApproval() {
             </div>
           </div>
 
-          <div className="pt-2 border-t border-border flex items-center justify-between text-[11px] font-mono text-text-muted">
+          <div className="pt-2 hairline-t flex items-center justify-between text-[11px] font-mono text-text-muted">
             <span>Anti-Spam Throttling: ON</span>
-            <span className="text-primary">1-Click Approval Active</span>
+            <span className="text-emerald">1-Click Approval Active</span>
           </div>
         </div>
 
         {/* Right Column: Weekly Multi-Profile Calendar Grid */}
-        <div className="lg:col-span-7 rounded-2xl bg-surface border border-border p-5 space-y-4 shadow-xl">
-          <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-border">
+        <div className="lg:col-span-7 rounded-xl bg-surface-subtle hairline-border p-5 space-y-4 shadow-xl">
+          <div className="flex flex-wrap items-center justify-between gap-2 pb-3 hairline-b">
             {/* Connected Platform Filters */}
             <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0">
-              {platforms.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => setActivePlatformFilter(p.id)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors flex items-center gap-1 ${
-                    activePlatformFilter === p.id
-                      ? "bg-surface-strong text-white border-primary"
-                      : "bg-surface-subtle text-text-muted border-border hover:text-white"
-                  }`}
-                >
-                  <span>{p.icon}</span>
-                  <span className="hidden sm:inline">{p.name}</span>
-                </button>
-              ))}
+              {platforms.map((p) => {
+                const Icon = p.icon;
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => setActivePlatformFilter(p.id)}
+                    className={`px-2.5 py-1 rounded-md text-xs font-medium hairline-border transition-colors flex items-center gap-1.5 ${
+                      activePlatformFilter === p.id
+                        ? "bg-surface-elevated text-white border-white/40"
+                        : "bg-surface text-text-muted hover:text-white"
+                    }`}
+                  >
+                    <Icon className="w-3 h-3 text-text-muted" />
+                    <span className="hidden sm:inline">{p.name}</span>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Auto-Fill Best Times CTA */}
             <button
               type="button"
               onClick={handleAutoFillTimes}
-              className="px-3 py-1.5 rounded-lg bg-primary-subtle text-primary hover:bg-primary hover:text-white border border-primary/30 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+              className="px-3 py-1.5 rounded-md bg-surface hover:bg-surface-elevated text-text-primary hairline-border text-xs font-medium flex items-center gap-1.5 transition-colors"
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Auto-Fill Best Times</span>
+              <Sparkles className="w-3.5 h-3.5 text-accent" />
+              <span>Auto-Fill Times</span>
             </button>
           </div>
 
@@ -268,16 +277,16 @@ export function SocialCalendarApproval() {
               return (
                 <div
                   key={day}
-                  className={`rounded-xl p-2 min-h-[220px] flex flex-col justify-between border ${
+                  className={`rounded-lg p-2 min-h-[220px] flex flex-col justify-between hairline-border ${
                     isToday
-                      ? "bg-surface-subtle/90 border-primary/40 ring-1 ring-primary/20"
-                      : "bg-surface-subtle/40 border-border"
+                      ? "bg-surface border-white/30"
+                      : "bg-surface/50"
                   }`}
                 >
-                  <div className="text-center pb-1 border-b border-border/50">
-                    <span className="text-xs font-bold text-white">{day}</span>
+                  <div className="text-center pb-1 border-b border-white/[0.05]">
+                    <span className="text-xs font-semibold text-white">{day}</span>
                     {isToday && (
-                      <span className="block text-[9px] font-mono text-primary font-semibold">
+                      <span className="block text-[9px] font-mono text-emerald font-semibold">
                         TODAY
                       </span>
                     )}
@@ -288,22 +297,18 @@ export function SocialCalendarApproval() {
                     {dayEvents.map((evt) => (
                       <div
                         key={evt.id}
-                        className="p-1.5 rounded-lg bg-surface border border-border text-[10px] space-y-1 hover:border-primary transition-colors cursor-pointer"
+                        className="p-1.5 rounded bg-surface-subtle hairline-border text-[10px] space-y-1 hover:border-white/30 transition-colors cursor-pointer"
                         title={evt.clipTitle}
                       >
-                        <div className="flex items-center justify-between font-mono text-text-muted">
+                        <div className="flex items-center justify-between font-mono text-text-muted tabular-nums">
                           <span>{evt.time.split(" ")[0]}</span>
-                          <span
-                            className={`font-bold ${
-                              evt.status === "posted"
-                                ? "text-accent"
-                                : "text-primary"
-                            }`}
-                          >
-                            {evt.status === "posted" ? "✓" : "●"}
-                          </span>
+                          {evt.status === "posted" ? (
+                            <Check className="w-2.5 h-2.5 text-emerald stroke-[3]" />
+                          ) : (
+                            <span className="w-1.5 h-1.5 rounded-full bg-white/70 inline-block" />
+                          )}
                         </div>
-                        <div className="font-semibold text-white truncate text-[10px]">
+                        <div className="font-medium text-white truncate text-[10px]">
                           {evt.clipTitle}
                         </div>
                       </div>

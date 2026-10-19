@@ -3,34 +3,35 @@
 @tailwind utilities;
 
 :root {
-  /* Multi-Depth Cinema Stage Surfaces per Section 1 & 6.4 */
-  --color-canvas-deep: #07090e;
-  --color-canvas: #0b0f17;
-  --color-surface: #111726;
-  --color-surface-subtle: #161f33;
-  --color-surface-strong: #1e2942;
-  --color-surface-glass: rgba(17, 23, 38, 0.78);
+  /* Multi-Depth Cinema Stage Surfaces */
+  --color-canvas-deep: #050608;
+  --color-canvas: #08090c;
+  --color-surface: #0e1015;
+  --color-surface-subtle: #14171f;
+  --color-surface-elevated: #1a1e29;
+  --color-surface-glass: rgba(14, 16, 21, 0.78);
 
   /* Typography & High-Contrast Hierarchy (WCAG 2.2 AA verified) */
-  --color-text-primary: #f8fafc;
-  --color-text-secondary: #cbd5e1;
-  --color-text-muted: #94a3b8;
+  --color-text-primary: #f4f4f6;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
 
   /* Brand, Accent & Semantic Status Tokens */
-  --color-primary: #3b82f6;
-  --color-primary-hover: #2563eb;
-  --color-primary-pressed: #1d4ed8;
-  --color-on-primary: #ffffff;
-  --color-primary-subtle: rgba(59, 130, 246, 0.14);
+  --color-primary: #f4f4f6;
+  --color-primary-hover: #ffffff;
+  --color-on-primary: #08090c;
 
-  --color-accent: #10b981;
-  --color-accent-subtle: rgba(16, 185, 129, 0.14);
+  --color-accent: #3b82f6;
+  --color-accent-subtle: rgba(59, 130, 246, 0.14);
+
+  --color-emerald: #10b981;
+  --color-emerald-subtle: rgba(16, 185, 129, 0.14);
 
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
 
-  --color-border: rgba(148, 163, 184, 0.14);
-  --color-border-strong: rgba(59, 130, 246, 0.45);
+  --color-border: rgba(255, 255, 255, 0.07);
+  --color-border-strong: rgba(255, 255, 255, 0.16);
 
   /* Spacing Tokens */
   --space-1: 4px;
@@ -68,7 +69,7 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background-color: var(--color-canvas);
   color: var(--color-text-primary);
   overflow-x: hidden;
@@ -88,25 +89,25 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #07090e;
+  background: #050608;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.22);
+  background: rgba(255, 255, 255, 0.14);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.6);
+  background: rgba(255, 255, 255, 0.28);
 }
 
-/* Accessible focus visible rings per Rulebook Section 17.4 */
+/* Accessible focus visible rings */
 :focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
-/* Prefers-reduced-motion fallback per Rulebook Section 18.7 */
+/* Prefers-reduced-motion fallback */
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,
@@ -118,14 +119,44 @@ body {
   }
 }
 
-/* Studio Reticle & Grid Guides */
-.studio-grid-subtle {
-  background-size: 32px 32px;
-  background-image: 
-    linear-gradient(to right, rgba(148, 163, 184, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
+/* Architectural Hairline Grid & Corner Crosshairs */
+.hairline-border {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.hairline-b {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.hairline-t {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.hairline-x {
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.crosshair-corner {
+  position: relative;
+}
+
+.crosshair-corner::before {
+  content: "+";
+  position: absolute;
+  top: -7px;
+  left: -7px;
+  width: 14px;
+  height: 14px;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  line-height: 14px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.25);
+  pointer-events: none;
 }
 
 .studio-emboss {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 -1px 1px rgba(255, 255, 255, 0.05);
 }
+

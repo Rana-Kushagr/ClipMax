@@ -4,11 +4,11 @@ import React, { useState } from "react";
 import {
   Scissors,
   Zap,
-  Sparkles,
   Info,
-  DollarSign,
-  Calendar,
+  Layers,
   HelpCircle,
+  Calendar,
+  DollarSign,
   Menu,
   X,
 } from "lucide-react";
@@ -34,10 +34,10 @@ export function AppHeader({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navModes = [
-    { id: "clip-edit", label: "1. Clip & Edit", icon: Scissors, href: "#studio-command" },
-    { id: "how-it-works", label: "2. How It Works", icon: HelpCircle, href: "#walkthrough" },
-    { id: "schedule-approve", label: "3. Schedule & Approve", icon: Calendar, href: "#playgrounds" },
-    { id: "bounties", label: "4. Earn Cash Bounties", icon: DollarSign, href: "#bounties" },
+    { id: "clip-edit", label: "Studio", icon: Layers, href: "#studio-command" },
+    { id: "how-it-works", label: "How It Works", icon: HelpCircle, href: "#walkthrough" },
+    { id: "schedule-approve", label: "Social Autopilot", icon: Calendar, href: "#playgrounds" },
+    { id: "bounties", label: "Bounties & Pricing", icon: DollarSign, href: "#bounties" },
   ] as const;
 
   const handleNavClick = (mode: WorkspaceViewMode, href: string) => {
@@ -50,73 +50,76 @@ export function AppHeader({
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-surface-glass border-b border-border transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-        {/* Left: Brand Emblem + Scissor Frame Icon + Output-Only Credit Pill */}
+    <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-[#08090C]/85 hairline-b transition-colors">
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+        {/* Left: Brand Emblem + Scissor Frame Icon + Agency Pill */}
         <div className="flex items-center gap-3">
           <a
             href="#"
-            className="flex items-center gap-2 group focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1"
+            className="flex items-center gap-2.5 group focus-visible:ring-2 focus-visible:ring-accent rounded-lg p-1"
             aria-label="ClipMax Home"
           >
-            <div className="relative w-8 h-8 rounded-lg bg-surface-strong border border-border flex items-center justify-center overflow-hidden">
-              <Scissors className="w-4 h-4 text-primary group-hover:rotate-45 transition-transform" />
-              <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-accent animate-pulse-subtle" />
+            <div className="relative w-8 h-8 rounded-md bg-surface-subtle hairline-border flex items-center justify-center overflow-hidden">
+              <Scissors className="w-4 h-4 text-white group-hover:rotate-45 transition-transform" />
+              <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-emerald" />
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-display font-extrabold text-lg tracking-tight text-white">
-                Clip<span className="text-primary">Max</span>
+            <div className="flex items-center gap-2">
+              <span className="font-display font-extrabold text-lg tracking-tight text-text-primary">
+                CLIPMAX
               </span>
-              <span className="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-mono uppercase font-bold tracking-wider bg-primary-subtle text-primary border border-primary/20 rounded">
-                STUDIO
+              <span className="hidden sm:inline-block px-2 py-0.5 text-[9px] font-mono uppercase font-semibold tracking-wider bg-accent/10 text-blue-400 border border-blue-500/20 rounded-full">
+                AGENCY
               </span>
             </div>
           </a>
 
-          {/* Live Credit Pill (Section 3) */}
-          <div className="relative">
+          {/* Monospace Output-Only Credit Counter */}
+          <div className="relative hidden md:block">
             <button
               type="button"
               onClick={() => setShowCreditTooltip(!showCreditTooltip)}
               onMouseEnter={() => setShowCreditTooltip(true)}
               onMouseLeave={() => setShowCreditTooltip(false)}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-accent-subtle border border-accent/30 text-accent hover:border-accent text-xs font-mono transition-colors"
+              className="flex items-center gap-2 px-3 py-1 rounded-md bg-surface-subtle hairline-border hover:border-white/20 text-xs font-mono transition-colors"
               aria-label="Credit balance information"
             >
-              <Zap className="w-3 h-3 fill-accent" />
-              <span className="font-semibold tabular-nums">
-                ⚡ {freeExportsRemaining} Free HD Exports Left
+              <Zap className="w-3 h-3 text-emerald" />
+              <span className="text-white/90 font-medium tabular-nums">
+                {freeExportsRemaining} / 3 Free HD Exports
               </span>
-              <span className="hidden xl:inline text-text-muted text-[10px]">
-                • 0 Burned on Upload
-              </span>
+              <div className="w-12 h-1 bg-white/10 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-emerald transition-all"
+                  style={{ width: `${(freeExportsRemaining / 3) * 100}%` }}
+                />
+              </div>
             </button>
 
             {/* Credit Trust Tooltip Popover */}
             {showCreditTooltip && (
               <div
                 role="tooltip"
-                className="absolute left-0 mt-2 w-72 p-3 bg-surface-strong border border-border-strong rounded-xl shadow-2xl text-xs space-y-1.5 z-50 text-left"
+                className="absolute left-0 mt-2 w-72 p-3 bg-surface-elevated hairline-border border-white/20 rounded-lg shadow-2xl text-xs space-y-1.5 z-50 text-left"
               >
-                <div className="flex items-center gap-1.5 font-bold text-text-primary">
+                <div className="flex items-center gap-1.5 font-semibold text-text-primary">
                   <Info className="w-3.5 h-3.5 text-accent" />
                   <span>Output-Only Metering Guarantee</span>
                 </div>
                 <p className="text-text-secondary leading-relaxed text-[11px]">
-                  Unlike OpusClip and Quso, uploading a 2-hour video burns <strong>0 credits</strong>. You only spend credits when you download the finished 1080p vertical video.
+                  Uploading video burns <strong>0 credits</strong>. You only spend credits when you download the finished 1080p vertical video.
                 </p>
-                <div className="pt-1.5 border-t border-border flex justify-between text-[10px] font-mono text-text-muted">
+                <div className="pt-1.5 border-t border-white/[0.07] flex justify-between text-[10px] font-mono text-text-muted">
                   <span>Free Starter Tier</span>
-                  <span className="text-accent font-semibold">100% Rollover</span>
+                  <span className="text-emerald font-semibold">100% Rollover</span>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Center: The "9-Year-Old to Pro" Mode Switcher */}
+        {/* Center: 4-Item Navigation */}
         <nav
-          className="hidden lg:flex items-center p-1 rounded-pill bg-surface-subtle border border-border text-xs font-medium"
+          className="hidden lg:flex items-center p-1 rounded-lg bg-surface-subtle hairline-border text-xs font-medium"
           aria-label="Workspace View Mode"
         >
           {navModes.map((mode) => {
@@ -127,45 +130,44 @@ export function AppHeader({
                 key={mode.id}
                 type="button"
                 onClick={() => handleNavClick(mode.id, mode.href)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-pill transition-all ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md transition-all ${
                   isActive
-                    ? "bg-primary text-white font-bold shadow-sm"
-                    : "text-text-muted hover:text-text-primary hover:bg-surface-strong/50"
+                    ? "bg-surface-elevated text-white font-semibold hairline-border shadow-sm"
+                    : "text-text-secondary hover:text-white"
                 }`}
                 aria-pressed={isActive}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <Icon className="w-3.5 h-3.5 text-text-muted" />
                 <span>{mode.label}</span>
               </button>
             );
           })}
         </nav>
 
-        {/* Right: Quick Actions */}
+        {/* Right: Solid Studio White CTA & Quick Actions */}
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onLoadSample}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-subtle hover:bg-surface-strong border border-border text-text-secondary hover:text-white text-xs font-medium transition-colors"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface-subtle hover:bg-surface-elevated hairline-border text-text-secondary hover:text-white text-xs font-medium transition-colors"
           >
-            <Sparkles className="w-3.5 h-3.5 text-warning" />
-            <span>Try Sample Project</span>
+            <span>Load Sample</span>
           </button>
 
           <button
             type="button"
             onClick={onStartClipping}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-primary hover:bg-primary-hover text-white font-display font-bold text-xs shadow-md transition-all active:scale-95"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-primary hover:bg-white text-primary-obsidian font-semibold text-xs transition-all active:scale-95 shadow-sm"
           >
-            <Zap className="w-3.5 h-3.5 fill-white" />
-            <span>Start Clipping Free</span>
+            <Zap className="w-3 h-3 fill-current text-primary-obsidian" />
+            <span>Start Free</span>
           </button>
 
           {/* Mobile hamburger menu button */}
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-lg bg-surface-subtle text-text-secondary hover:text-white border border-border"
+            className="lg:hidden p-2 rounded-md bg-surface-subtle text-text-secondary hover:text-white hairline-border"
             aria-label="Toggle Navigation Menu"
             aria-expanded={mobileMenuOpen}
           >
@@ -176,7 +178,7 @@ export function AppHeader({
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-b border-border bg-surface px-4 py-4 space-y-2">
+        <div className="lg:hidden hairline-b bg-surface px-4 py-4 space-y-2">
           <div className="grid grid-cols-1 gap-1 text-xs font-medium">
             {navModes.map((mode) => {
               const Icon = mode.icon;
@@ -186,10 +188,10 @@ export function AppHeader({
                   key={mode.id}
                   type="button"
                   onClick={() => handleNavClick(mode.id, mode.href)}
-                  className={`flex items-center gap-2 p-2.5 rounded-lg text-left transition-colors ${
+                  className={`flex items-center gap-2 p-2.5 rounded-md text-left transition-colors ${
                     isActive
-                      ? "bg-primary text-white font-bold"
-                      : "bg-surface-subtle hover:bg-surface-strong text-text-secondary hover:text-white"
+                      ? "bg-surface-elevated text-white font-semibold hairline-border"
+                      : "bg-surface-subtle hover:bg-surface-elevated text-text-secondary hover:text-white"
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -203,9 +205,8 @@ export function AppHeader({
                 onLoadSample();
                 setMobileMenuOpen(false);
               }}
-              className="flex items-center justify-center gap-2 p-2.5 rounded-lg bg-surface-subtle text-warning font-semibold text-center mt-2 border border-warning/30"
+              className="flex items-center justify-center gap-2 p-2.5 rounded-md bg-surface-subtle text-text-primary font-medium text-center mt-2 hairline-border"
             >
-              <Sparkles className="w-4 h-4" />
               <span>Load Sample Podcast Now</span>
             </button>
           </div>
