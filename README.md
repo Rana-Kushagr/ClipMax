@@ -1,3 +1,5 @@
+ https://rana-kushagr.github.io/ClipMax/
+ 
 # ClipMax 🎬
 > **The Two-Sided AI Video Clipping Studio, Autonomous Channel Autopilot & Pay-Per-View Bounty Marketplace.**
 
