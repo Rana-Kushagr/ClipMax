@@ -79,7 +79,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090A0D] text-zinc-100 selection:bg-emerald-500/20 selection:text-emerald-300 relative overflow-x-hidden font-sans">
+    <div className="min-h-screen bg-transparent text-zinc-100 selection:bg-emerald-500/20 selection:text-emerald-300 relative overflow-x-hidden font-sans">
       {/* 1. Top Viewport GSAP Scroll Progress Ribbon */}
       <div
         ref={progressBarRef}
@@ -87,7 +87,7 @@ export function App() {
       />
 
       {/* 2. Global Darkroom Cinema Studio Physical Environment */}
-      <StudioEnvironmentBg heroImageUrl={`${import.meta.env.BASE_URL}hero-bg.webp`} />
+      <StudioEnvironmentBg heroImageUrl={`${import.meta.env.BASE_URL}clipmax-bg.jpg`} />
 
       {/* 3. Kodak Vision3 35mm Micro SVG Noise Grain Texture */}
       <NoiseOverlay opacity={0.024} />
