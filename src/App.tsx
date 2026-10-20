@@ -1,5 +1,6 @@
 import React, { useState, useOptimistic, useTransition } from "react";
 import { AppHeader } from "./components/navigation/AppHeader";
+import { StudioEnvironmentBg } from "./components/background/StudioEnvironmentBg";
 import { HeroViewfinderHud } from "./components/hero/HeroViewfinderHud";
 import { HeroCommandCenter } from "./components/hero/HeroCommandCenter";
 import { HowItWorksWalkthrough } from "./components/walkthrough/HowItWorksWalkthrough";
@@ -78,31 +79,27 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#08090B] text-zinc-100 selection:bg-emerald-500/20 selection:text-emerald-300 relative overflow-x-hidden font-sans">
+    <div className="min-h-screen bg-[#090A0D] text-zinc-100 selection:bg-emerald-500/20 selection:text-emerald-300 relative overflow-x-hidden font-sans">
       {/* 1. Top Viewport GSAP Scroll Progress Ribbon */}
       <div
         ref={progressBarRef}
         className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-400 via-[#E06D3B] to-emerald-400 origin-left z-50 pointer-events-none scale-x-0"
       />
 
-      {/* 2. Micro SVG Noise Grain Texture */}
-      <NoiseOverlay opacity={0.025} />
+      {/* 2. Global Darkroom Cinema Studio Physical Environment */}
+      <StudioEnvironmentBg heroImageUrl={`${import.meta.env.BASE_URL}hero-bg.webp`} />
 
-      {/* 3. Global App Header */}
+      {/* 3. Kodak Vision3 35mm Micro SVG Noise Grain Texture */}
+      <NoiseOverlay opacity={0.024} />
+
+      {/* 4. Global App Header */}
       <AppHeader freeExportsCount={optimisticFreeExports} />
 
-      {/* 4. Hero Section with Viewfinder HUD and Command Center */}
+      {/* 5. Hero Section with Viewfinder HUD and Command Center */}
       <section
         id="hero"
         className="relative min-h-[92vh] pt-32 pb-20 flex flex-col justify-center overflow-hidden border-b border-white/[0.06]"
       >
-        {/* Subtle Photographic Cinema Stage Overlay */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat -z-20 opacity-30 pointer-events-none"
-          style={{ backgroundImage: `url('${import.meta.env.BASE_URL}hero-bg.webp')` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#08090B]/60 via-transparent to-[#08090B] -z-10 pointer-events-none" />
-
         {/* GSAP Dissolving Viewfinder HUD */}
         <HeroViewfinderHud hudRef={hudContainerRef} isInputActive={videoUrl.length > 0} />
 
@@ -129,13 +126,25 @@ export function App() {
         </div>
       </section>
 
-      {/* 5. How It Works 60FPS Walkthrough */}
-      <section id="walkthrough" className="py-24 relative">
+      {/* 6. Section 01: How It Works 60FPS Walkthrough */}
+      <section id="walkthrough" className="py-24 relative overflow-hidden">
+        {/* Subtle Warm Tungsten Floor Reflection */}
+        <div
+          className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[600px] h-[350px] pointer-events-none -z-10 blur-[130px]"
+          style={{ background: "rgba(224, 109, 59, 0.05)" }}
+          aria-hidden="true"
+        />
         <HowItWorksWalkthrough onLoadWorkflowSample={handleLoadWorkflowSample} />
       </section>
 
-      {/* 6. AI Studio Interactive Workspace */}
-      <section id="studio" className="py-24 relative border-t border-white/[0.08]">
+      {/* 7. Section 02: AI Studio Interactive Workspace */}
+      <section id="studio" className="py-24 relative border-t border-white/[0.08] overflow-hidden">
+        {/* Subtle Studio Emerald Floor Reflection */}
+        <div
+          className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[600px] h-[350px] pointer-events-none -z-10 blur-[130px]"
+          style={{ background: "rgba(16, 185, 129, 0.05)" }}
+          aria-hidden="true"
+        />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
             <span className="text-xs font-mono uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
@@ -159,8 +168,14 @@ export function App() {
         </div>
       </section>
 
-      {/* 7. Bounty Marketplace */}
-      <section id="bounties" className="py-24 relative border-t border-white/[0.08]">
+      {/* 8. Section 03: Bounty Marketplace */}
+      <section id="bounties" className="py-24 relative border-t border-white/[0.08] overflow-hidden">
+        {/* Subtle Warm Tungsten Floor Reflection */}
+        <div
+          className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[650px] h-[350px] pointer-events-none -z-10 blur-[130px]"
+          style={{ background: "rgba(224, 109, 59, 0.05)" }}
+          aria-hidden="true"
+        />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <span className="text-xs font-mono uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
@@ -180,7 +195,7 @@ export function App() {
         </div>
       </section>
 
-      {/* 8. Earnings Profit Simulator */}
+      {/* 9. Earnings Profit Simulator */}
       <section id="simulator" className="py-24 relative border-t border-white/[0.08]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-4">
@@ -201,7 +216,7 @@ export function App() {
         </div>
       </section>
 
-      {/* 9. Output-Only Pricing */}
+      {/* 10. Output-Only Pricing */}
       <section id="pricing" className="py-24 relative border-t border-white/[0.08]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-4">
@@ -222,12 +237,12 @@ export function App() {
         </div>
       </section>
 
-      {/* 10. Studio Footer */}
+      {/* 11. Studio Footer */}
       <StudioFooter />
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl bg-[#0E1014] border border-emerald-500/40 text-xs font-mono text-zinc-200 shadow-xl shadow-black/60 animate-bounce">
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl bg-[#0E1015] border border-emerald-500/40 text-xs font-mono text-zinc-200 shadow-xl shadow-black/60 animate-bounce">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
           <button

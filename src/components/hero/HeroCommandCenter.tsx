@@ -186,8 +186,19 @@ export function HeroCommandCenter({
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
-        className="max-w-3xl mx-auto"
+        className="max-w-3xl mx-auto relative"
       >
+        {/* Subtle Anamorphic Horizontal Lens Streak Behind Command Bar */}
+        <div
+          className="absolute -top-[1px] left-1/2 -translate-x-1/2 w-full max-w-[760px] pointer-events-none z-0"
+          style={{
+            height: "1px",
+            background:
+              "linear-gradient(90deg, transparent 5%, rgba(224,109,59,0.28) 35%, rgba(255,255,255,0.45) 50%, rgba(16,185,129,0.28) 65%, transparent 95%)",
+            boxShadow: "0 0 32px 2px rgba(224,109,59,0.12)",
+          }}
+          aria-hidden="true"
+        />
         <SpotlightCard
           spotlightColor="rgba(16, 185, 129, 0.16)"
           className={`p-2 sm:p-2.5 transition-all shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-2xl ${

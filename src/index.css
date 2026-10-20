@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --color-canvas-deep: #040507;
-  --color-canvas: #08090B;
-  --color-surface: #0E1014;
+  --color-canvas-deep: #050608;
+  --color-canvas: #090A0D;
+  --color-surface: #0E1015;
   --color-surface-subtle: #12151B;
   --color-surface-elevated: #161920;
   --color-surface-strong: #1D222C;
-  --color-surface-glass: rgba(14, 16, 20, 0.78);
+  --color-surface-glass: rgba(14, 16, 21, 0.78);
 
   --color-mint: #10B981;
   --color-amber: #E06D3B;
@@ -18,7 +18,7 @@
   --color-text-secondary: #A1A1AA;
   --color-text-muted: #71717A;
 
-  --color-border: rgba(255, 255, 255, 0.07);
+  --color-border: rgba(255, 255, 255, 0.08);
   --color-border-strong: rgba(255, 255, 255, 0.16);
 }
 
@@ -29,7 +29,7 @@
 html {
   color-scheme: dark;
   scroll-behavior: smooth;
-  background-color: #08090B;
+  background-color: #090A0D;
   color: #F4F4F6;
 }
 
@@ -37,11 +37,18 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', sans-serif;
-  background-color: #08090B;
+  background-color: #090A0D;
   color: #F4F4F6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Physical Smoked-Glass Studio Card Console */
+.studio-console-card {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 /* Tabular Numerals for SMPTE Timecodes & Virality Badges */

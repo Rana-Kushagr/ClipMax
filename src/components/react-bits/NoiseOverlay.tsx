@@ -4,13 +4,13 @@ interface NoiseOverlayProps {
   opacity?: number;
 }
 
-export function NoiseOverlay({ opacity = 0.025 }: Readonly<NoiseOverlayProps>) {
+export function NoiseOverlay({ opacity = 0.024 }: Readonly<NoiseOverlayProps>) {
   return (
     <div
       className="fixed inset-0 pointer-events-none z-30 select-none overflow-hidden"
       aria-hidden="true"
     >
-      {/* Subtle SVG feTurbulence film grain */}
+      {/* Kodak Vision3 35mm Film Grain SVG feTurbulence */}
       <svg
         className="w-full h-full mix-blend-overlay pointer-events-none"
         style={{ opacity }}
@@ -18,7 +18,7 @@ export function NoiseOverlay({ opacity = 0.025 }: Readonly<NoiseOverlayProps>) {
         <filter id="film-grain-noise">
           <feTurbulence
             type="fractalNoise"
-            baseFrequency="0.8"
+            baseFrequency="0.75"
             numOctaves="3"
             stitchTiles="stitch"
           />
