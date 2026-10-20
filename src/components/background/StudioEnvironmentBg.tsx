@@ -5,29 +5,32 @@ interface StudioEnvironmentBgProps {
 }
 
 export function StudioEnvironmentBg({
-  heroImageUrl = "./hero-bg.webp",
+  heroImageUrl = "./cinema-desk-bg.jpg",
 }: Readonly<StudioEnvironmentBgProps>) {
   return (
     <div
-      className="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none"
+      className="absolute top-0 left-0 right-0 w-full h-[1400px] pointer-events-none z-0 overflow-hidden select-none"
       aria-hidden="true"
     >
-      {/* 1. Main User Background Artwork - Fixed, Vibrant, and 100% Visible */}
+      {/* 1. Normal Scrolling Background Image - Moves Naturally 1:1 with Content */}
       <img
         src={heroImageUrl}
         alt=""
-        className="w-full h-full object-cover object-center fixed inset-0 pointer-events-none z-0 select-none brightness-[0.92] contrast-[1.05]"
+        className="w-full h-full object-cover object-center pointer-events-none select-none brightness-[0.95] contrast-[1.04]"
       />
 
-      {/* 2. Soft Protective Overlay for High-Contrast Text Legibility */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black/45 via-black/25 to-black/60 pointer-events-none z-0" />
+      {/* 2. Soft Protective Contrast Tint for Flawless Text Readability */}
+      <div className="absolute inset-0 bg-black/25 pointer-events-none" />
 
-      {/* 3. Subtle Edge Vignette */}
+      {/* 3. Smooth Seamless Fade into Lower Sections */}
+      <div className="absolute inset-x-0 bottom-0 h-96 bg-gradient-to-b from-transparent via-[#090A0D]/75 to-[#090A0D] pointer-events-none" />
+
+      {/* 4. Subtle Optical Perimeter Vignette */}
       <div
-        className="fixed inset-0 pointer-events-none z-0"
+        className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 95% 85% at 50% 50%, transparent 45%, rgba(4, 5, 8, 0.60) 100%)",
+            "radial-gradient(ellipse 95% 85% at 50% 45%, transparent 52%, rgba(5, 6, 9, 0.50) 100%)",
         }}
       />
     </div>

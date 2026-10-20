@@ -79,15 +79,15 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-transparent text-zinc-100 selection:bg-emerald-500/20 selection:text-emerald-300 relative overflow-x-hidden font-sans">
+    <div className="min-h-screen bg-[#090A0D] text-zinc-100 selection:bg-emerald-500/20 selection:text-emerald-300 relative overflow-x-hidden font-sans">
       {/* 1. Top Viewport GSAP Scroll Progress Ribbon */}
       <div
         ref={progressBarRef}
         className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-400 via-[#E06D3B] to-emerald-400 origin-left z-50 pointer-events-none scale-x-0"
       />
 
-      {/* 2. Global Darkroom Cinema Studio Physical Environment */}
-      <StudioEnvironmentBg heroImageUrl={`${import.meta.env.BASE_URL}clipmax-bg.jpg`} />
+      {/* 2. Normal Scrolling Cinema Desk Background - Moves Naturally with Page Content */}
+      <StudioEnvironmentBg heroImageUrl={`${import.meta.env.BASE_URL}cinema-desk-bg.jpg`} />
 
       {/* 3. Kodak Vision3 35mm Micro SVG Noise Grain Texture */}
       <NoiseOverlay opacity={0.024} />
