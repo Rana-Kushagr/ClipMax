@@ -50,7 +50,7 @@ export function AppHeader({
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-[#08090C]/85 hairline-b transition-colors">
+    <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-[#08090C]/60 hairline-b transition-colors">
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         {/* Left: Brand Emblem + Scissor Frame Icon + Agency Pill */}
         <div className="flex items-center gap-3">

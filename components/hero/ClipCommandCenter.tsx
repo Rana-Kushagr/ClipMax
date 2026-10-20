@@ -154,7 +154,7 @@ export function ClipCommandCenter({
       </div>
 
       {/* Hero Display Heading with High-Fashion Editorial Contrast */}
-      <h1 className="font-display font-bold text-[clamp(2.5rem,5.5vw,4.25rem)] tracking-[-0.035em] text-text-primary max-w-4xl mx-auto leading-[1.04] mb-5">
+      <h1 className="font-display font-bold text-[clamp(2.5rem,5.5vw,4.25rem)] tracking-[-0.035em] text-text-primary max-w-4xl mx-auto leading-[1.04] mb-5 drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
         Paste one long video. Get 10{" "}
         <span className="font-editorial italic font-normal text-text-primary">
           viral shorts
@@ -162,7 +162,7 @@ export function ClipCommandCenter({
         in one click.
       </h1>
 
-      <p className="text-text-secondary text-sm sm:text-base max-w-2xl mx-auto mb-8 leading-relaxed font-sans">
+      <p className="text-text-secondary text-sm sm:text-base max-w-2xl mx-auto mb-8 leading-relaxed font-sans drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]">
         Autonomous face-tracking reframe, SMPTE-timed kinetic captions, and 1-click mobile schedule approval. Zero timeline editing required.
       </p>
 

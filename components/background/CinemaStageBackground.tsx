@@ -26,7 +26,7 @@ export function CinemaStageBackground({ isInputActive = false }: CinemaStageBack
       className="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none"
       aria-hidden="true"
     >
-      {/* Layer 1: Bespoke 16:9 Cinema Studio Photograph Base */}
+      {/* Layer 1: Bespoke Cinema Studio Monolith Background (Full Visibility) */}
       <div
         className="absolute inset-0 w-full h-[120vh] -top-10 transition-transform duration-300 ease-out will-change-transform"
         style={{
@@ -39,35 +39,20 @@ export function CinemaStageBackground({ isInputActive = false }: CinemaStageBack
           fill
           priority
           sizes="100vw"
-          className="object-cover object-top opacity-35"
+          className="object-cover object-top opacity-100"
         />
       </div>
 
-      {/* Layer 2: Multi-Stop Studio Vignette Scrim (Guarantees Razor-Sharp Text Contrast) */}
+      {/* Layer 2: Subtle Bottom Fade (Only transitions bottom 30% into canvas floor) */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 75% 55% at 50% 24%, rgba(8, 9, 12, 0.75) 0%, rgba(8, 9, 12, 0.92) 65%, #08090C 100%), linear-gradient(180deg, rgba(8, 9, 12, 0.45) 0%, #08090C 95%)",
+            "linear-gradient(180deg, rgba(8, 9, 12, 0) 0%, rgba(8, 9, 12, 0) 60%, rgba(8, 9, 12, 0.75) 85%, #08090C 100%)",
         }}
       />
 
-      {/* Layer 3: Oversized Embossed CLIPMAX Studio Watermark */}
-      <div className="absolute top-[18%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-center pointer-events-none">
-        <span
-          className="font-display font-black text-[clamp(4.5rem,14vw,12rem)] tracking-[-0.05em] text-white/[0.03] uppercase whitespace-nowrap studio-emboss"
-          style={{
-            maskImage:
-              "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 65%, rgba(0,0,0,0) 100%)",
-            WebkitMaskImage:
-              "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 65%, rgba(0,0,0,0) 100%)",
-          }}
-        >
-          CLIPMAX
-        </span>
-      </div>
-
-      {/* Layer 4: Architectural 1240px Hairline Rails & Corner Crosshairs */}
+      {/* Layer 3: Architectural 1240px Hairline Rails & Corner Crosshairs */}
       <div className="relative max-w-[1240px] h-full mx-auto border-l border-r border-white/[0.06] hidden md:block">
         {/* Top left and right corner crosshair ticks */}
         <div className="absolute top-20 -left-[5px] text-[10px] font-mono text-white/20 select-none leading-none">
@@ -160,8 +145,8 @@ export function CinemaStageBackground({ isInputActive = false }: CinemaStageBack
         </div>
       </div>
 
-      {/* Layer 5: Film Grain Overlay (inline SVG feTurbulence) */}
-      <div className="fixed inset-0 pointer-events-none opacity-[0.035] mix-blend-overlay z-30">
+      {/* Layer 4: Film Grain Overlay (inline SVG feTurbulence) */}
+      <div className="fixed inset-0 pointer-events-none opacity-[0.03] mix-blend-overlay z-30">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <filter id="film-grain">
             <feTurbulence
