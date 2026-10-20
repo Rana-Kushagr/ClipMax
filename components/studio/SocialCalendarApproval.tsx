@@ -46,10 +46,10 @@ export function SocialCalendarApproval() {
     setApprovalBot((prev) => ({
       ...prev,
       status: "regenerated",
-      clipTitle: "Why 99% of Solopreneurs Are Working Too Hard in 2026",
+      clipTitle: "Query Optimization: Analyzing Execution Plans",
       score: 97,
     }));
-    setToastMessage("Hook regenerated: 'Why 99% of Solopreneurs Are Working Too Hard in 2026' (Virality: 97).");
+    setToastMessage("Hook regenerated: 'Query Optimization: Analyzing Execution Plans' (Virality: 97).");
     setTimeout(() => setToastMessage(null), 4000);
   };
 

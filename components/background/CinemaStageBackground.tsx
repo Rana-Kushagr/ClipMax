@@ -9,6 +9,8 @@ interface CinemaStageBackgroundProps {
 
 export function CinemaStageBackground({ isInputActive = false }: CinemaStageBackgroundProps) {
   const [scrollY, setScrollY] = useState(0);
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+  const bgImageUrl = `${basePath}/hero-bg.webp`;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,21 +34,21 @@ export function CinemaStageBackground({ isInputActive = false }: CinemaStageBack
         }}
       >
         <Image
-          src="/hero-bg.webp"
+          src={bgImageUrl}
           alt="Cinema Stage Studio Background"
           fill
           priority
           sizes="100vw"
-          className="object-cover object-top opacity-45"
+          className="object-cover object-top opacity-35"
         />
       </div>
 
-      {/* Layer 2: Multi-Stop Studio Vignette Scrim */}
+      {/* Layer 2: Multi-Stop Studio Vignette Scrim (Guarantees Razor-Sharp Text Contrast) */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 75% 55% at 50% 24%, rgba(8, 9, 12, 0.38) 0%, rgba(8, 9, 12, 0.86) 68%, #08090C 100%), linear-gradient(180deg, rgba(8, 9, 12, 0.2) 0%, #08090C 92%)",
+            "radial-gradient(ellipse 75% 55% at 50% 24%, rgba(8, 9, 12, 0.75) 0%, rgba(8, 9, 12, 0.92) 65%, #08090C 100%), linear-gradient(180deg, rgba(8, 9, 12, 0.45) 0%, #08090C 95%)",
         }}
       />
 

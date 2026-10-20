@@ -28,11 +28,11 @@ export default function ClipMaxHome() {
     "Tech & Hardware",
   ]);
   const [promptQuery, setPromptQuery] = useState(
-    "Compile all the hilarious moments and sudden outbursts"
+    "Extract core technical trade-offs and architectural decisions"
   );
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(900); // 15 mins
-  const [selectedPersona, setSelectedPersona] = useState("rogan");
+  const [selectedPersona, setSelectedPersona] = useState("deep-dive");
 
   const showNotification = (msg: string) => {
     setGlobalToast(msg);
@@ -41,14 +41,14 @@ export default function ClipMaxHome() {
 
   const handleClipsGenerated = () => {
     setActiveStudioTab("clips");
-    showNotification("6 Ranked 9:16 Viral Shorts generated. Scored with Whisper-v3 diarization.");
+    showNotification("6 Ranked 9:16 Vertical Shorts generated. Scored with Whisper-v3 diarization.");
   };
 
   const handleLoadSamplePodcast = () => {
     setStudioMode("studio");
-    setSelectedPersona("rogan");
-    setPromptQuery("Find intense philosophical debates and mind-bending AI arguments");
-    showNotification("Sample Loaded: The Future of AI with Sam Altman & Lex Fridman (2h 14m)");
+    setSelectedPersona("deep-dive");
+    setPromptQuery("Extract core technical trade-offs and architectural decisions");
+    showNotification("Sample Loaded: System Architecture & Video Pipelines (2h 14m)");
     const elem = document.getElementById("studio-command");
     if (elem) elem.scrollIntoView({ behavior: "smooth" });
   };
@@ -60,7 +60,7 @@ export default function ClipMaxHome() {
 
   const handleClipCampaign = (campaign: BountyCampaign) => {
     setStudioMode("studio");
-    setPromptQuery(`Extract high retention moments for ${campaign.brand}: ${campaign.hookGuide}`);
+    setPromptQuery(`Extract key highlights for ${campaign.brand}: ${campaign.hookGuide}`);
     showNotification(`Campaign Footage Loaded: ${campaign.brand} - ${campaign.title} (Pool: $${campaign.totalPool.toLocaleString()})`);
     const elem = document.getElementById("studio-command");
     if (elem) elem.scrollIntoView({ behavior: "smooth" });

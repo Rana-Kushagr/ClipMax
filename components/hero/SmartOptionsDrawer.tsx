@@ -7,10 +7,10 @@ import {
   Check,
   Tag,
   MessageSquare,
-  Sparkles,
+  SlidersHorizontal,
 } from "lucide-react";
-import { GENRE_LIST, CREATOR_PERSONAS } from "@/lib/constants";
-import { CreatorPersona } from "@/types/studio";
+import { GENRE_LIST, EDITING_STYLE_PRESETS } from "@/lib/constants";
+import { EditingStylePreset } from "@/types/studio";
 
 interface SmartOptionsDrawerProps {
   selectedGenres: string[];
@@ -37,7 +37,7 @@ export function SmartOptionsDrawer({
   selectedPersona,
   setSelectedPersona,
 }: SmartOptionsDrawerProps) {
-  const [activeTab, setActiveTab] = useState<"genre" | "prompt" | "timeframe" | "persona">("genre");
+  const [activeTab, setActiveTab] = useState<"genre" | "prompt" | "timeframe" | "preset">("genre");
 
   const toggleGenre = (genre: string) => {
     setSelectedGenres((prev) =>
@@ -47,16 +47,16 @@ export function SmartOptionsDrawer({
     );
   };
 
-  const handleSelectPersona = (persona: CreatorPersona) => {
-    setSelectedPersona(persona.id);
-    setPromptQuery(persona.prompt);
+  const handleSelectPreset = (preset: EditingStylePreset) => {
+    setSelectedPersona(preset.id);
+    setPromptQuery(preset.prompt);
   };
 
   const promptSuggestions = [
-    "Compile all the hilarious moments and sudden outbursts",
-    "Extract tactical revenue frameworks and high-energy statements",
-    "Find contentious arguments and intense philosophical debates",
-    "Cut to before-and-after story reveals with strong emotional payoff",
+    "Extract core technical trade-offs and architectural decisions",
+    "Find key performance benchmarks and deployment metrics",
+    "Isolate structured explanations and fundamental concepts",
+    "Identify critical design patterns and system workflows",
   ];
 
   const formatTime = (secs: number) => {
@@ -116,19 +116,19 @@ export function SmartOptionsDrawer({
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab("persona")}
+            onClick={() => setActiveTab("preset")}
             className={`px-3 py-1 rounded transition-colors ${
-              activeTab === "persona"
+              activeTab === "preset"
                 ? "bg-surface-elevated text-white font-medium hairline-border shadow-sm"
                 : "text-text-muted hover:text-white"
             }`}
           >
-            Personas
+            Style Presets
           </button>
         </div>
       </div>
 
-      {/* Tab 1: 28 Genre Chips (Zero emojis) */}
+      {/* Tab 1: 28 Genre Chips */}
       {activeTab === "genre" && (
         <div className="pt-3.5 space-y-3">
           <div className="flex items-center justify-between text-xs text-text-muted">
@@ -186,7 +186,7 @@ export function SmartOptionsDrawer({
               type="text"
               value={promptQuery}
               onChange={(e) => setPromptQuery(e.target.value)}
-              placeholder="e.g. Find moments where the host talks about high ROI investments and sudden mistakes..."
+              placeholder="e.g. Find moments where the speakers discuss architecture trade-offs and performance..."
               className="w-full px-3.5 py-2.5 rounded-lg bg-surface-subtle hairline-border focus:border-white/40 focus:ring-1 focus:ring-white/40 text-sm text-text-primary placeholder:text-text-muted font-sans"
             />
             {promptQuery && (
@@ -279,20 +279,20 @@ export function SmartOptionsDrawer({
         </div>
       )}
 
-      {/* Tab 4: Creator Personas */}
-      {activeTab === "persona" && (
+      {/* Tab 4: Editing Style Presets (Authentic, zero fake personas) */}
+      {activeTab === "preset" && (
         <div className="pt-3.5 space-y-3">
           <span className="text-xs text-text-muted block">
-            Click any creator to automatically apply their cadence, viral prompt formula, and kinetic caption preset:
+            Select a cadence and focus preset to configure AI clip extraction parameters:
           </span>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-            {CREATOR_PERSONAS.map((persona) => {
-              const isSelected = selectedPersona === persona.id;
+            {EDITING_STYLE_PRESETS.map((preset) => {
+              const isSelected = selectedPersona === preset.id;
               return (
                 <button
-                  key={persona.id}
+                  key={preset.id}
                   type="button"
-                  onClick={() => handleSelectPersona(persona)}
+                  onClick={() => handleSelectPreset(preset)}
                   className={`p-3 rounded-lg hairline-border text-left transition-all relative flex flex-col justify-between ${
                     isSelected
                       ? "bg-surface-elevated border-white/40 shadow-sm"
@@ -301,26 +301,24 @@ export function SmartOptionsDrawer({
                   aria-pressed={isSelected}
                 >
                   <div className="flex items-center gap-2 mb-2">
-                    <img
-                      src={persona.avatar}
-                      alt={persona.name}
-                      className="w-8 h-8 rounded-full object-cover hairline-border"
-                    />
+                    <div className="w-8 h-8 rounded-md bg-surface hairline-border flex items-center justify-center text-text-secondary">
+                      <SlidersHorizontal className="w-4 h-4 text-emerald" />
+                    </div>
                     <div>
                       <div className="text-xs font-semibold text-white leading-tight">
-                        {persona.name}
+                        {preset.name}
                       </div>
                       <div className="text-[10px] font-mono text-text-muted">
-                        {persona.handle}
+                        {preset.badge}
                       </div>
                     </div>
                   </div>
                   <div className="space-y-1">
                     <div className="text-[10px] text-text-secondary">
-                      Pacing: <span className="text-text-muted">{persona.pacing}</span>
+                      Pacing: <span className="text-text-muted">{preset.pacing}</span>
                     </div>
                     <div className="text-[10px] text-white/80 font-mono">
-                      Preset: {persona.captionPreset}
+                      Caption: {preset.captionPreset}
                     </div>
                   </div>
                   {isSelected && (

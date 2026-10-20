@@ -40,8 +40,8 @@ export function BountyAndPricingSection({
   const finalPayout = reinvestInCredits ? estimatedCash * 1.25 : estimatedCash;
 
   const renderBrandIcon = (logoCode: string) => {
-    if (logoCode === "NORD") return <Shield className="w-4 h-4 text-emerald" />;
-    if (logoCode === "SHOP") return <ShoppingBag className="w-4 h-4 text-accent" />;
+    if (logoCode === "DEV") return <Shield className="w-4 h-4 text-emerald" />;
+    if (logoCode === "CLOUD") return <ShoppingBag className="w-4 h-4 text-accent" />;
     return <FileText className="w-4 h-4 text-white" />;
   };
 

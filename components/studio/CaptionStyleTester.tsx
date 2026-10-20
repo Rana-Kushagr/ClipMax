@@ -23,19 +23,17 @@ export function CaptionStyleTester({
   const [fontSize, setFontSize] = useState<"sm" | "md" | "lg">("md");
 
   const sampleWords = [
-    "IF",
-    "YOU",
-    "ARE",
-    "BUILDING",
-    "AI",
-    "PRODUCTS",
-    "WITHOUT",
-    "SOLVING",
-    "REAL",
-    "PROBLEMS",
-    "YOU",
-    "WILL",
-    "FAIL",
+    "HIGH",
+    "PERFORMANCE",
+    "VIDEO",
+    "ENGINEERING",
+    "SCALES",
+    "YOUR",
+    "CONTENT",
+    "ACROSS",
+    "EVERY",
+    "VERTICAL",
+    "FEED",
   ];
 
   // Animate word by word kinetic timing

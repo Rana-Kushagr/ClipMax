@@ -19,10 +19,10 @@ export interface VideoClip {
 
 export type CaptionPresetId =
   | "clipmax-emerald"
-  | "hormozi-gold"
-  | "beast-impact"
+  | "bold-gold"
+  | "high-contrast"
   | "clean-studio"
-  | "neon-bounce";
+  | "vivid-pop";
 
 export interface CaptionStyle {
   id: CaptionPresetId;
@@ -35,11 +35,10 @@ export interface CaptionStyle {
   badge: string;
 }
 
-export interface CreatorPersona {
+export interface EditingStylePreset {
   id: string;
   name: string;
-  handle: string;
-  avatar: string;
+  badge: string;
   pacing: string;
   captionPreset: CaptionPresetId;
   prompt: string;

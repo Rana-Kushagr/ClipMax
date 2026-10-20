@@ -188,7 +188,7 @@ export function ScrollMotionGuide({
                     <div className="flex-1 text-left">
                       <div className="text-xs text-text-muted font-mono">INGESTING STREAM:</div>
                       <div className="text-sm font-semibold text-white truncate font-sans">
-                        https://youtube.com/watch?v=LexFridman_SamAltman_FutureAI
+                        https://youtube.com/watch?v=SystemArchitecture_Discussion
                       </div>
                     </div>
                     <div className="px-2.5 py-1 rounded bg-surface hairline-border text-emerald font-mono text-xs font-semibold">
@@ -263,7 +263,7 @@ export function ScrollMotionGuide({
 
                       {/* Kinetic Caption Overlay */}
                       <div className="absolute bottom-3 left-1 right-1 text-center font-display font-black text-xs text-white uppercase italic tracking-wider drop-shadow-md">
-                        <span className="text-emerald underline">AI WILL</span> REPLACE
+                        <span className="text-emerald underline">SYSTEMS</span> SCALE FAST
                       </div>
                     </div>
                   </div>
@@ -281,7 +281,7 @@ export function ScrollMotionGuide({
                     </div>
                     <div className="p-2.5 rounded-lg bg-surface text-[11px] text-text-secondary space-y-2 hairline-border">
                       <div className="font-semibold text-text-primary">
-                        Ready for Approval: #1 AI Startup Clip (98 Score)
+                        Ready for Approval: Database Performance & Indexing (98 Score)
                       </div>
                       <div className="flex gap-2 pt-1">
                         <button
@@ -312,7 +312,7 @@ export function ScrollMotionGuide({
                       </span>
                     </div>
                     <div className="text-[11px] text-text-secondary">
-                      120,000 Verified Views on TikTok @ $2.00 CPM Payout.
+                      120,000 Verified Sample Views @ $2.00 CPM Payout.
                     </div>
                     <div className="pt-1.5 border-t border-white/[0.07] flex items-center justify-between text-[10px] font-mono text-text-muted">
                       <span>Fee: 0% Wallet Reinvest</span>
