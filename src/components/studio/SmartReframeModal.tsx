@@ -1,53 +1,47 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   X,
   Check,
   RotateCcw,
-  Columns,
-  User,
-  Film,
+  Sliders,
   Scan,
-  Maximize2,
+  Users,
+  User,
+  Layers,
 } from "lucide-react";
 import { VideoClip } from "../../types/studio";
 
+type FramingMode = "Auto" | "Split" | "Solo";
+
 interface SmartReframeModalProps {
-  clip: VideoClip | null;
+  clip: VideoClip;
   isOpen: boolean;
   onClose: () => void;
-  onApplyCrop: (clipId: string, aspectRatio: string, layout: string) => void;
+  onApplyCrop: (clipId: string, aspectRatio: string, layout: FramingMode) => void;
 }
+
+const getCropWidth = (ratio: string): string => {
+  if (ratio === "9:16") return "32%";
+  if (ratio === "1:1") return "50%";
+  return "70%";
+};
 
 export function SmartReframeModal({
   clip,
   isOpen,
   onClose,
   onApplyCrop,
-}: SmartReframeModalProps) {
+}: Readonly<SmartReframeModalProps>) {
   const [aspectRatio, setAspectRatio] = useState<string>("9:16");
-  const [layoutMode, setLayoutMode] = useState<"solo" | "split" | "switching">("split");
-  const [cropBoxPosition, setCropBoxPosition] = useState<number>(50);
+  const [framingMode, setFramingMode] = useState<FramingMode>(
+    clip.speakerType === "split" ? "Split" : clip.speakerType === "solo" ? "Solo" : "Auto"
+  );
+  const [activeSpeakerMode, setActiveSpeakerMode] = useState<
+    "auto" | "speaker1" | "speaker2" | "split"
+  >("auto");
+  const [cropBoxPosition, setCropBoxPosition] = useState<number>(50); // % horizontal pan
 
-  useEffect(() => {
-    if (clip) {
-      setAspectRatio(clip.aspectRatio || "9:16");
-      setLayoutMode(clip.speakerType || "split");
-      setCropBoxPosition(50);
-    }
-  }, [clip]);
-
-  // Keyboard close with Escape
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        onClose();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
-
-  if (!isOpen || !clip) return null;
+  if (!isOpen) return null;
 
   const ratios = [
     { id: "9:16", label: "9:16", description: "TikTok / Shorts / Reels" },
@@ -80,102 +74,89 @@ export function SmartReframeModal({
             </p>
           </div>
           <button
-            type="button"
             onClick={onClose}
-            className="p-1.5 rounded-md bg-[#08090B] hover:bg-[#161920] border border-white/[0.08] text-text-muted hover:text-white transition-colors"
+            className="p-1.5 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] text-text-muted hover:text-white transition-colors"
             aria-label="Close Crop Modal"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Modal Body: Side-by-side Source Monitor vs Output Stage */}
+        {/* Modal Body */}
         <div className="p-6 space-y-6 overflow-y-auto">
-          {/* Multi-Speaker Layout Mode Switcher */}
-          <div className="space-y-2">
-            <span className="text-xs font-semibold text-text-primary block">
-              Speaker Framing Architecture:
-            </span>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => setLayoutMode("solo")}
-                className={`p-3 rounded-lg border text-left transition-all flex items-center gap-2.5 ${
-                  layoutMode === "solo"
-                    ? "bg-[#161920] border-[#10B981]/50 text-white shadow-sm"
-                    : "bg-[#12151B] border-white/[0.07] text-text-secondary hover:text-white"
-                }`}
-              >
-                <User className="w-4 h-4 text-white shrink-0" />
-                <div>
-                  <div className="text-xs font-semibold">Solo Speaker Tracking</div>
-                  <div className="text-[10px] text-text-muted">
-                    Locks camera on active single speaker
-                  </div>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setLayoutMode("split")}
-                className={`p-3 rounded-lg border text-left transition-all flex items-center gap-2.5 ${
-                  layoutMode === "split"
-                    ? "bg-[#161920] border-[#10B981]/50 text-white shadow-sm"
-                    : "bg-[#12151B] border-white/[0.07] text-text-secondary hover:text-white"
-                }`}
-              >
-                <Columns className="w-4 h-4 text-[#10B981] shrink-0" />
-                <div>
-                  <div className="text-xs font-semibold">2-Speaker Vertical Split</div>
-                  <div className="text-[10px] text-text-muted">
-                    Stacks host & guest top/bottom
-                  </div>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setLayoutMode("switching")}
-                className={`p-3 rounded-lg border text-left transition-all flex items-center gap-2.5 ${
-                  layoutMode === "switching"
-                    ? "bg-[#161920] border-[#E06D3B]/50 text-white shadow-sm"
-                    : "bg-[#12151B] border-white/[0.07] text-text-secondary hover:text-white"
-                }`}
-              >
-                <Film className="w-4 h-4 text-[#E06D3B] shrink-0" />
-                <div>
-                  <div className="text-xs font-semibold">Auto Scene Switching</div>
-                  <div className="text-[10px] text-text-muted">
-                    Cuts to speaker on audio voice activity
-                  </div>
-                </div>
-              </button>
+          {/* Top Mode Bar: Aspect Ratio Pills & Speaker Mode */}
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/[0.06]">
+            {/* Aspect Ratio Pills */}
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-text-muted">
+                Target Canvas Aspect Ratio
+              </span>
+              <div className="flex items-center gap-1.5">
+                {ratios.map((r) => (
+                  <button
+                    key={r.id}
+                    onClick={() => setAspectRatio(r.id)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all ${
+                      aspectRatio === r.id
+                        ? "bg-[#10B981] text-black font-bold shadow-md shadow-[#10B981]/20"
+                        : "bg-[#14171F] text-text-secondary border border-white/[0.06] hover:text-white"
+                    }`}
+                  >
+                    {r.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Aspect Ratio Morph Pills */}
-          <div className="space-y-2">
-            <span className="text-xs font-semibold text-text-primary block">
-              Aspect Ratio Morph Target:
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {ratios.map((r) => (
+            {/* Framing Mode: Solo, Split, Auto */}
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-text-muted">
+                Autonomous Camera Director Mode
+              </span>
+              <div className="flex items-center gap-1.5 p-1 rounded-lg bg-[#14171F] border border-white/[0.06]">
                 <button
-                  key={r.id}
-                  type="button"
-                  onClick={() => setAspectRatio(r.id)}
-                  className={`px-3 py-1.5 rounded-md text-xs font-mono font-medium border transition-colors flex items-center gap-1.5 ${
-                    aspectRatio === r.id
-                      ? "bg-white text-black font-semibold border-white shadow-sm"
-                      : "bg-[#12151B] border-white/[0.08] text-text-secondary hover:text-white"
+                  onClick={() => {
+                    setFramingMode("Auto");
+                    setActiveSpeakerMode("auto");
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-mono transition-colors ${
+                    framingMode === "Auto"
+                      ? "bg-[#10B981] text-black font-bold"
+                      : "text-text-muted hover:text-white"
                   }`}
                 >
-                  <span>{r.label}</span>
-                  <span className="text-[10px] text-text-muted font-sans">
-                    ({r.description})
-                  </span>
+                  <Scan className="w-3.5 h-3.5" />
+                  <span>Auto Dynamic</span>
                 </button>
-              ))}
+                <button
+                  onClick={() => {
+                    setFramingMode("Split");
+                    setActiveSpeakerMode("split");
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-mono transition-colors ${
+                    framingMode === "Split"
+                      ? "bg-[#10B981] text-black font-bold"
+                      : "text-text-muted hover:text-white"
+                  }`}
+                >
+                  <Users className="w-3.5 h-3.5" />
+                  <span>Stacked Split</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setFramingMode("Solo");
+                    setActiveSpeakerMode("speaker1");
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-mono transition-colors ${
+                    framingMode === "Solo"
+                      ? "bg-[#10B981] text-black font-bold"
+                      : "text-text-muted hover:text-white"
+                  }`}
+                >
+                  <User className="w-3.5 h-3.5" />
+                  <span>Solo Lock</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -225,7 +206,7 @@ export function SmartReframeModal({
                   className="absolute top-1 bottom-1 border-2 border-white/80 rounded-md pointer-events-none transition-all duration-100 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                   style={{
                     left: `${Math.max(8, Math.min(68, cropBoxPosition - 16))}%`,
-                    width: aspectRatio === "9:16" ? "32%" : aspectRatio === "1:1" ? "50%" : "70%",
+                    width: getCropWidth(aspectRatio),
                   }}
                 >
                   <div className="absolute top-1 left-1 bg-black/80 px-1 rounded text-[8px] font-mono text-white">
@@ -241,100 +222,116 @@ export function SmartReframeModal({
                 </span>
                 <input
                   type="range"
-                  min="20"
-                  max="80"
+                  min={20}
+                  max={80}
                   value={cropBoxPosition}
                   onChange={(e) => setCropBoxPosition(Number(e.target.value))}
-                  className="w-full accent-white cursor-pointer"
-                  aria-label="Crop pan horizontal position"
+                  className="w-full h-1.5 bg-[#14171F] rounded-lg appearance-none cursor-pointer accent-[#10B981]"
                 />
-                <span className="text-xs font-mono text-white tabular-nums w-8">
+                <span className="text-xs font-mono text-white w-10 text-right">
                   {cropBoxPosition}%
                 </span>
               </div>
             </div>
 
-            {/* Right: 9:16 Vertical Output Preview */}
-            <div className="lg:col-span-5 flex flex-col items-center space-y-2">
-              <span className="text-xs font-mono text-text-muted">
-                VERTICAL OUTPUT STAGE:
-              </span>
+            {/* Right: 9:16 Vertical Delivery Output Preview */}
+            <div className="lg:col-span-5 flex flex-col items-center">
+              <div className="w-full flex justify-between items-center text-xs text-text-muted mb-2">
+                <span className="font-mono text-white">
+                  RENDER PREVIEW ({aspectRatio})
+                </span>
+                <span className="font-mono text-[11px] text-text-muted">
+                  60 FPS REC.709
+                </span>
+              </div>
 
-              <div className="w-48 aspect-[9/16] rounded-2xl bg-[#040507] border-2 border-[#10B981]/80 shadow-[0_10px_40px_rgba(0,0,0,0.8)] relative overflow-hidden flex flex-col">
-                <div className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded-full bg-[#10B981] text-black font-mono text-[9px] font-bold">
-                  98 VIRAL
-                </div>
-
-                {layoutMode === "split" ? (
-                  <>
-                    <div className="h-1/2 w-full relative overflow-hidden border-b border-white/[0.1]">
+              {/* Vertical Screen Phone Container */}
+              <div className="w-48 sm:w-56 aspect-[9/16] rounded-2xl bg-[#040507] border-2 border-white/20 shadow-2xl relative overflow-hidden flex flex-col">
+                {framingMode === "Split" ? (
+                  /* Stacked Split Screen View */
+                  <div className="w-full h-full flex flex-col">
+                    {/* Top Speaker */}
+                    <div className="flex-1 relative overflow-hidden border-b border-black">
                       <img
-                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80"
+                        src={clip.thumbnail}
                         alt="Speaker 1"
-                        className="w-full h-full object-cover filter brightness-90"
+                        className="w-full h-full object-cover object-[25%_center] filter brightness-90"
                       />
-                    </div>
-                    <div className="h-1/2 w-full relative overflow-hidden">
-                      <img
-                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80"
-                        alt="Speaker 2"
-                        className="w-full h-full object-cover filter brightness-90"
-                      />
-                      <div className="absolute bottom-3 left-1 right-1 text-center font-display font-black text-[11px] text-white uppercase italic tracking-wider drop-shadow-md">
-                        <span className="text-[#10B981]">SYSTEMS</span> SCALE FAST
+                      <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-black/70 text-[9px] font-mono text-[#10B981]">
+                        SPEAKER 01
                       </div>
                     </div>
-                  </>
+                    {/* Bottom Speaker */}
+                    <div className="flex-1 relative overflow-hidden">
+                      <img
+                        src={clip.thumbnail}
+                        alt="Speaker 2"
+                        className="w-full h-full object-cover object-[75%_center] filter brightness-90"
+                      />
+                      <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-black/70 text-[9px] font-mono text-[#38BDF8]">
+                        SPEAKER 02
+                      </div>
+                    </div>
+                  </div>
                 ) : (
-                  <div className="h-full w-full relative overflow-hidden">
+                  /* Solo / Auto View */
+                  <div className="w-full h-full relative overflow-hidden">
                     <img
                       src={clip.thumbnail}
-                      alt="Solo speaker"
+                      alt={clip.title}
                       className="w-full h-full object-cover filter brightness-90"
+                      style={{
+                        objectPosition: `${cropBoxPosition}% center`,
+                      }}
                     />
-                    <div className="absolute bottom-4 left-1 right-1 text-center font-display font-black text-xs text-white uppercase italic tracking-wider drop-shadow-md">
-                      <span className="text-[#10B981]">OPTIMIZED</span> QUERY PLAN
+                    <div className="absolute top-3 left-3 px-2 py-0.5 rounded bg-[#10B981] text-black font-mono text-[10px] font-bold">
+                      {clip.viralityScore} VIRAL
                     </div>
                   </div>
                 )}
+
+                {/* Subtitle Safe Margin Area Overlay */}
+                <div className="absolute inset-x-3 bottom-6 p-2 rounded bg-black/60 backdrop-blur-sm border border-white/10 text-center">
+                  <span className="text-[10px] font-display font-black text-white">
+                    "ZERO ALLOCATION PIPELINES"
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-4 bg-[#12151B] border-t border-white/[0.08] flex items-center justify-between gap-3">
+        <div className="flex items-center justify-between px-6 py-4 border-t border-white/[0.08] bg-[#12151B]">
           <button
-            type="button"
             onClick={() => {
-              setAspectRatio("9:16");
-              setLayoutMode("split");
+              setFramingMode(
+                clip.speakerType === "split" ? "Split" : clip.speakerType === "solo" ? "Solo" : "Auto"
+              );
               setCropBoxPosition(50);
             }}
-            className="px-3.5 py-1.5 rounded-md bg-[#08090B] hover:bg-[#161920] border border-white/[0.08] text-xs text-text-secondary hover:text-white flex items-center gap-1.5 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-mono text-text-muted hover:text-white transition-colors"
           >
-            <RotateCcw className="w-3.5 h-3.5 text-text-muted" />
-            <span>Reset Default</span>
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Reset Defaults</span>
           </button>
 
           <div className="flex items-center gap-2">
             <button
-              type="button"
               onClick={onClose}
-              className="px-3.5 py-1.5 rounded-md text-xs text-text-muted hover:text-white transition-colors"
+              className="px-4 py-2 text-xs font-mono text-text-secondary hover:text-white transition-colors"
             >
               Cancel
             </button>
             <button
-              type="button"
               onClick={() => {
-                onApplyCrop(clip.id, aspectRatio, layoutMode);
+                onApplyCrop(clip.id, aspectRatio, framingMode);
                 onClose();
               }}
-              className="px-4 py-2 rounded-md bg-white hover:bg-[#F4F4F6] text-[#08090B] font-semibold text-xs shadow-sm flex items-center gap-1.5 transition-all active:scale-95"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#10B981] hover:bg-[#10B981]/90 text-black font-mono text-xs font-bold transition-all shadow-md shadow-[#10B981]/20"
             >
-              <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-              <span>Apply Smart Reframe</span>
+              <Check className="w-3.5 h-3.5 stroke-[3]" />
+              <span>Apply Reframe Settings</span>
             </button>
           </div>
         </div>

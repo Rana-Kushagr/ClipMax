@@ -1,10 +1,11 @@
 export type ViralityTier = "Viral" | "High" | "Good";
+export type GradeRating = "A+" | "A" | "A-" | "B+";
 
 export interface ClipLetterGrades {
-  hook: "A+" | "A" | "A-" | "B+";
-  flow: "A+" | "A" | "A-" | "B+";
-  value: "A+" | "A" | "A-" | "B+";
-  trend: "A+" | "A" | "A-" | "B+";
+  hook: GradeRating;
+  flow: GradeRating;
+  value: GradeRating;
+  trend: GradeRating;
 }
 
 export interface VideoClip {

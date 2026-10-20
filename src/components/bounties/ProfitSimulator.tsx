@@ -1,14 +1,7 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import {
   Calculator,
-  Sparkles,
-  TrendingUp,
-  Percent,
   CheckCircle2,
-  DollarSign,
-  HelpCircle,
-  BarChart3,
 } from "lucide-react";
 import { SpotlightCard } from "../react-bits/SpotlightCard";
 import { CountUp } from "../react-bits/CountUp";
@@ -63,7 +56,7 @@ export const ProfitSimulator: React.FC = () => {
               max={20}
               step={1}
               value={dailyShorts}
-              onChange={(e) => setDailyShorts(parseInt(e.target.value, 10))}
+              onChange={(e) => setDailyShorts(Number.parseInt(e.target.value, 10))}
               aria-label="Daily shorts published slider"
               className="w-full h-2 bg-[#08090B] rounded-lg appearance-none cursor-pointer accent-emerald-500 border border-white/[0.08]"
             />
@@ -88,7 +81,7 @@ export const ProfitSimulator: React.FC = () => {
               max={100000}
               step={1000}
               value={avgViews}
-              onChange={(e) => setAvgViews(parseInt(e.target.value, 10))}
+              onChange={(e) => setAvgViews(Number.parseInt(e.target.value, 10))}
               aria-label="Average views per short slider"
               className="w-full h-2 bg-[#08090B] rounded-lg appearance-none cursor-pointer accent-[#E06D3B] border border-white/[0.08]"
             />

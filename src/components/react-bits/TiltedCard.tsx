@@ -15,7 +15,7 @@ export function TiltedCard({
   maxAngle = 9,
   scale = 1.02,
   glareOpacity = 0.18,
-}: TiltedCardProps) {
+}: Readonly<TiltedCardProps>) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [glarePosition, setGlarePosition] = useState({ x: 50, y: 50, opacity: 0 });
   const shouldReduceMotion = useReducedMotion();

@@ -11,14 +11,14 @@ import { StudioFooter } from "./components/footer/StudioFooter";
 import { NoiseOverlay } from "./components/react-bits/NoiseOverlay";
 import { BlurText } from "./components/react-bits/BlurText";
 import { useClipMaxGsap } from "./hooks/useClipMaxGsap";
-import { CheckCircle2, Download, X } from "lucide-react";
+import { CheckCircle2, X } from "lucide-react";
 
 export function App() {
   const { progressBarRef, hudContainerRef } = useClipMaxGsap();
 
   // React 19 useOptimistic for free export credits
   const [actualFreeExports, setActualFreeExports] = useState(3);
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const [optimisticFreeExports, setOptimisticFreeExports] = useOptimistic(
     actualFreeExports,
     (current, decrementAmount: number) => Math.max(0, current - decrementAmount)

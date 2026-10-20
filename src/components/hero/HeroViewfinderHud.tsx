@@ -9,7 +9,7 @@ interface HeroViewfinderHudProps {
 export function HeroViewfinderHud({
   hudRef,
   isInputActive = false,
-}: HeroViewfinderHudProps) {
+}: Readonly<HeroViewfinderHudProps>) {
   return (
     <div
       ref={hudRef}

@@ -19,7 +19,7 @@ export function StudioQuickDock({
   activeTool,
   setActiveTool,
   onToolSelect,
-}: StudioQuickDockProps) {
+}: Readonly<StudioQuickDockProps>) {
   const tools = [
     {
       id: "ai-reframe",

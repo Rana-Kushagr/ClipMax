@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Check, Zap, Sparkles, Shield, ArrowRight } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
 import { SpotlightCard } from "../react-bits/SpotlightCard";
 import { Magnet } from "../react-bits/Magnet";
 
@@ -168,7 +168,7 @@ export const OutputOnlyPricing: React.FC = () => {
                   </span>
                   <ul className="space-y-2.5">
                     {tier.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-2.5 text-xs text-zinc-300">
+                      <li key={`${tier.id}-feat-${idx}`} className="flex items-start gap-2.5 text-xs text-zinc-300">
                         <div
                           className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
                             tier.highlight

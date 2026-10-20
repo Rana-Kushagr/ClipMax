@@ -58,7 +58,7 @@ export function HeroCommandCenter({
   setActiveTool,
   videoUrl,
   setVideoUrl,
-}: HeroCommandCenterProps) {
+}: Readonly<HeroCommandCenterProps>) {
   const [protocolBadge, setProtocolBadge] = useState<string>("https://");
   const [platform, setPlatform] = useState<"youtube" | "twitch" | "kick" | "rumble" | "drive" | "file" | "unknown">("unknown");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -145,7 +145,7 @@ export function HeroCommandCenter({
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+    if (e.dataTransfer.files?.[0]) {
       const file = e.dataTransfer.files[0];
       setUploadedFileName(file.name);
       setVideoUrl(`local-file://${file.name}`);
@@ -256,7 +256,7 @@ export function HeroCommandCenter({
                 accept="video/*"
                 className="sr-only"
                 onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
+                  if (e.target.files?.[0]) {
                     const file = e.target.files[0];
                     setUploadedFileName(file.name);
                     setVideoUrl(`local-file://${file.name}`);
@@ -315,9 +315,9 @@ export function HeroCommandCenter({
       {/* Sample Links Quick Selector */}
       <div className="flex flex-wrap items-center justify-center gap-2 mt-3.5 text-xs text-text-muted">
         <span>Try a sample video:</span>
-        {sampleUrls.map((s, idx) => (
+        {sampleUrls.map((s) => (
           <button
-            key={idx}
+            key={`sample-${s.name}`}
             type="button"
             onClick={() => setVideoUrl(s.url)}
             className="text-text-secondary hover:text-white transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-[#10B981] font-mono text-[11px]"

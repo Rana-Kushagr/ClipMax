@@ -13,9 +13,8 @@ export function SpotlightCard({
   spotlightColor = "rgba(16, 185, 129, 0.12)",
   size = 450,
   ...props
-}: SpotlightCardProps) {
+}: Readonly<SpotlightCardProps>) {
   const divRef = useRef<HTMLDivElement>(null);
-  const [isFocused, setIsFocused] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [opacity, setOpacity] = useState(0);
 
@@ -26,12 +25,10 @@ export function SpotlightCard({
   };
 
   const handleFocus = () => {
-    setIsFocused(true);
     setOpacity(1);
   };
 
   const handleBlur = () => {
-    setIsFocused(false);
     setOpacity(0);
   };
 

@@ -17,7 +17,7 @@ export function BlurText({
   as: Component = "span",
   delay = 0,
   stagger = 0.04,
-}: BlurTextProps) {
+}: Readonly<BlurTextProps>) {
   const shouldReduceMotion = useReducedMotion();
   const words = text.split(" ");
 

@@ -1,94 +1,71 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useReducedMotion } from "framer-motion";
 
 interface DecryptedTextProps {
   text: string;
   speed?: number;
   maxIterations?: number;
-  characters?: string;
   className?: string;
-  animateOnView?: boolean;
+  characters?: string;
 }
-
-const DEFAULT_CHARS = "0123456789ABCDEF%$#@*";
 
 export function DecryptedText({
   text,
-  speed = 40,
+  speed = 50,
   maxIterations = 10,
-  characters = DEFAULT_CHARS,
   className = "",
-  animateOnView = true,
-}: DecryptedTextProps) {
+  characters = "0123456789ABCDEF!@#$%&*",
+}: Readonly<DecryptedTextProps>) {
   const [displayText, setDisplayText] = useState(text);
-  const [isHovered, setIsHovered] = useState(false);
-  const [hasAnimated, setHasAnimated] = useState(false);
-  const containerRef = useRef<HTMLSpanElement>(null);
+  const [isHovering, setIsHovering] = useState(false);
   const shouldReduceMotion = useReducedMotion();
+  const iterationRef = useRef(0);
 
-  const triggerScramble = () => {
+  // Safe Cryptographic Random Function (SonarCloud S2245 compliant)
+  const getSafeRandom = () => {
+    if (typeof window !== "undefined" && window.crypto?.getRandomValues) {
+      const buffer = new Uint32Array(1);
+      window.crypto.getRandomValues(buffer);
+      return buffer[0] / 4294967296;
+    }
+    return 0.5;
+  };
+
+  useEffect(() => {
     if (shouldReduceMotion) {
       setDisplayText(text);
       return;
     }
 
-    let iteration = 0;
+    iterationRef.current = 0;
     const interval = setInterval(() => {
-      setDisplayText(() =>
+      setDisplayText(
         text
           .split("")
           .map((char, index) => {
-            if (char === " " || char === "-" || char === ":" || char === "/") return char;
-            if (index < iteration) return text[index];
-            return characters[Math.floor(Math.random() * characters.length)];
+            if (char === " " || index < iterationRef.current) {
+              return text[index];
+            }
+            const randIndex = Math.floor(getSafeRandom() * characters.length);
+            return characters[randIndex];
           })
           .join("")
       );
 
-      iteration += 1 / (maxIterations / text.length || 1);
-      if (iteration >= text.length) {
+      if (iterationRef.current >= text.length) {
         clearInterval(interval);
-        setDisplayText(text);
       }
+
+      iterationRef.current += 1 / (maxIterations / text.length || 1);
     }, speed);
-  };
 
-  useEffect(() => {
-    if (!animateOnView) {
-      triggerScramble();
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasAnimated) {
-            triggerScramble();
-            setHasAnimated(true);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [text]);
+    return () => clearInterval(interval);
+  }, [text, speed, maxIterations, characters, isHovering, shouldReduceMotion]);
 
   return (
     <span
-      ref={containerRef}
-      onMouseEnter={() => {
-        if (!isHovered) {
-          setIsHovered(true);
-          triggerScramble();
-        }
-      }}
-      onMouseLeave={() => setIsHovered(false)}
-      className={`font-mono tabular-nums ${className}`}
+      className={`font-mono inline-block ${className}`}
+      onMouseEnter={() => setIsHovering(!isHovering)}
     >
       {displayText}
     </span>

@@ -9,7 +9,6 @@ import {
   Columns,
   Film,
   User,
-  Sparkles,
 } from "lucide-react";
 import { VideoClip, CaptionPresetId } from "../../types/studio";
 import { INITIAL_CLIPS, CAPTION_STYLES } from "../../lib/constants";
@@ -58,7 +57,7 @@ export function ViralClipStrip({
   onEditClip,
   activeCaptionPreset,
   onExportClip,
-}: ViralClipStripProps) {
+}: Readonly<ViralClipStripProps>) {
   const [playingClipId, setPlayingClipId] = useState<string | null>("clip-1");
   const [clips, setClips] = useState<VideoClip[]>(INITIAL_CLIPS);
   const [editingTitleId, setEditingTitleId] = useState<string | null>(null);

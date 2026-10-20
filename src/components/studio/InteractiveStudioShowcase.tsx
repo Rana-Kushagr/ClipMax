@@ -24,7 +24,7 @@ export function InteractiveStudioShowcase({
   activeStudioTab,
   setActiveStudioTab,
   onExportSuccess,
-}: InteractiveStudioShowcaseProps) {
+}: Readonly<InteractiveStudioShowcaseProps>) {
   const [activeCaptionPreset, setActiveCaptionPreset] =
     useState<CaptionPresetId>("clipmax-emerald");
   const [selectedClipForCrop, setSelectedClipForCrop] =
@@ -165,12 +165,14 @@ export function InteractiveStudioShowcase({
       </div>
 
       {/* Reframe Crop Modal */}
-      <SmartReframeModal
-        clip={selectedClipForCrop}
-        isOpen={isCropModalOpen}
-        onClose={() => setIsCropModalOpen(false)}
-        onApplyCrop={handleApplyCrop}
-      />
+      {selectedClipForCrop && (
+        <SmartReframeModal
+          clip={selectedClipForCrop}
+          isOpen={isCropModalOpen}
+          onClose={() => setIsCropModalOpen(false)}
+          onApplyCrop={handleApplyCrop}
+        />
+      )}
     </section>
   );
 }

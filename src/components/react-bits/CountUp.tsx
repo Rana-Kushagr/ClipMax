@@ -19,7 +19,7 @@ export function CountUp({
   suffix = "",
   decimals = 2,
   className = "",
-}: CountUpProps) {
+}: Readonly<CountUpProps>) {
   const [current, setCurrent] = useState(from);
   const shouldReduceMotion = useReducedMotion();
 

@@ -34,7 +34,7 @@ export function SmartOptionsDrawer({
   setEndTime,
   selectedPersona,
   setSelectedPersona,
-}: SmartOptionsDrawerProps) {
+}: Readonly<SmartOptionsDrawerProps>) {
   const [activeTab, setActiveTab] = useState<"genre" | "prompt" | "timeframe" | "preset">("genre");
 
   const toggleGenre = (genre: string) => {

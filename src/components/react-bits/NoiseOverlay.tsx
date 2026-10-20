@@ -4,7 +4,7 @@ interface NoiseOverlayProps {
   opacity?: number;
 }
 
-export function NoiseOverlay({ opacity = 0.025 }: NoiseOverlayProps) {
+export function NoiseOverlay({ opacity = 0.025 }: Readonly<NoiseOverlayProps>) {
   return (
     <div
       className="fixed inset-0 pointer-events-none z-30 select-none overflow-hidden"

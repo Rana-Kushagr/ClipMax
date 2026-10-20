@@ -2,13 +2,10 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
   ShieldCheck,
-  TrendingUp,
   Clock,
   ArrowUpRight,
   Filter,
   DollarSign,
-  Layers,
-  Sparkles,
 } from "lucide-react";
 import { BOUNTY_CAMPAIGNS } from "../../lib/constants";
 import { BountyCampaign } from "../../types/studio";
@@ -19,7 +16,7 @@ interface BountyCampaignGridProps {
   onSelectCampaign: (url: string) => void;
 }
 
-export const BountyCampaignGrid: React.FC<BountyCampaignGridProps> = ({
+export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = ({
   onSelectCampaign,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("All Niches");

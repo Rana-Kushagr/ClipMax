@@ -1,63 +1,94 @@
 import React, { useState, useEffect } from "react";
 import {
   Subtitles,
-  Check,
-  ArrowRight,
-  Sparkles,
-  Scissors,
   Type,
+  Check,
+  RotateCcw,
+  Sliders,
+  ArrowRight,
+  Flame,
 } from "lucide-react";
-import { CaptionPresetId } from "../../types/studio";
 import { CAPTION_STYLES } from "../../lib/constants";
+import { CaptionPresetId } from "../../types/studio";
 
 interface TokenWord {
   id: number;
-  text: string;
+  word: string;
   state: "default" | "mint" | "amber" | "cut";
 }
 
 const INITIAL_TRANSCRIPT: TokenWord[] = [
-  { id: 1, text: "HIGH", state: "default" },
-  { id: 2, text: "PERFORMANCE", state: "mint" },
-  { id: 3, text: "VIDEO", state: "default" },
-  { id: 4, text: "ENGINEERING", state: "amber" },
-  { id: 5, text: "SCALES", state: "default" },
-  { id: 6, text: "YOUR", state: "default" },
-  { id: 7, text: "SHORTS", state: "mint" },
-  { id: 8, text: "ACROSS", state: "default" },
-  { id: 9, text: "EVERY", state: "default" },
-  { id: 10, text: "VERTICAL", state: "amber" },
-  { id: 11, text: "FEED", state: "mint" },
+  { id: 1, word: "If", state: "default" },
+  { id: 2, word: "you", state: "default" },
+  { id: 3, word: "are", state: "default" },
+  { id: 4, word: "building", state: "mint" },
+  { id: 5, word: "low-latency", state: "amber" },
+  { id: 6, word: "systems,", state: "default" },
+  { id: 7, word: "memory", state: "mint" },
+  { id: 8, word: "allocations", state: "amber" },
+  { id: 9, word: "will", state: "default" },
+  { id: 10, word: "silently", state: "default" },
+  { id: 11, word: "kill", state: "amber" },
+  { id: 12, word: "your", state: "default" },
+  { id: 13, word: "P99", state: "mint" },
+  { id: 14, word: "response", state: "default" },
+  { id: 15, word: "times.", state: "default" },
 ];
 
 interface KineticCaptionStudioProps {
   activePreset: CaptionPresetId;
-  onSelectPreset: (presetId: CaptionPresetId) => void;
+  onSelectPreset: (id: CaptionPresetId) => void;
 }
+
+const getNextTokenState = (state: TokenWord["state"]): TokenWord["state"] => {
+  switch (state) {
+    case "default":
+      return "mint";
+    case "mint":
+      return "amber";
+    case "amber":
+      return "cut";
+    default:
+      return "default";
+  }
+};
+
+const getPreviewFontSizeClass = (size: "sm" | "md" | "lg"): string => {
+  if (size === "sm") return "text-xs";
+  if (size === "md") return "text-sm";
+  return "text-base";
+};
+
+const getStageFontSizeClass = (size: "sm" | "md" | "lg"): string => {
+  if (size === "sm") return "text-base";
+  if (size === "md") return "text-lg";
+  return "text-xl";
+};
+
+const getTokenHighlightColor = (
+  state: TokenWord["state"],
+  defaultHighlight: string
+): string => {
+  if (state === "amber") return "#E06D3B";
+  if (state === "mint") return "#10B981";
+  return defaultHighlight;
+};
 
 export function KineticCaptionStudio({
   activePreset,
   onSelectPreset,
-}: KineticCaptionStudioProps) {
+}: Readonly<KineticCaptionStudioProps>) {
   const [tokens, setTokens] = useState<TokenWord[]>(INITIAL_TRANSCRIPT);
   const [activeWordIndex, setActiveWordIndex] = useState(0);
-  const [isUppercase, setIsUppercase] = useState(true);
   const [fontSize, setFontSize] = useState<"sm" | "md" | "lg">("md");
+  const [isUppercase, setIsUppercase] = useState(true);
 
   // Cycle token state: default -> mint -> amber -> cut -> default
   const handleTokenClick = (id: number) => {
     setTokens((prev) =>
       prev.map((t) => {
         if (t.id !== id) return t;
-        const nextState: TokenWord["state"] =
-          t.state === "default"
-            ? "mint"
-            : t.state === "mint"
-            ? "amber"
-            : t.state === "amber"
-            ? "cut"
-            : "default";
-        return { ...t, state: nextState };
+        return { ...t, state: getNextTokenState(t.state) };
       })
     );
   };
@@ -74,99 +105,128 @@ export function KineticCaptionStudio({
   }, [activeTokens.length]);
 
   const activeStyle =
-    CAPTION_STYLES.find((c) => c.id === activePreset) || CAPTION_STYLES[0];
+    CAPTION_STYLES.find((s) => s.id === activePreset) || CAPTION_STYLES[0];
+
+  const resetTokens = () => setTokens(INITIAL_TRANSCRIPT);
 
   return (
-    <div className="space-y-6 select-none" aria-label="Kinetic Caption Studio">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.08]">
+    <div className="space-y-8">
+      {/* Top Controls Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
         <div>
-          <div className="flex items-center gap-2">
-            <Subtitles className="w-4 h-4 text-[#10B981]" />
-            <h3 className="font-display font-semibold text-lg text-[#F4F4F6]">
-              Live Kinetic Caption Studio & Transcript Tokenizer
-            </h3>
-            <span className="px-2 py-0.5 rounded bg-[#161920] text-text-secondary border border-white/[0.08] text-xs font-mono">
-              Whisper-V3 Millisecond Alignment
-            </span>
-          </div>
-          <p className="text-xs text-text-muted mt-1 font-sans">
-            Click any word below to cycle: <strong>Default</strong> → <span className="text-[#10B981]">Mint Highlight</span> → <span className="text-[#E06D3B]">Amber Highlight</span> → <span className="line-through text-red-400">Cut Word</span>.
+          <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <Subtitles className="w-5 h-5 text-[#10B981]" />
+            <span>Kinetic Subtitle & Transcript Studio</span>
+          </h3>
+          <p className="text-xs text-text-muted mt-1">
+            Click words to cycle highlight modes (Mint → Amber → Strikethrough Cut). Subtitles auto-sync to audio phonemes.
           </p>
         </div>
 
-        {/* Quick Toggles */}
-        <div className="flex items-center gap-2 text-xs">
+        {/* Global Controls */}
+        <div className="flex items-center gap-2">
+          {/* Font Size Selector */}
+          <div className="flex items-center gap-1 p-1 rounded-lg bg-[#14171F] border border-white/[0.08]">
+            <Type className="w-3.5 h-3.5 text-text-muted ml-1 mr-1" />
+            {(["sm", "md", "lg"] as const).map((size) => (
+              <button
+                key={size}
+                onClick={() => setFontSize(size)}
+                className={`px-2 py-0.5 text-[10px] font-mono rounded transition-colors uppercase ${
+                  fontSize === size
+                    ? "bg-[#10B981] text-black font-bold"
+                    : "text-text-muted hover:text-white"
+                }`}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+
+          {/* Uppercase Toggle */}
           <button
-            type="button"
             onClick={() => setIsUppercase(!isUppercase)}
-            className={`px-2.5 py-1 rounded-md border font-mono transition-colors ${
+            className={`px-2.5 py-1 text-xs font-mono rounded-lg border transition-colors ${
               isUppercase
-                ? "bg-[#161920] border-white/40 text-white font-medium"
-                : "bg-[#12151B] border-white/[0.08] text-text-muted"
+                ? "bg-white/[0.08] text-white border-white/20"
+                : "bg-transparent text-text-muted border-white/[0.08] hover:text-white"
             }`}
           >
-            ALL CAPS: {isUppercase ? "ON" : "OFF"}
+            AA
+          </button>
+
+          {/* Reset */}
+          <button
+            onClick={resetTokens}
+            className="p-1.5 rounded-lg bg-[#14171F] border border-white/[0.08] text-text-muted hover:text-white transition-colors"
+            title="Reset words"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
-      {/* Interactive Word-By-Word Token Clicker Transcript Well */}
-      <div className="p-4 rounded-xl bg-[#12151B] border border-white/[0.08] space-y-2">
-        <div className="flex items-center justify-between text-xs font-mono text-text-muted">
-          <span className="flex items-center gap-1.5">
-            <Type className="w-3.5 h-3.5 text-[#10B981]" />
-            CLICKABLE TRANSCRIPT TOKENS:
+      {/* Interactive Word Tokenizer Bar */}
+      <div className="p-4 rounded-xl bg-[#0E1015] border border-white/[0.08] space-y-3">
+        <div className="flex items-center justify-between text-xs text-text-secondary">
+          <span className="font-mono text-[11px] uppercase tracking-wider text-text-muted">
+            Interactive Word Track: Click word to change highlight state
           </span>
-          <span className="text-[11px] text-text-muted">Click token to change emphasis or cut</span>
+          <div className="flex items-center gap-3 text-[11px] font-mono">
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-[#10B981]" /> Mint
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-[#E06D3B]" /> Amber
+            </span>
+            <span className="flex items-center gap-1 text-text-muted line-through">
+              Cut
+            </span>
+          </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 pt-1">
+        {/* Word Chips */}
+        <div className="flex flex-wrap gap-2 pt-2">
           {tokens.map((token) => {
-            let badgeStyle = "bg-[#0E1014] text-white border-white/[0.1] hover:border-white/30";
-            if (token.state === "mint") {
-              badgeStyle = "bg-[#10B981]/20 text-[#10B981] border-[#10B981]/50 font-bold shadow-[0_0_12px_rgba(16,185,129,0.25)]";
-            } else if (token.state === "amber") {
-              badgeStyle = "bg-[#E06D3B]/20 text-[#E06D3B] border-[#E06D3B]/50 font-bold shadow-[0_0_12px_rgba(224,109,59,0.25)]";
-            } else if (token.state === "cut") {
-              badgeStyle = "bg-red-500/10 text-red-400 border-red-500/20 line-through opacity-50";
-            }
+            const isCut = token.state === "cut";
+            const isMint = token.state === "mint";
+            const isAmber = token.state === "amber";
+
+            let chipClasses = "bg-white/[0.04] text-white border-white/[0.08] hover:border-white/30";
+            if (isCut) chipClasses = "bg-red-500/10 text-red-400/60 line-through border-red-500/20";
+            if (isMint) chipClasses = "bg-[#10B981]/20 text-[#10B981] font-bold border-[#10B981]/40";
+            if (isAmber) chipClasses = "bg-[#E06D3B]/20 text-[#E06D3B] font-bold border-[#E06D3B]/40";
 
             return (
               <button
                 key={token.id}
-                type="button"
                 onClick={() => handleTokenClick(token.id)}
-                className={`px-3 py-1.5 rounded-lg border text-xs font-mono transition-all active:scale-95 ${badgeStyle}`}
-                title={`Token: ${token.text} (${token.state})`}
+                className={`px-3 py-1.5 rounded-lg text-xs font-mono border transition-all duration-150 cursor-pointer select-none active:scale-95 ${chipClasses}`}
               >
-                {token.text}
+                {token.word}
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* 5 Dark Visual Tiles */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+      {/* Caption Style Preset Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
         {CAPTION_STYLES.map((style) => {
           const isSelected = activePreset === style.id;
           return (
             <button
               key={style.id}
-              type="button"
               onClick={() => onSelectPreset(style.id)}
-              className={`p-3.5 rounded-xl border text-left transition-all duration-150 flex flex-col justify-between relative group ${
+              className={`text-left p-3.5 rounded-xl border transition-all duration-200 relative group flex flex-col justify-between ${
                 isSelected
-                  ? "bg-[#161920] border-[#10B981] ring-1 ring-[#10B981]/40 shadow-lg"
-                  : "bg-[#12151B] border-white/[0.08] hover:border-white/20 hover:bg-[#161920]"
+                  ? "bg-[#14171F] border-[#10B981] shadow-lg shadow-[#10B981]/5 ring-1 ring-[#10B981]/30"
+                  : "bg-[#0E1015] border-white/[0.08] hover:border-white/20 hover:bg-[#12151B]"
               }`}
-              aria-pressed={isSelected}
             >
-              {/* Top metadata */}
-              <div className="flex items-center justify-between w-full mb-3">
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-black/60 text-text-muted">
-                  {style.tagline}
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-mono text-text-muted uppercase tracking-wider">
+                  Preset
                 </span>
                 {isSelected && (
                   <div className="w-4 h-4 rounded-full bg-[#10B981] text-black flex items-center justify-center">
@@ -178,13 +238,9 @@ export function KineticCaptionStudio({
               {/* Live Preview Box inside card */}
               <div className="w-full h-20 rounded-lg bg-[#040507] flex items-center justify-center p-2 mb-3 border border-white/[0.08] overflow-hidden">
                 <div
-                  className={`text-center transition-all ${style.fontClass} ${
-                    fontSize === "sm"
-                      ? "text-xs"
-                      : fontSize === "md"
-                      ? "text-sm"
-                      : "text-base"
-                  }`}
+                  className={`text-center transition-all ${style.fontClass} ${getPreviewFontSizeClass(
+                    fontSize
+                  )}`}
                   style={{ color: style.textColor }}
                 >
                   <span
@@ -246,9 +302,9 @@ export function KineticCaptionStudio({
               {activeStyle.name}
             </div>
             <div
-              className={`font-display font-black leading-tight drop-shadow-lg ${
-                fontSize === "sm" ? "text-base" : fontSize === "md" ? "text-lg" : "text-xl"
-              } ${isUppercase ? "uppercase" : "normal-case"}`}
+              className={`font-display font-black leading-tight drop-shadow-lg ${getStageFontSizeClass(
+                fontSize
+              )} ${isUppercase ? "uppercase" : "normal-case"}`}
               style={{
                 color: activeStyle.textColor,
               }}
@@ -261,12 +317,10 @@ export function KineticCaptionStudio({
                   )
                   .map((token, idx) => {
                     const isHighlighted = idx === 1;
-                    const highlightColor =
-                      token.state === "amber"
-                        ? "#E06D3B"
-                        : token.state === "mint"
-                        ? "#10B981"
-                        : activeStyle.highlightColor;
+                    const highlightColor = getTokenHighlightColor(
+                      token.state,
+                      activeStyle.highlightColor
+                    );
 
                     return (
                       <span
@@ -275,10 +329,10 @@ export function KineticCaptionStudio({
                           isHighlighted ? "scale-110 font-extrabold" : "opacity-80"
                         }`}
                         style={{
-                          color: isHighlighted ? highlightColor : "#FFFFFF",
+                          color: isHighlighted ? highlightColor : activeStyle.textColor,
                         }}
                       >
-                        {token.text}{" "}
+                        {token.word}
                       </span>
                     );
                   })}
@@ -287,55 +341,32 @@ export function KineticCaptionStudio({
           </div>
         </div>
 
-        {/* Caption Studio Parameters */}
+        {/* Right Info Deck */}
         <div className="flex-1 space-y-4">
-          <div className="space-y-1">
-            <span className="text-xs font-mono text-text-muted uppercase tracking-wider">
-              Submagic-Grade Kinetic Engine
-            </span>
-            <h4 className="font-display font-semibold text-lg text-white">
-              Word-By-Word Millisecond Speech Synchronization
-            </h4>
-            <p className="text-xs text-text-secondary leading-relaxed font-sans">
-              Every word is parsed by Whisper-V3 with exact SMPTE timestamp offsets. Highlight colors, keyword emphasis, and spring animations keep retention above 90% in the vertical feed.
-            </p>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.05] border border-white/[0.08] text-xs font-mono text-text-secondary">
+            <Sliders className="w-3.5 h-3.5 text-[#10B981]" />
+            <span>Phoneme-Aligned Kinetic Typography</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-            <div className="p-3 rounded-lg bg-[#0E1014] border border-white/[0.08]">
-              <span className="text-[11px] font-mono text-text-muted block mb-1">
-                FONT SIZE SCALING:
-              </span>
-              <div className="flex gap-1.5">
-                {(["sm", "md", "lg"] as const).map((sz) => (
-                  <button
-                    key={sz}
-                    type="button"
-                    onClick={() => setFontSize(sz)}
-                    className={`flex-1 py-1 rounded-md text-xs font-mono font-medium uppercase transition-colors ${
-                      fontSize === sz
-                        ? "bg-white text-black font-semibold"
-                        : "bg-[#161920] text-text-muted hover:text-white border border-white/[0.08]"
-                    }`}
-                  >
-                    {sz}
-                  </button>
-                ))}
-              </div>
-            </div>
+          <h4 className="text-xl font-bold text-white">
+            Current Style: <span className="text-[#10B981]">{activeStyle.name}</span>
+          </h4>
+          <p className="text-sm text-text-muted leading-relaxed">
+            {activeStyle.description} Built to maintain viewer retention across TikTok and YouTube Shorts algorithms with frame-by-frame color pop animations.
+          </p>
 
-            <div className="p-3 rounded-lg bg-[#0E1014] border border-white/[0.08] flex items-center justify-between">
-              <div>
-                <span className="text-[11px] font-mono text-text-muted block">
-                  ACTIVE PRESET:
-                </span>
-                <span className="text-xs font-semibold text-white">
-                  {activeStyle.name}
-                </span>
-              </div>
-              <span className="text-[10px] font-mono text-[#10B981]">
-                1080P COMPLIANT
+          <div className="grid grid-cols-2 gap-3 pt-2">
+            <div className="p-3 rounded-lg bg-[#0E1015] border border-white/[0.06] text-xs font-mono">
+              <span className="text-text-muted block text-[10px] uppercase">
+                Render Target
               </span>
+              <span className="text-white font-semibold">1080x1920 (9:16)</span>
+            </div>
+            <div className="p-3 rounded-lg bg-[#0E1015] border border-white/[0.06] text-xs font-mono">
+              <span className="text-text-muted block text-[10px] uppercase">
+                Font Family
+              </span>
+              <span className="text-white font-semibold">Plus Jakarta Sans 800</span>
             </div>
           </div>
         </div>

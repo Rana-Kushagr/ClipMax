@@ -2,12 +2,9 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Film,
-  Sparkles,
   Menu,
   X,
   ArrowRight,
-  Flame,
-  CheckCircle,
 } from "lucide-react";
 import { Magnet } from "../react-bits/Magnet";
 import { DecryptedText } from "../react-bits/DecryptedText";
@@ -16,7 +13,7 @@ interface AppHeaderProps {
   freeExportsCount: number;
 }
 
-export const AppHeader: React.FC<AppHeaderProps> = ({ freeExportsCount }) => {
+export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({ freeExportsCount }) => {
   const [activeSection, setActiveSection] = useState<string>("hero");
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);

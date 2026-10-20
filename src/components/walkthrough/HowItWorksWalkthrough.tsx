@@ -18,12 +18,16 @@ import {
 import { BlurText } from "../react-bits/BlurText";
 import { Magnet } from "../react-bits/Magnet";
 
+type StepNumber = 1 | 2 | 3;
+
 interface HowItWorksWalkthroughProps {
   onLoadWorkflowSample: () => void;
 }
 
-export function HowItWorksWalkthrough({ onLoadWorkflowSample }: HowItWorksWalkthroughProps) {
-  const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
+export function HowItWorksWalkthrough({
+  onLoadWorkflowSample,
+}: Readonly<HowItWorksWalkthroughProps>) {
+  const [activeStep, setActiveStep] = useState<StepNumber>(1);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [stepProgress, setStepProgress] = useState(0);

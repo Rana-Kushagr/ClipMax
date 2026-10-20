@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { motion, useSpring, useReducedMotion } from "framer-motion";
 
 interface MagnetProps {
@@ -13,7 +13,7 @@ export function Magnet({
   className = "",
   strength = 0.25,
   radius = 50,
-}: MagnetProps) {
+}: Readonly<MagnetProps>) {
   const magnetRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
 
