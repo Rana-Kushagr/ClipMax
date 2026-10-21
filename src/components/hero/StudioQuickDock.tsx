@@ -72,7 +72,7 @@ export function StudioQuickDock({
         <Dock
           magnification={58}
           distance={120}
-          className="bg-[#1E1710]/85 border-[#F3E5AB]/15 shadow-2xl backdrop-blur-xl h-16 px-4"
+          className="bg-[#1E1710] border-[#F3E5AB]/15 shadow-2xl h-16 px-4"
         >
           {tools.map((tool) => {
             const Icon = tool.icon;

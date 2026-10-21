@@ -1,4 +1,5 @@
 import React, { useEffect, createContext, useContext, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 
@@ -35,7 +36,7 @@ export function ExpandableScreen({
   children,
   triggerRadius = "16px",
   contentRadius = "24px",
-  animationDuration = 0.32,
+  animationDuration = 0.28,
   isOpen: controlledIsOpen,
   onOpenChange,
 }: Readonly<ExpandableScreenProps>) {
@@ -51,54 +52,73 @@ export function ExpandableScreen({
     }
   };
 
+  // Hard Main-Page Scroll Lock When Expanded
   useEffect(() => {
+    if (!isExpanded) return;
+    const scrollY = window.scrollY;
+    const originalStyle = {
+      overflow: document.body.style.overflow,
+      position: document.body.style.position,
+      top: document.body.style.top,
+      width: document.body.style.width,
+    };
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isExpanded) {
+      if (e.key === "Escape") {
         setIsExpanded(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = originalStyle.overflow;
+      document.body.style.position = originalStyle.position;
+      document.body.style.top = originalStyle.top;
+      document.body.style.width = originalStyle.width;
+      window.scrollTo(0, scrollY);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [isExpanded]);
 
-  return (
-    <ExpandableContext.Provider value={{ isExpanded, setIsExpanded, layoutId }}>
-      {/* Trigger */}
-      <motion.div
-        layoutId={`expandable-trigger-${layoutId}`}
-        onClick={() => setIsExpanded(true)}
-        className="cursor-pointer"
-        style={{ borderRadius: triggerRadius }}
-      >
-        {trigger}
-      </motion.div>
-
-      {/* Expanded Screen Overlay */}
-      <AnimatePresence>
-        {isExpanded && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6">
-            {/* Backdrop */}
+  const overlayNode = isExpanded && typeof document !== "undefined"
+    ? createPortal(
+        <AnimatePresence>
+          <div
+            className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-6 overflow-y-auto overscroll-contain bg-[#0D0A07]/92 backdrop-blur-xl"
+            onWheel={(e) => e.stopPropagation()}
+          >
+            {/* Backdrop click to dismiss */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsExpanded(false)}
-              className="fixed inset-0 bg-black/80 backdrop-blur-md -z-10"
+              className="fixed inset-0 -z-10"
+              aria-hidden="true"
             />
 
             {/* Modal Container */}
             <motion.div
-              layoutId={`expandable-trigger-${layoutId}`}
+              initial={{ opacity: 0, scale: 0.95, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 16 }}
               transition={{
                 duration: animationDuration,
                 ease: [0.16, 1, 0.3, 1],
               }}
               style={{ borderRadius: contentRadius }}
-              className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-[#1A140E] border border-[#F3E5AB]/25 shadow-2xl p-6"
+              className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-[#1E1710] border border-[#F3E5AB]/25 shadow-2xl p-6"
             >
               <button
+                type="button"
                 onClick={() => setIsExpanded(false)}
-                className="absolute top-4 right-4 p-2 rounded-full bg-white/[0.06] text-[#F3E5AB] hover:bg-white/[0.12] transition-colors z-20"
+                className="absolute top-4 right-4 p-2 rounded-full bg-[#2A2016] text-[#F3E5AB] hover:text-white hover:bg-[#382B1E] border border-[#F3E5AB]/20 transition-colors z-20"
                 aria-label="Close modal"
               >
                 <X className="w-5 h-5" />
@@ -106,8 +126,24 @@ export function ExpandableScreen({
               {children}
             </motion.div>
           </div>
-        )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body
+      )
+    : null;
+
+  return (
+    <ExpandableContext.Provider value={{ isExpanded, setIsExpanded, layoutId }}>
+      {/* Trigger */}
+      <div
+        onClick={() => setIsExpanded(true)}
+        className="cursor-pointer"
+        style={{ borderRadius: triggerRadius }}
+      >
+        {trigger}
+      </div>
+
+      {/* Portaled overlay */}
+      {overlayNode}
     </ExpandableContext.Provider>
   );
 }

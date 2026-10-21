@@ -11,15 +11,17 @@ interface DecryptedTextProps {
 
 export function DecryptedText({
   text,
-  speed = 50,
-  maxIterations = 10,
+  speed = 45,
+  maxIterations = 8,
   className = "",
-  characters = "0123456789ABCDEF!@#$%&*",
+  characters = "0123456789ABCDEF!@#$%",
 }: Readonly<DecryptedTextProps>) {
-  const [displayText, setDisplayText] = useState(text);
+  const originalText = text;
+  const [displayText, setDisplayText] = useState(originalText);
   const [isHovering, setIsHovering] = useState(false);
   const shouldReduceMotion = useReducedMotion();
   const iterationRef = useRef(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Safe Cryptographic Random Function (SonarCloud S2245 compliant)
   const getSafeRandom = () => {
@@ -33,34 +35,51 @@ export function DecryptedText({
 
   useEffect(() => {
     if (shouldReduceMotion) {
-      setDisplayText(text);
+      setDisplayText(originalText);
       return;
     }
 
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
     iterationRef.current = 0;
-    const interval = setInterval(() => {
+
+    intervalRef.current = setInterval(() => {
+      iterationRef.current += 1;
+
+      if (iterationRef.current >= maxIterations) {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
+        setDisplayText(originalText);
+        return;
+      }
+
       setDisplayText(
-        text
+        originalText
           .split("")
           .map((char, index) => {
-            if (char === " " || index < iterationRef.current) {
-              return text[index];
+            if (char === " " || index < iterationRef.current / (maxIterations / originalText.length)) {
+              return originalText[index];
             }
             const randIndex = Math.floor(getSafeRandom() * characters.length);
-            return characters[randIndex];
+            return characters[randIndex] || char;
           })
           .join("")
       );
-
-      if (iterationRef.current >= text.length) {
-        clearInterval(interval);
-      }
-
-      iterationRef.current += 1 / (maxIterations / text.length || 1);
     }, speed);
 
-    return () => clearInterval(interval);
-  }, [text, speed, maxIterations, characters, isHovering, shouldReduceMotion]);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      setDisplayText(originalText);
+    };
+  }, [originalText, speed, maxIterations, characters, isHovering, shouldReduceMotion]);
 
   return (
     <span

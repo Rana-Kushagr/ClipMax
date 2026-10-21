@@ -32,6 +32,8 @@ export function HowItWorksWalkthrough({
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [isMuted, setIsMuted] = useState<boolean>(true);
+  const sectionRef = useRef<HTMLElement>(null);
+  const isVisibleRef = useRef<boolean>(true);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrubberRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef<boolean>(false);
@@ -40,7 +42,23 @@ export function HowItWorksWalkthrough({
   // Determine current scene (1: 0-5s, 2: 5-10s, 3: 10-15s)
   const currentScene = currentTime < 5 ? 1 : currentTime < 10 ? 2 : 3;
 
-  // 60FPS high-precision timeline loop
+  // Track section visibility to pause animation loops when off-screen
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleRef.current = entry.isIntersecting;
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // 60FPS high-precision timeline loop (paused when off-screen)
   useEffect(() => {
     let animId: number;
 
@@ -48,7 +66,7 @@ export function HowItWorksWalkthrough({
       const delta = (now - lastTimeRef.current) / 1000;
       lastTimeRef.current = now;
 
-      if (isPlaying && !isDraggingRef.current) {
+      if (isPlaying && isVisibleRef.current && !isDraggingRef.current) {
         setCurrentTime((prev) => {
           const next = prev + delta;
           if (next >= 15) {
@@ -67,7 +85,7 @@ export function HowItWorksWalkthrough({
     return () => cancelAnimationFrame(animId);
   }, [isPlaying]);
 
-  // Audio waveform & spectral radar canvas rendering for Scene 1
+  // Audio waveform & spectral radar canvas rendering for Scene 1 (paused when off-screen)
   useEffect(() => {
     if (currentScene !== 1 || !canvasRef.current) return;
     const canvas = canvasRef.current;
@@ -78,6 +96,11 @@ export function HowItWorksWalkthrough({
     let t = currentTime * 3;
 
     const draw = () => {
+      if (!isVisibleRef.current) {
+        animId = requestAnimationFrame(draw);
+        return;
+      }
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const width = canvas.width;
       const height = canvas.height;
@@ -184,6 +207,7 @@ export function HowItWorksWalkthrough({
 
   return (
     <section
+      ref={sectionRef}
       id="walkthrough"
       className="relative z-10 py-16 px-4 sm:px-6 max-w-[1240px] mx-auto select-none"
       aria-label="Cinema Walkthrough Player"

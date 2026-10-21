@@ -75,6 +75,7 @@ export const BorderGlow = ({
   fillOpacity = 0.45,
 }) => {
   const cardRef = useRef(null);
+  const rafPendingRef = useRef(false);
 
   const getCenterOfElement = useCallback((el) => {
     const { width, height } = el.getBoundingClientRect();
@@ -104,15 +105,23 @@ export const BorderGlow = ({
   }, [getCenterOfElement]);
 
   const handlePointerMove = useCallback((e) => {
-    const card = cardRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const edge = getEdgeProximity(card, x, y);
-    const angle = getCursorAngle(card, x, y);
-    card.style.setProperty('--edge-proximity', `${(edge * 100).toFixed(3)}`);
-    card.style.setProperty('--cursor-angle', `${angle.toFixed(3)}deg`);
+    if (rafPendingRef.current) return;
+    rafPendingRef.current = true;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+
+    requestAnimationFrame(() => {
+      rafPendingRef.current = false;
+      const card = cardRef.current;
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      const edge = getEdgeProximity(card, x, y);
+      const angle = getCursorAngle(card, x, y);
+      card.style.setProperty('--edge-proximity', `${(edge * 100).toFixed(2)}`);
+      card.style.setProperty('--cursor-angle', `${angle.toFixed(2)}deg`);
+    });
   }, [getEdgeProximity, getCursorAngle]);
 
   const runSweep = useCallback(() => {

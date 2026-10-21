@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
 import { Magnet } from "../react-bits/Magnet";
 import { BorderGlow } from "../ui/BorderGlow";
@@ -94,8 +94,20 @@ export const OutputOnlyPricing: React.FC = () => {
 
         {/* Price Display */}
         <div className="flex items-baseline gap-2 mb-6 pb-6 border-b border-[#F3E5AB]/10">
-          <span className="text-4xl lg:text-5xl font-mono font-bold text-[#F4F4F6] tabular-nums">
-            ${price}
+          <span className="text-4xl lg:text-5xl font-mono font-bold text-[#F4F4F6] tabular-nums inline-flex items-baseline overflow-hidden">
+            <span>$</span>
+            <AnimatePresence mode="popLayout" initial={false}>
+              <motion.span
+                key={price}
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+                transition={{ duration: 0.2 }}
+                className="inline-block"
+              >
+                {price}
+              </motion.span>
+            </AnimatePresence>
           </span>
           <div className="space-y-0.5">
             <span className="text-xs text-[#A1A1AA] block font-mono">/ month</span>
@@ -161,7 +173,7 @@ export const OutputOnlyPricing: React.FC = () => {
     <div className="w-full">
       {/* Interactive Segmented Pill Billing Switch with Framer Motion Sliding Thumb */}
       <div className="flex items-center justify-center mb-12">
-        <div className="relative inline-flex p-1.5 rounded-full bg-[#1E1710]/90 border border-[#F3E5AB]/20 shadow-2xl backdrop-blur-xl">
+        <div className="relative inline-flex p-1.5 rounded-full bg-[#1E1710] border border-[#F3E5AB]/20 shadow-2xl">
           <button
             type="button"
             onClick={() => setBillingCycle("monthly")}
@@ -232,7 +244,7 @@ export const OutputOnlyPricing: React.FC = () => {
           return (
             <div
               key={tier.id}
-              className="flex flex-col justify-between h-full rounded-2xl bg-[#1E1710]/85 backdrop-blur-xl border border-[#F3E5AB]/15 shadow-xl transition-all duration-300 hover:border-[#F3E5AB]/30"
+              className="flex flex-col justify-between h-full rounded-2xl bg-[#1E1710] border border-[#F3E5AB]/15 shadow-xl transition-all duration-300 hover:border-[#F3E5AB]/30"
             >
               {renderCardContent(tier, price)}
             </div>

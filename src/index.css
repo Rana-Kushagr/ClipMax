@@ -51,6 +51,24 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+/* Staggered Studio Card Floating Animation */
+@keyframes studioCardFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.studio-card-float {
+  animation: studioCardFloat 4.2s ease-in-out infinite;
+}
+
+.studio-card-float:hover {
+  animation-play-state: paused;
+}
+
 /* Tabular Numerals for SMPTE Timecodes & Virality Badges */
 .tabular-nums {
   font-variant-numeric: tabular-nums;

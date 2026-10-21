@@ -22,14 +22,23 @@ export const CardContainer = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMouseEntered, setIsMouseEntered] = useState(false);
+  const rafPendingRef = useRef(false);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
-    const { left, top, width, height } =
-      containerRef.current.getBoundingClientRect();
-    const x = (e.clientX - left - width / 2) / 25;
-    const y = (e.clientY - top - height / 2) / 25;
-    containerRef.current.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+    if (!containerRef.current || rafPendingRef.current) return;
+    rafPendingRef.current = true;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+
+    requestAnimationFrame(() => {
+      rafPendingRef.current = false;
+      if (!containerRef.current) return;
+      const { left, top, width, height } =
+        containerRef.current.getBoundingClientRect();
+      const x = Math.max(-10, Math.min(10, ((clientX - left - width / 2) / (width / 2)) * 10));
+      const y = Math.max(-10, Math.min(10, ((clientY - top - height / 2) / (height / 2)) * 10));
+      containerRef.current.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg) scale3d(1.03, 1.03, 1.03)`;
+    });
   };
 
   const handleMouseEnter = () => {
@@ -39,7 +48,7 @@ export const CardContainer = ({
   const handleMouseLeave = () => {
     if (!containerRef.current) return;
     setIsMouseEntered(false);
-    containerRef.current.style.transform = `rotateY(0deg) rotateX(0deg)`;
+    containerRef.current.style.transform = `perspective(1000px) rotateY(0deg) rotateX(0deg) scale3d(1, 1, 1)`;
   };
 
   return (
@@ -53,7 +62,7 @@ export const CardContainer = ({
           onMouseEnter={handleMouseEnter}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          className={`flex items-center justify-center relative transition-all duration-200 ease-linear ${className}`}
+          className={`flex items-center justify-center relative transition-transform duration-200 ease-out ${className}`}
           style={{ transformStyle: "preserve-3d" }}
         >
           {children}
@@ -121,7 +130,7 @@ export const CardItem = ({
   return (
     <Tag
       ref={ref}
-      className={`w-fit transition duration-200 ease-linear ${className}`}
+      className={`w-fit transition-transform duration-200 ease-out ${className}`}
       {...rest}
     >
       {children}

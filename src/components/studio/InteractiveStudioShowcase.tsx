@@ -7,9 +7,10 @@ import {
   Calendar,
 } from "lucide-react";
 import { ViralClipStrip } from "./ViralClipStrip";
+import { SmartReframeStudio } from "./SmartReframeStudio";
 import { KineticCaptionStudio } from "./KineticCaptionStudio";
 import { SocialCalendarBot } from "./SocialCalendarBot";
-import { SmartReframeModal } from "./SmartReframeModal";
+import { StudioEditorModal } from "./StudioEditorModal";
 import { VideoClip, CaptionPresetId } from "../../types/studio";
 import { INITIAL_CLIPS } from "../../lib/constants";
 import { BlurText } from "../react-bits/BlurText";
@@ -29,15 +30,14 @@ export function InteractiveStudioShowcase({
     useState<CaptionPresetId>("clipmax-emerald");
   const [selectedClipForCrop, setSelectedClipForCrop] =
     useState<VideoClip | null>(null);
-  const [isCropModalOpen, setIsCropModalOpen] = useState(false);
+  const [isEditorModalOpen, setIsEditorModalOpen] = useState(false);
 
   const handleEditClip = (clip: VideoClip) => {
     setSelectedClipForCrop(clip);
-    setIsCropModalOpen(true);
+    setIsEditorModalOpen(true);
   };
 
   const handleApplyCrop = (
-    _clipId: string,
     aspectRatio: string,
     layout: string
   ) => {
@@ -52,7 +52,7 @@ export function InteractiveStudioShowcase({
 
   const tabs = [
     { id: "clips", label: "Viral 9:16 Strip", icon: Scissors },
-    { id: "reframe", label: "Smart Reframe Modal", icon: Columns },
+    { id: "reframe", label: "Smart Reframe", icon: Columns },
     { id: "captions", label: "Kinetic Captions", icon: Subtitles },
     { id: "schedule", label: "Schedule & Bot", icon: Calendar },
   ] as const;
@@ -60,25 +60,25 @@ export function InteractiveStudioShowcase({
   return (
     <section
       id="playgrounds"
-      className="relative z-10 py-16 px-4 sm:px-6 max-w-[1240px] mx-auto space-y-8"
+      className="relative z-10 py-16 px-4 sm:px-6 max-w-[1240px] mx-auto space-y-8 overflow-visible"
       aria-label="Interactive Studio Workspaces"
     >
-      {/* Studio Navigation Tabs with Editorial Heading using <BlurText /> */}
+      {/* Studio Navigation Tabs with Editorial Heading */}
       <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
         <div>
-          <span className="text-xs font-mono uppercase tracking-wider text-text-muted font-medium">
+          <span className="text-xs font-mono uppercase tracking-wider text-[#A1A1AA] font-medium">
             Studio Workspaces
           </span>
           <BlurText
             text="Cinema-grade AI studio, built for retention."
-            italicWord="retention"
+            italicWords={["retention"]}
             as="h2"
             className="font-display font-bold text-2xl sm:text-3xl text-[#F4F4F6] tracking-tight mt-1"
           />
         </div>
 
         {/* Tab switcher buttons with Framer Motion layoutId pill */}
-        <div className="p-1 rounded-lg bg-[#1E1710]/90 border border-[#F3E5AB]/15 flex items-center gap-1 overflow-x-auto max-w-full backdrop-blur-xl">
+        <div className="p-1 rounded-xl bg-[#1E1710] border border-[#F3E5AB]/15 flex items-center gap-1 overflow-x-auto max-w-full shadow-lg">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeStudioTab === tab.id;
@@ -87,37 +87,28 @@ export function InteractiveStudioShowcase({
               <button
                 key={tab.id}
                 type="button"
-                onClick={() => {
-                  if (tab.id === "reframe") {
-                    setSelectedClipForCrop(INITIAL_CLIPS[0]);
-                    setIsCropModalOpen(true);
-                  } else {
-                    setActiveStudioTab(tab.id as "clips" | "captions" | "schedule");
-                  }
-                }}
-                className={`relative px-3.5 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-colors shrink-0 ${
-                  isActive ? "text-[#F4F4F6] font-semibold" : "text-[#A1A1AA] hover:text-white"
+                onClick={() => setActiveStudioTab(tab.id)}
+                className={`relative px-4 py-2 rounded-lg text-xs font-medium flex items-center gap-2 transition-colors shrink-0 ${
+                  isActive ? "text-[#17120C] font-semibold" : "text-[#A1A1AA] hover:text-white"
                 }`}
               >
                 {isActive && (
                   <motion.div
                     layoutId="studioWorkspacePill"
-                    className="absolute inset-0 bg-[#2A2016] border border-[#F3E5AB]/25 rounded-md shadow-sm"
+                    className="absolute inset-0 bg-[#F3E5AB] rounded-lg shadow-sm -z-10"
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
                   />
                 )}
-                <span className="relative z-10 flex items-center gap-2">
-                  <Icon className="w-3.5 h-3.5 text-[#10B981]" />
-                  <span>{tab.label}</span>
-                </span>
+                <Icon className={`w-3.5 h-3.5 ${isActive ? "text-[#17120C]" : "text-[#10B981]"}`} />
+                <span>{tab.label}</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Render Active Playground in Flat Hairline Container with AnimatePresence */}
-      <div className="rounded-xl bg-[#1E1710]/85 border border-[#F3E5AB]/15 p-4 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.85)] backdrop-blur-xl min-h-[480px]">
+      {/* Render Active Studio Workspace with AnimatePresence mode="wait" */}
+      <div className="rounded-2xl bg-[#1E1710] border border-[#F3E5AB]/15 p-4 sm:p-6 shadow-2xl min-h-[480px] overflow-visible">
         <AnimatePresence mode="wait">
           {activeStudioTab === "clips" && (
             <motion.div
@@ -126,12 +117,25 @@ export function InteractiveStudioShowcase({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.2 }}
+              className="overflow-visible"
             >
               <ViralClipStrip
                 onEditClip={handleEditClip}
                 activeCaptionPreset={activeCaptionPreset}
                 onExportClip={handleExportClip}
               />
+            </motion.div>
+          )}
+
+          {activeStudioTab === "reframe" && (
+            <motion.div
+              key="tab-reframe"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.2 }}
+            >
+              <SmartReframeStudio onApplyCrop={handleApplyCrop} />
             </motion.div>
           )}
 
@@ -146,6 +150,7 @@ export function InteractiveStudioShowcase({
               <KineticCaptionStudio
                 activePreset={activeCaptionPreset}
                 onSelectPreset={(p) => setActiveCaptionPreset(p)}
+                onExportSuccess={onExportSuccess}
               />
             </motion.div>
           )}
@@ -164,15 +169,13 @@ export function InteractiveStudioShowcase({
         </AnimatePresence>
       </div>
 
-      {/* Reframe Crop Modal */}
-      {selectedClipForCrop && (
-        <SmartReframeModal
-          clip={selectedClipForCrop}
-          isOpen={isCropModalOpen}
-          onClose={() => setIsCropModalOpen(false)}
-          onApplyCrop={handleApplyCrop}
-        />
-      )}
+      {/* Portaled, Scroll-Locked Full-Screen Studio Editor Modal */}
+      <StudioEditorModal
+        clip={selectedClipForCrop || INITIAL_CLIPS[0]}
+        isOpen={isEditorModalOpen}
+        onClose={() => setIsEditorModalOpen(false)}
+        onExport={onExportSuccess}
+      />
     </section>
   );
 }

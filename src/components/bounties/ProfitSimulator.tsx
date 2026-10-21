@@ -23,11 +23,11 @@ export const ProfitSimulator: React.FC = () => {
   return (
     <SpotlightCard
       spotlightColor="rgba(243, 229, 171, 0.15)"
-      className="w-full bg-[#1E1710]/85 border border-[#F3E5AB]/15 rounded-2xl p-6 lg:p-8 backdrop-blur-xl shadow-2xl"
+      className="w-full bg-[#1E1710] border border-[#F3E5AB]/15 rounded-2xl p-6 lg:p-8 shadow-2xl overflow-visible"
     >
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center overflow-visible">
         {/* Left Column: Sliders & Controls (7 Cols) */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-6 overflow-visible">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-[#D99B52]/10 border border-[#D99B52]/30 flex items-center justify-center text-[#D99B52]">
               <Calculator className="w-5 h-5" />
@@ -43,7 +43,7 @@ export const ProfitSimulator: React.FC = () => {
           </div>
 
           {/* Slider 1: Daily Shorts */}
-          <div className="space-y-2 p-4 rounded-xl bg-[#2A2016]/80 border border-[#F3E5AB]/10">
+          <div className="space-y-2 p-4 rounded-xl bg-[#2A2016] border border-[#F3E5AB]/10 overflow-visible">
             <div className="flex justify-between items-center text-xs font-mono">
               <span className="text-[#F4F4F6] font-medium">Daily Shorts Published</span>
               <span className="text-[#F3E5AB] font-bold px-2 py-0.5 rounded bg-[#F3E5AB]/10 border border-[#F3E5AB]/25">
@@ -68,7 +68,7 @@ export const ProfitSimulator: React.FC = () => {
           </div>
 
           {/* Slider 2: Average Views per Short */}
-          <div className="space-y-2 p-4 rounded-xl bg-[#2A2016]/80 border border-[#F3E5AB]/10">
+          <div className="space-y-2 p-4 rounded-xl bg-[#2A2016] border border-[#F3E5AB]/10 overflow-visible">
             <div className="flex justify-between items-center text-xs font-mono">
               <span className="text-[#F4F4F6] font-medium">Average Views per Short</span>
               <span className="text-[#10B981] font-bold px-2 py-0.5 rounded bg-[#10B981]/10 border border-[#10B981]/20">
@@ -93,7 +93,7 @@ export const ProfitSimulator: React.FC = () => {
           </div>
 
           {/* Reinvestment Toggle */}
-          <div className="flex items-center justify-between p-4 rounded-xl bg-[#2A2016]/80 border border-[#F3E5AB]/10">
+          <div className="flex items-center justify-between p-4 rounded-xl bg-[#2A2016] border border-[#F3E5AB]/10 overflow-visible">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-semibold text-[#F4F4F6]">
