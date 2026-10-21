@@ -5,6 +5,7 @@ interface BlurTextProps {
   text: string;
   className?: string;
   italicWord?: string;
+  italicWords?: string[];
   as?: "h1" | "h2" | "h3" | "span" | "div";
   delay?: number;
   stagger?: number;
@@ -14,12 +15,24 @@ export function BlurText({
   text,
   className = "",
   italicWord,
+  italicWords,
   as: Component = "span",
   delay = 0,
   stagger = 0.04,
 }: Readonly<BlurTextProps>) {
   const shouldReduceMotion = useReducedMotion();
   const words = text.split(" ");
+
+  const checkIsItalic = (word: string) => {
+    const cleanWord = word.toLowerCase().replace(/[^a-z0-9]/g, "");
+    if (italicWord && cleanWord.includes(italicWord.toLowerCase().replace(/[^a-z0-9]/g, ""))) {
+      return true;
+    }
+    if (italicWords && italicWords.some((w) => cleanWord.includes(w.toLowerCase().replace(/[^a-z0-9]/g, "")))) {
+      return true;
+    }
+    return false;
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -56,18 +69,18 @@ export function BlurText({
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
+        viewport={{ once: false, amount: 0.25 }}
         className="inline-block"
       >
         {words.map((word, index) => {
-          const isItalic = italicWord && word.toLowerCase().includes(italicWord.toLowerCase());
+          const isItalic = checkIsItalic(word);
           return (
             <motion.span
               key={`${word}-${index}`}
               variants={wordVariants}
               className={`inline-block mr-[0.25em] ${
                 isItalic
-                  ? "font-editorial italic font-normal text-white drop-shadow-[0_0_24px_rgba(224,109,59,0.35)]"
+                  ? "font-editorial italic font-normal text-[#F3E5AB] drop-shadow-[0_0_24px_rgba(217,155,82,0.4)]"
                   : ""
               }`}
             >

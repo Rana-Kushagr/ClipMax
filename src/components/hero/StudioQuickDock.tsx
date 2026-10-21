@@ -8,6 +8,7 @@ import {
   Scissors,
   Share2,
 } from "lucide-react";
+import { Dock, DockIcon } from "../ui/dock";
 
 interface StudioQuickDockProps {
   activeTool: string;
@@ -25,87 +26,86 @@ export function StudioQuickDock({
       id: "ai-reframe",
       name: "AI Reframe",
       icon: Crop,
-      targetId: "playgrounds",
+      targetId: "studio",
     },
     {
       id: "kinetic-captions",
       name: "Kinetic Captions",
       icon: Subtitles,
-      targetId: "playgrounds",
+      targetId: "studio",
     },
     {
       id: "auto-broll",
       name: "Auto B-Roll",
       icon: Layers,
-      targetId: "playgrounds",
+      targetId: "studio",
     },
     {
       id: "hook-predictor",
       name: "Hook Predictor",
       icon: TrendingUp,
-      targetId: "playgrounds",
+      targetId: "studio",
     },
     {
       id: "clean-audio",
       name: "Clean Audio",
       icon: Volume2,
-      targetId: "playgrounds",
+      targetId: "studio",
     },
     {
       id: "silence-cut",
       name: "Silence Cut",
       icon: Scissors,
-      targetId: "playgrounds",
+      targetId: "studio",
     },
     {
       id: "multi-post",
       name: "Multi-Post",
       icon: Share2,
-      targetId: "playgrounds",
+      targetId: "studio",
     },
   ];
 
   return (
     <div className="w-full max-w-3xl mx-auto px-2 select-none" aria-label="Studio Quick Dock">
-      <div className="p-2.5 rounded-xl bg-[#0E1014] border border-white/[0.08] shadow-2xl flex items-center justify-between gap-2 overflow-x-auto no-scrollbar">
-        {tools.map((tool) => {
-          const Icon = tool.icon;
-          const isActive = activeTool === tool.id;
+      <div className="flex flex-col items-center gap-2">
+        <Dock
+          magnification={58}
+          distance={120}
+          className="bg-[#1E1710]/85 border-[#F3E5AB]/15 shadow-2xl backdrop-blur-xl h-16 px-4"
+        >
+          {tools.map((tool) => {
+            const Icon = tool.icon;
+            const isActive = activeTool === tool.id;
 
-          return (
-            <button
-              key={tool.id}
-              type="button"
-              onClick={() => {
-                setActiveTool(tool.id);
-                if (onToolSelect) onToolSelect(tool.id);
-                const elem = document.getElementById(tool.targetId);
-                if (elem) elem.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="flex-1 min-w-[76px] flex flex-col items-center gap-1.5 p-1 rounded-lg transition-all group"
-              aria-label={`${tool.name} tool`}
-              aria-pressed={isActive}
-            >
-              {/* 52px x 52px circular dock button */}
-              <div
-                className={`w-[52px] h-[52px] rounded-full flex items-center justify-center transition-all ${
+            return (
+              <DockIcon
+                key={tool.id}
+                title={tool.name}
+                onClick={() => {
+                  setActiveTool(tool.id);
+                  if (onToolSelect) onToolSelect(tool.id);
+                  const elem = document.getElementById(tool.targetId);
+                  if (elem) elem.scrollIntoView({ behavior: "smooth" });
+                }}
+                className={`transition-all duration-200 relative group ${
                   isActive
-                    ? "bg-white text-black shadow-md ring-2 ring-white/20"
-                    : "bg-[#12151B] border border-white/[0.07] group-hover:border-white/30 text-text-secondary group-hover:text-white"
+                    ? "bg-[#F3E5AB] text-[#17120C] shadow-lg shadow-[#D99B52]/20 ring-2 ring-[#F3E5AB]/30"
+                    : "bg-[#2A2016]/80 text-[#D99B52] hover:text-[#F3E5AB] hover:bg-[#382B1E]/90 border border-[#F3E5AB]/10"
                 }`}
               >
-                <Icon className="w-5 h-5 stroke-[1.75]" />
-              </div>
-              <span
-                className={`text-[12px] font-medium transition-colors text-center ${
-                  isActive ? "text-white font-semibold" : "text-text-muted group-hover:text-white"
-                }`}
-              >
-                {tool.name}
-              </span>
-            </button>
-          );
-        })}
+                <Icon className="w-5 h-5 stroke-[1.8]" />
+                {/* Floating tooltip */}
+                <span className="absolute -top-8 px-2 py-0.5 rounded bg-[#17120C] border border-[#F3E5AB]/20 text-[10px] font-mono text-[#F3E5AB] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-md">
+                  {tool.name}
+                </span>
+              </DockIcon>
+            );
+          })}
+        </Dock>
+        <span className="text-[11px] font-mono text-[#F3E5AB]/60 uppercase tracking-widest mt-1">
+          7-Module Cinema Precision Dock
+        </span>
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ import { BlurText } from "../react-bits/BlurText";
 import { DecryptedText } from "../react-bits/DecryptedText";
 import { SpotlightCard } from "../react-bits/SpotlightCard";
 import { Magnet } from "../react-bits/Magnet";
+import { BorderGlow } from "../ui/BorderGlow";
 import { SmartOptionsDrawer } from "./SmartOptionsDrawer";
 import { StudioQuickDock } from "./StudioQuickDock";
 
@@ -169,8 +170,8 @@ export function HeroCommandCenter({
       {/* Hero Display Heading using <BlurText /> with High-Fashion Editorial Contrast */}
       <div className="max-w-4xl mx-auto mb-5">
         <BlurText
-          text="Paste one long video. Get 10 viral shorts in one click."
-          italicWord="viral"
+          text="Paste one long video. Get viral shorts in one click."
+          italicWords={["viral", "shorts"]}
           as="h1"
           className="font-display font-bold text-[clamp(2.4rem,5.5vw,4.25rem)] tracking-[-0.035em] text-[#F4F4F6] leading-[1.04] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]"
         />
@@ -180,7 +181,7 @@ export function HeroCommandCenter({
         Autonomous face-tracking reframe, SMPTE-timed kinetic captions, and 1-click mobile schedule approval. Zero timeline editing required.
       </p>
 
-      {/* Universal Command Recessed Well with SpotlightCard */}
+      {/* Universal Command Recessed Well with BorderGlow & SpotlightCard */}
       <div
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
@@ -199,14 +200,22 @@ export function HeroCommandCenter({
           }}
           aria-hidden="true"
         />
-        <SpotlightCard
-          spotlightColor="rgba(16, 185, 129, 0.16)"
-          className={`p-2 sm:p-2.5 transition-all shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-2xl ${
-            dragActive
-              ? "border-[#10B981] ring-2 ring-[#10B981]/40 bg-[#161920]"
-              : "hover:border-white/25"
-          }`}
+        <BorderGlow
+          animated={true}
+          borderRadius={18}
+          glowColor="42 80 78"
+          backgroundColor="#1E1710"
+          colors={['#F3E5AB', '#D99B52', '#10B981']}
+          className="w-full"
         >
+          <SpotlightCard
+            spotlightColor="rgba(243, 229, 171, 0.16)"
+            className={`p-2 sm:p-2.5 transition-all shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-2xl bg-transparent border-none ${
+              dragActive
+                ? "ring-2 ring-[#F3E5AB]/60 bg-[#2A2016]/90"
+                : ""
+            }`}
+          >
           <div className="flex flex-col sm:flex-row items-center gap-2">
             {/* Live Protocol Badge Detection */}
             <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-2 rounded-lg bg-[#08090B] border border-white/[0.08] text-xs font-mono shrink-0 select-none">
@@ -321,6 +330,7 @@ export function HeroCommandCenter({
             </div>
           )}
         </SpotlightCard>
+        </BorderGlow>
       </div>
 
       {/* Sample Links Quick Selector */}

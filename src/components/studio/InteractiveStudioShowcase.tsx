@@ -78,7 +78,7 @@ export function InteractiveStudioShowcase({
         </div>
 
         {/* Tab switcher buttons with Framer Motion layoutId pill */}
-        <div className="p-1 rounded-lg bg-[#12151B] border border-white/[0.08] flex items-center gap-1 overflow-x-auto max-w-full">
+        <div className="p-1 rounded-lg bg-[#1E1710]/90 border border-[#F3E5AB]/15 flex items-center gap-1 overflow-x-auto max-w-full backdrop-blur-xl">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeStudioTab === tab.id;
@@ -96,13 +96,13 @@ export function InteractiveStudioShowcase({
                   }
                 }}
                 className={`relative px-3.5 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-colors shrink-0 ${
-                  isActive ? "text-white font-semibold" : "text-text-secondary hover:text-white"
+                  isActive ? "text-[#F4F4F6] font-semibold" : "text-[#A1A1AA] hover:text-white"
                 }`}
               >
                 {isActive && (
                   <motion.div
                     layoutId="studioWorkspacePill"
-                    className="absolute inset-0 bg-[#161920] border border-white/[0.15] rounded-md shadow-sm"
+                    className="absolute inset-0 bg-[#2A2016] border border-[#F3E5AB]/25 rounded-md shadow-sm"
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
                   />
                 )}
@@ -117,7 +117,7 @@ export function InteractiveStudioShowcase({
       </div>
 
       {/* Render Active Playground in Flat Hairline Container with AnimatePresence */}
-      <div className="rounded-xl bg-[#0E1014] border border-white/[0.08] p-4 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-xl min-h-[480px]">
+      <div className="rounded-xl bg-[#1E1710]/85 border border-[#F3E5AB]/15 p-4 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.85)] backdrop-blur-xl min-h-[480px]">
         <AnimatePresence mode="wait">
           {activeStudioTab === "clips" && (
             <motion.div

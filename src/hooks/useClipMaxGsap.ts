@@ -27,7 +27,7 @@ export function useClipMaxGsap() {
       }
 
       // 2. Hero Viewfinder HUD Scroll Dissolve (0px -> 480px)
-      // Scales corners outward and fades out to guarantee ZERO text collision with lower sections!
+      // Scales corners outward and fades out smoothly; resets when scrolling back up!
       if (hudContainerRef.current) {
         gsap.to(hudContainerRef.current, {
           opacity: 0,
@@ -38,6 +38,7 @@ export function useClipMaxGsap() {
             start: "top top",
             end: "bottom 35%",
             scrub: true,
+            toggleActions: "restart pause resume reset",
           },
         });
 
@@ -54,12 +55,14 @@ export function useClipMaxGsap() {
               start: "top top",
               end: "bottom 40%",
               scrub: true,
+              toggleActions: "restart pause resume reset",
             },
           });
         }
       }
 
       // 3. Staggered 3D Batch Reveal on the 6 Studio Clip Cards
+      // Re-triggers dynamically when scrolling up or down!
       ScrollTrigger.batch(".studio-clip-card", {
         onEnter: (batch) => {
           gsap.fromTo(
@@ -76,7 +79,27 @@ export function useClipMaxGsap() {
             }
           );
         },
-        once: true,
+        onEnterBack: (batch) => {
+          gsap.fromTo(
+            batch,
+            { opacity: 0, y: -24, rotateX: -6 },
+            {
+              opacity: 1,
+              y: 0,
+              rotateX: 0,
+              stagger: 0.08,
+              ease: "power3.out",
+              duration: 0.6,
+              overwrite: "auto",
+            }
+          );
+        },
+        onLeave: (batch) => {
+          gsap.to(batch, { opacity: 0.2, y: -20, duration: 0.4, overwrite: "auto" });
+        },
+        onLeaveBack: (batch) => {
+          gsap.to(batch, { opacity: 0, y: 40, duration: 0.4, overwrite: "auto" });
+        },
       });
     });
 

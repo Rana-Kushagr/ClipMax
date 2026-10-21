@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Play,
   Pause,
@@ -9,16 +9,17 @@ import {
   Scissors,
   DollarSign,
   Smartphone,
-  ArrowUpRight,
   ArrowRight,
   User,
   Mic,
   Video,
+  CheckCircle2,
+  Sliders,
+  Sparkle,
 } from "lucide-react";
 import { BlurText } from "../react-bits/BlurText";
 import { Magnet } from "../react-bits/Magnet";
-
-type StepNumber = 1 | 2 | 3;
+import { ExpandableScreen } from "../ui/expandable-screen";
 
 interface HowItWorksWalkthroughProps {
   onLoadWorkflowSample: () => void;
@@ -27,63 +28,81 @@ interface HowItWorksWalkthroughProps {
 export function HowItWorksWalkthrough({
   onLoadWorkflowSample,
 }: Readonly<HowItWorksWalkthroughProps>) {
-  const [activeStep, setActiveStep] = useState<StepNumber>(1);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(true);
-  const [stepProgress, setStepProgress] = useState(0);
+  // 15.00-second loopable 60FPS timeline
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState<boolean>(true);
+  const [isMuted, setIsMuted] = useState<boolean>(true);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const scrubberRef = useRef<HTMLDivElement>(null);
+  const isDraggingRef = useRef<boolean>(false);
+  const lastTimeRef = useRef<number>(performance.now());
 
-  // 15-second chapter timer: 5s per step (50ms interval => 100 ticks = 5s)
+  // Determine current scene (1: 0-5s, 2: 5-10s, 3: 10-15s)
+  const currentScene = currentTime < 5 ? 1 : currentTime < 10 ? 2 : 3;
+
+  // 60FPS high-precision timeline loop
   useEffect(() => {
-    if (!isPlaying) return;
+    let animId: number;
 
-    const interval = setInterval(() => {
-      setStepProgress((prev) => {
-        if (prev >= 100) {
-          setActiveStep((curr) => (curr === 3 ? 1 : ((curr + 1) as 1 | 2 | 3)));
-          return 0;
-        }
-        return prev + 1;
-      });
-    }, 50);
+    const tick = (now: number) => {
+      const delta = (now - lastTimeRef.current) / 1000;
+      lastTimeRef.current = now;
 
-    return () => clearInterval(interval);
+      if (isPlaying && !isDraggingRef.current) {
+        setCurrentTime((prev) => {
+          const next = prev + delta;
+          if (next >= 15) {
+            return 0; // Seamless loop at 15.0s
+          }
+          return next;
+        });
+      }
+
+      animId = requestAnimationFrame(tick);
+    };
+
+    lastTimeRef.current = performance.now();
+    animId = requestAnimationFrame(tick);
+
+    return () => cancelAnimationFrame(animId);
   }, [isPlaying]);
 
-  // Live 60FPS HTML5 Canvas Audio Waveform & Peak Scan Animation (Step 1)
+  // Audio waveform & spectral radar canvas rendering for Scene 1
   useEffect(() => {
-    if (activeStep !== 1 || !canvasRef.current) return;
+    if (currentScene !== 1 || !canvasRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     let animId: number;
-    let t = 0;
+    let t = currentTime * 3;
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const width = canvas.width;
       const height = canvas.height;
-      const bars = 56;
+      const bars = 52;
       const barWidth = width / bars - 2;
 
-      t += 0.05;
+      t += 0.04;
 
       for (let i = 0; i < bars; i++) {
-        const isPeak = [8, 17, 26, 35, 43, 50].includes(i);
-        const wave = Math.sin(t + i * 0.25) * 12;
-        const baseHeight = isPeak ? height * 0.75 + wave : 15 + ((i * 11) % (height * 0.45)) + wave * 0.3;
-        const clampedHeight = Math.max(8, Math.min(height - 6, baseHeight));
+        const isPeak = [7, 16, 25, 34, 42, 49].includes(i);
+        const wave = Math.sin(t + i * 0.28) * 10;
+        const baseHeight = isPeak
+          ? height * 0.78 + wave
+          : 12 + ((i * 13) % (height * 0.42)) + wave * 0.25;
+        const clampedHeight = Math.max(6, Math.min(height - 4, baseHeight));
 
         const x = i * (barWidth + 2);
         const y = height - clampedHeight;
 
         if (isPeak) {
-          ctx.fillStyle = "#10B981";
-          ctx.shadowColor = "rgba(16, 185, 129, 0.6)";
-          ctx.shadowBlur = 10;
+          ctx.fillStyle = "#F3E5AB";
+          ctx.shadowColor = "rgba(243, 229, 171, 0.75)";
+          ctx.shadowBlur = 12;
         } else {
-          ctx.fillStyle = "rgba(255, 255, 255, 0.22)";
+          ctx.fillStyle = "rgba(217, 155, 82, 0.35)";
           ctx.shadowBlur = 0;
         }
 
@@ -98,67 +117,110 @@ export function HowItWorksWalkthrough({
     draw();
 
     return () => cancelAnimationFrame(animId);
-  }, [activeStep]);
+  }, [currentScene, currentTime]);
+
+  // Interactive scrubber handlers
+  const handleScrubberChange = useCallback((clientX: number) => {
+    if (!scrubberRef.current) return;
+    const rect = scrubberRef.current.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    setCurrentTime(ratio * 15);
+  }, []);
+
+  const handleScrubberMouseDown = (e: React.MouseEvent) => {
+    isDraggingRef.current = true;
+    handleScrubberChange(e.clientX);
+
+    const onMouseMove = (ev: MouseEvent) => {
+      if (isDraggingRef.current) {
+        handleScrubberChange(ev.clientX);
+      }
+    };
+
+    const onMouseUp = () => {
+      isDraggingRef.current = false;
+      lastTimeRef.current = performance.now();
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+  };
+
+  const jumpToChapter = (sceneNum: number) => {
+    setCurrentTime((sceneNum - 1) * 5);
+    lastTimeRef.current = performance.now();
+  };
 
   const chapters = [
     {
       step: 1,
-      title: "1. Ingest Link or File",
-      description: "Auto-detects YouTube, Twitch, or MP4s, scans 2h in 2s, and isolates top 6 viral peaks.",
+      title: "1. Ingest & Spectral Radar",
+      description: "Auto-detects YouTube, Twitch, or MP4s, scans 2h audio in 2s, and isolates top viral hooks.",
       timecode: "00:00 - 00:05",
       icon: Scissors,
     },
     {
       step: 2,
-      title: "2. Autonomous Reframe & Subtitles",
-      description: "Converts 16:9 to 9:16 vertical, stacks speakers, and adds word-by-word kinetic captions.",
+      title: "2. Spring Slicing & Kinetic Captions",
+      description: "Spring morphs 16:9 to 9:16 vertical, stacks active speakers, and burns SMPTE kinetic captions.",
       timecode: "00:05 - 00:10",
       icon: Sparkles,
     },
     {
       step: 3,
-      title: "3. Auto-Schedule or Earn Bounties",
+      title: "3. Telegram Approval & Live Bounty Counter",
       description: "Push 1-click mobile approval to Telegram or claim verified per-view cash bounties.",
       timecode: "00:10 - 00:15",
       icon: DollarSign,
     },
   ];
 
+  // Live calculated earnings for Scene 3: climbs from $0.00 to +$240.00 based on time in scene
+  const scene3Fraction = Math.max(0, Math.min(1, (currentTime - 10) / 5));
+  const currentBountyViews = Math.floor(scene3Fraction * 120000);
+  const currentBountyAmount = (scene3Fraction * 240).toFixed(2);
+
   return (
     <section
       id="walkthrough"
-      className="relative z-10 py-16 px-4 sm:px-6 max-w-[1240px] mx-auto"
-      aria-label="How ClipMax Works Walkthrough"
+      className="relative z-10 py-16 px-4 sm:px-6 max-w-[1240px] mx-auto select-none"
+      aria-label="Cinema Walkthrough Player"
     >
       {/* Section Header */}
       <div className="text-center max-w-2xl mx-auto mb-10">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0E1014] border border-white/[0.08] text-text-secondary text-xs font-medium mb-3 shadow-md">
-          <Sparkles className="w-3.5 h-3.5 text-[#10B981]" />
-          <span>Interactive 15-Second 60FPS Walkthrough Stage</span>
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1E1710]/90 border border-[#F3E5AB]/20 text-[#F3E5AB] text-xs font-mono font-medium mb-3 shadow-lg">
+          <Sparkle className="w-3.5 h-3.5 text-[#D99B52]" />
+          <span>CINEMA WALKTHROUGH PLAYER 60FPS</span>
         </div>
         <BlurText
           text="How ClipMax works in three simple steps."
-          italicWord="three"
+          italicWords={["three", "simple"]}
           as="h2"
           className="font-display font-bold text-2xl sm:text-4xl text-[#F4F4F6] tracking-tight"
         />
-        <p className="text-text-secondary text-sm sm:text-base mt-2 font-sans">
-          Engineered with studio clarity so anyone can create viral shorts and earn bounties in seconds.
+        <p className="text-[#A1A1AA] text-sm sm:text-base mt-2 font-sans">
+          Engineered with studio clarity so anyone can create viral shorts and claim escrow bounties in seconds.
         </p>
       </div>
 
-      {/* Main Walkthrough Card Container */}
-      <div className="relative rounded-2xl bg-[#0E1014] border border-white/[0.08] shadow-[0_20px_60px_rgba(0,0,0,0.8)] overflow-hidden">
+      {/* Main Walkthrough Console Surface */}
+      <div className="relative rounded-2xl bg-[#1E1710]/85 backdrop-blur-xl border border-[#F3E5AB]/15 shadow-[0_24px_70px_rgba(0,0,0,0.85)] overflow-hidden">
         {/* Top Player Header Bar */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3 bg-[#12151B] border-b border-white/[0.07] text-xs">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 bg-[#17120C]/90 text-xs">
+          <div className="flex items-center gap-2.5">
             <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
-            <span className="font-mono text-white font-semibold">
-              CHOREOGRAPHY ENGINE 60FPS
+            <span className="font-mono text-[#F4F4F6] font-semibold tracking-wide">
+              AUTONOMOUS MOTION ENGINE
             </span>
-            <span className="text-text-muted hidden sm:inline">|</span>
-            <span className="font-mono text-text-secondary hidden sm:inline">
-              CHAPTER {activeStep}/3: {chapters[activeStep - 1].timecode}
+            <span className="text-white/20 hidden sm:inline">•</span>
+            <span className="font-mono text-[#D99B52] font-semibold hidden sm:inline tabular-nums">
+              {currentTime.toFixed(2)}s / 15.00s
+            </span>
+            <span className="text-white/20 hidden sm:inline">•</span>
+            <span className="font-mono text-[#F3E5AB]/75 hidden sm:inline">
+              SCENE {currentScene}/3: {chapters[currentScene - 1].title}
             </span>
           </div>
 
@@ -166,18 +228,15 @@ export function HowItWorksWalkthrough({
             <button
               type="button"
               onClick={() => setIsPlaying(!isPlaying)}
-              className="p-1.5 rounded-md bg-[#08090B] hover:bg-[#161920] border border-white/[0.08] text-text-secondary hover:text-white transition-colors"
+              className="p-1.5 rounded-lg bg-[#2A2016] hover:bg-[#382B1E] border border-[#F3E5AB]/20 text-[#F3E5AB] hover:text-white transition-colors"
               aria-label={isPlaying ? "Pause walkthrough" : "Play walkthrough"}
             >
               {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
             </button>
             <button
               type="button"
-              onClick={() => {
-                setActiveStep(1);
-                setStepProgress(0);
-              }}
-              className="p-1.5 rounded-md bg-[#08090B] hover:bg-[#161920] border border-white/[0.08] text-text-secondary hover:text-white transition-colors"
+              onClick={() => jumpToChapter(1)}
+              className="p-1.5 rounded-lg bg-[#2A2016] hover:bg-[#382B1E] border border-[#F3E5AB]/20 text-[#F3E5AB] hover:text-white transition-colors"
               aria-label="Restart walkthrough"
             >
               <RotateCcw className="w-3.5 h-3.5" />
@@ -185,7 +244,7 @@ export function HowItWorksWalkthrough({
             <button
               type="button"
               onClick={() => setIsMuted(!isMuted)}
-              className="p-1.5 rounded-md bg-[#08090B] hover:bg-[#161920] border border-white/[0.08] text-text-secondary hover:text-white transition-colors"
+              className="p-1.5 rounded-lg bg-[#2A2016] hover:bg-[#382B1E] border border-[#F3E5AB]/20 text-[#F3E5AB] hover:text-white transition-colors"
               aria-label={isMuted ? "Unmute audio" : "Mute audio"}
             >
               {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
@@ -194,33 +253,36 @@ export function HowItWorksWalkthrough({
         </div>
 
         {/* Video / Motion Graphic Interactive Canvas Stage */}
-        <div className="relative aspect-video w-full bg-[#040507] flex items-center justify-center overflow-hidden p-4 sm:p-8">
+        <div className="relative aspect-video w-full bg-[#110D09] flex items-center justify-center overflow-hidden p-4 sm:p-8">
           <div className="w-full h-full max-w-4xl flex items-center justify-center relative select-none">
-            {/* STEP 1 MOTION GRAPHIC: Universal Link Ingestion & Peak Detection */}
-            {activeStep === 1 && (
+            {/* SCENE 1 (0.0s - 5.0s): Universal Link Ingestion & Spectral Radar Scan */}
+            {currentScene === 1 && (
               <div className="w-full max-w-2xl flex flex-col items-center justify-center space-y-6 text-center animate-fadeIn">
-                <div className="relative w-full p-4 rounded-xl bg-[#0E1014] border border-white/[0.08] shadow-2xl flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-[#161920] border border-white/[0.08] flex items-center justify-center text-white font-bold">
+                <div className="relative w-full p-4 rounded-xl bg-[#1E1710] border border-[#F3E5AB]/20 shadow-2xl flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-[#2A2016] border border-[#F3E5AB]/20 flex items-center justify-center text-[#F3E5AB] font-bold">
                     <Video className="w-4 h-4 text-[#10B981]" />
                   </div>
-                  <div className="flex-1 text-left">
-                    <div className="text-xs text-text-muted font-mono">INGESTING STREAM:</div>
-                    <div className="text-sm font-semibold text-white truncate font-sans">
-                      https://youtube.com/watch?v=SystemArchitecture_Discussion
+                  <div className="flex-1 text-left min-w-0">
+                    <div className="text-[11px] text-[#A1A1AA] font-mono">INGESTING 4K STREAM:</div>
+                    <div className="text-sm font-semibold text-[#F4F4F6] truncate font-sans">
+                      https://youtube.com/watch?v=LexFridman_AI_Architecture_DeepDive
                     </div>
                   </div>
-                  <div className="px-2.5 py-1 rounded bg-[#08090B] border border-white/[0.08] text-[#10B981] font-mono text-xs font-semibold">
+                  <div className="px-2.5 py-1 rounded bg-[#17120C] border border-[#F3E5AB]/20 text-[#10B981] font-mono text-xs font-semibold shrink-0">
                     2h 14m DETECTED
                   </div>
                 </div>
 
                 {/* 60FPS Live Waveform Peak Detection Scan Canvas */}
-                <div className="w-full bg-[#0E1014] p-4 rounded-xl border border-white/[0.08] space-y-2">
-                  <div className="flex justify-between text-xs font-mono text-text-muted">
-                    <span>AUDIO TIMELINE SCAN (0 credits burned)</span>
-                    <span className="text-[#10B981] font-semibold">6 VIRAL HOOKS PINPOINTED</span>
+                <div className="w-full bg-[#1E1710] p-4 rounded-xl border border-[#F3E5AB]/20 space-y-2.5">
+                  <div className="flex justify-between items-center text-xs font-mono text-[#A1A1AA]">
+                    <span className="flex items-center gap-2 text-[#F4F4F6]">
+                      <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
+                      SPECTRAL AUDIO SCAN (0 credits burned)
+                    </span>
+                    <span className="text-[#F3E5AB] font-semibold">6 VIRAL HOOKS PINPOINTED</span>
                   </div>
-                  <div className="h-16 w-full bg-[#040507] rounded-lg overflow-hidden p-1 flex items-center">
+                  <div className="h-16 w-full bg-[#17120C] rounded-lg overflow-hidden p-1 flex items-center border border-[#F3E5AB]/10">
                     <canvas
                       ref={canvasRef}
                       width={620}
@@ -232,41 +294,41 @@ export function HowItWorksWalkthrough({
               </div>
             )}
 
-            {/* STEP 2 MOTION GRAPHIC: 16:9 to 9:16 Reframe & Kinetic Captions */}
-            {activeStep === 2 && (
+            {/* SCENE 2 (5.0s - 10.0s): 16:9 to 9:16 Spring Slicing & Kinetic Captions */}
+            {currentScene === 2 && (
               <div className="w-full max-w-3xl flex flex-col sm:flex-row items-center justify-center gap-6 animate-fadeIn">
                 {/* 16:9 Source */}
-                <div className="w-56 aspect-video bg-[#0E1014] rounded-xl border border-white/[0.08] p-2 flex flex-col justify-between text-[10px] text-text-muted opacity-80">
-                  <span className="font-mono">ORIGINAL 16:9 WIDE</span>
+                <div className="w-56 aspect-video bg-[#1E1710] rounded-xl border border-[#F3E5AB]/20 p-2 flex flex-col justify-between text-[10px] text-[#A1A1AA] opacity-80">
+                  <span className="font-mono text-[#D99B52]">ORIGINAL 16:9 WIDE</span>
                   <div className="flex justify-around items-center h-16">
-                    <div className="w-10 h-10 rounded-full bg-[#161920] border border-white/[0.08] flex items-center justify-center text-xs">
-                      <Mic className="w-4 h-4 text-white" />
+                    <div className="w-10 h-10 rounded-full bg-[#2A2016] border border-[#F3E5AB]/20 flex items-center justify-center text-xs">
+                      <Mic className="w-4 h-4 text-[#F3E5AB]" />
                     </div>
-                    <div className="w-10 h-10 rounded-full bg-[#161920] border border-white/[0.08] flex items-center justify-center text-xs">
+                    <div className="w-10 h-10 rounded-full bg-[#2A2016] border border-[#F3E5AB]/20 flex items-center justify-center text-xs">
                       <User className="w-4 h-4 text-white" />
                     </div>
                   </div>
-                  <span className="text-center font-mono text-[9px]">HORIZONTAL FEED</span>
+                  <span className="text-center font-mono text-[9px] text-[#A1A1AA]">HORIZONTAL FEED</span>
                 </div>
 
-                <ArrowRight className="w-5 h-5 text-white/40 hidden sm:block shrink-0" />
+                <ArrowRight className="w-5 h-5 text-[#D99B52] hidden sm:block shrink-0 animate-pulse" />
 
                 {/* 9:16 Vertical Reframed Output Phone */}
-                <div className="w-48 aspect-[9/16] bg-[#161920] rounded-2xl border-2 border-[#10B981]/60 shadow-[0_0_30px_rgba(16,185,129,0.2)] p-2 relative flex flex-col justify-between overflow-hidden">
+                <div className="w-48 aspect-[9/16] bg-[#1E1710] rounded-2xl border-2 border-[#10B981]/70 shadow-[0_0_35px_rgba(16,185,129,0.25)] p-2 relative flex flex-col justify-between overflow-hidden">
                   {/* Top score badge */}
                   <div className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded-full bg-[#10B981] text-black text-[10px] font-mono font-bold shadow">
                     98 VIRAL
                   </div>
 
                   {/* Stacked 2-speaker split */}
-                  <div className="h-1/2 w-full rounded-lg bg-[#0E1014] flex items-center justify-center relative overflow-hidden mb-1 border border-white/[0.07]">
-                    <div className="w-10 h-10 rounded-full bg-[#161920] border border-white/[0.08] flex items-center justify-center text-sm">
-                      <Mic className="w-4 h-4 text-white" />
+                  <div className="h-1/2 w-full rounded-lg bg-[#2A2016] flex items-center justify-center relative overflow-hidden mb-1 border border-[#F3E5AB]/10">
+                    <div className="w-10 h-10 rounded-full bg-[#17120C] border border-[#F3E5AB]/20 flex items-center justify-center text-sm">
+                      <Mic className="w-4 h-4 text-[#F3E5AB]" />
                     </div>
                   </div>
 
-                  <div className="h-1/2 w-full rounded-lg bg-[#0E1014] flex items-center justify-center relative overflow-hidden border border-white/[0.07]">
-                    <div className="w-10 h-10 rounded-full bg-[#161920] border border-white/[0.08] flex items-center justify-center text-sm">
+                  <div className="h-1/2 w-full rounded-lg bg-[#2A2016] flex items-center justify-center relative overflow-hidden border border-[#F3E5AB]/10">
+                    <div className="w-10 h-10 rounded-full bg-[#17120C] border border-[#F3E5AB]/20 flex items-center justify-center text-sm">
                       <User className="w-4 h-4 text-white" />
                     </div>
 
@@ -279,29 +341,29 @@ export function HowItWorksWalkthrough({
               </div>
             )}
 
-            {/* STEP 3 MOTION GRAPHIC: 1-Click Mobile Bot Approval & Cash Bounties */}
-            {activeStep === 3 && (
+            {/* SCENE 3 (10.0s - 15.0s): Telegram Bot Approval & Live Bounty Counter */}
+            {currentScene === 3 && (
               <div className="w-full max-w-2xl flex flex-col sm:flex-row items-center justify-center gap-6 animate-fadeIn">
                 {/* Telegram / Mobile Bot Mockup */}
-                <div className="w-64 p-3 rounded-xl bg-[#0E1014] border border-white/[0.08] shadow-xl space-y-2">
-                  <div className="flex items-center gap-1.5 text-xs font-semibold text-white">
+                <div className="w-64 p-3.5 rounded-xl bg-[#1E1710] border border-[#F3E5AB]/20 shadow-xl space-y-2.5">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-[#F4F4F6]">
                     <Smartphone className="w-3.5 h-3.5 text-[#10B981]" />
                     <span>Telegram Autopilot Bot</span>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-[#08090B] text-[11px] text-text-secondary space-y-2 border border-white/[0.06]">
-                    <div className="font-semibold text-white">
-                      Ready for Approval: Database Performance & Indexing (98 Score)
+                  <div className="p-2.5 rounded-lg bg-[#17120C] text-[11px] text-[#A1A1AA] space-y-2 border border-[#F3E5AB]/10">
+                    <div className="font-semibold text-[#F4F4F6]">
+                      Ready for Approval: Neural Indexing (98 Score)
                     </div>
                     <div className="flex gap-2 pt-1">
                       <button
                         type="button"
-                        className="flex-1 py-1 rounded bg-white text-black font-semibold text-[10px] text-center"
+                        className="flex-1 py-1 rounded bg-[#F3E5AB] text-[#17120C] font-semibold text-[10px] text-center hover:bg-white transition-colors"
                       >
                         ✓ Approve & Post
                       </button>
                       <button
                         type="button"
-                        className="py-1 px-2.5 rounded bg-[#161920] text-text-secondary text-[10px] border border-white/[0.08]"
+                        className="py-1 px-2.5 rounded bg-[#2A2016] text-[#A1A1AA] text-[10px] border border-[#F3E5AB]/20 hover:text-white"
                       >
                         Regen
                       </button>
@@ -309,21 +371,21 @@ export function HowItWorksWalkthrough({
                   </div>
                 </div>
 
-                {/* Cash Bounty Earning Card */}
-                <div className="w-64 p-3 rounded-xl bg-[#0E1014] border border-[#10B981]/40 shadow-[0_0_25px_rgba(16,185,129,0.15)] space-y-2">
+                {/* Cash Bounty Earning Card with Live Counter */}
+                <div className="w-64 p-3.5 rounded-xl bg-[#1E1710] border border-[#10B981]/50 shadow-[0_0_30px_rgba(16,185,129,0.2)] space-y-2.5">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-white flex items-center gap-1">
+                    <span className="font-semibold text-[#F4F4F6] flex items-center gap-1">
                       <DollarSign className="w-3.5 h-3.5 text-[#10B981]" />
                       Verified Bounty
                     </span>
-                    <span className="font-mono text-[#10B981] text-[11px] font-bold">
-                      +$240.00
+                    <span className="font-mono text-[#10B981] text-xs font-bold tabular-nums">
+                      +${currentBountyAmount}
                     </span>
                   </div>
-                  <div className="text-[11px] text-text-secondary">
-                    120,000 Verified Sample Views @ $2.00 CPM Payout.
+                  <div className="text-[11px] text-[#A1A1AA]">
+                    <span className="text-[#F4F4F6] font-mono font-medium tabular-nums">{currentBountyViews.toLocaleString()}</span> Verified Sample Views @ $2.00 CPM Payout.
                   </div>
-                  <div className="pt-1.5 border-t border-white/[0.07] flex items-center justify-between text-[10px] font-mono text-text-muted">
+                  <div className="pt-1.5 border-t border-[#F3E5AB]/10 flex items-center justify-between text-[10px] font-mono text-[#A1A1AA]">
                     <span>Fee: 0% Wallet Reinvest</span>
                     <span className="text-[#10B981] font-semibold">READY TO WITHDRAW</span>
                   </div>
@@ -333,30 +395,55 @@ export function HowItWorksWalkthrough({
           </div>
         </div>
 
+        {/* 15.00s Continuous Interactive Timeline Scrubber */}
+        <div className="px-4 sm:px-6 py-3 bg-[#17120C] border-t border-[#F3E5AB]/10">
+          <div className="flex items-center justify-between text-[11px] font-mono text-[#A1A1AA] mb-1.5">
+            <span>00:00.00</span>
+            <span className="text-[#F3E5AB] font-semibold tabular-nums">
+              SCRUBBER: {currentTime.toFixed(2)}s / 15.00s
+            </span>
+            <span>00:15.00</span>
+          </div>
+          <div
+            ref={scrubberRef}
+            onMouseDown={handleScrubberMouseDown}
+            className="relative w-full h-2.5 bg-[#2A2016] rounded-full cursor-pointer overflow-hidden group"
+          >
+            {/* Played progress fill */}
+            <div
+              className="h-full bg-gradient-to-r from-[#10B981] via-[#D99B52] to-[#F3E5AB] rounded-full"
+              style={{ width: `${(currentTime / 15) * 100}%` }}
+            />
+            {/* Chapter demarcation ticks */}
+            <div className="absolute top-0 bottom-0 left-[33.33%] w-[1px] bg-white/20 pointer-events-none" />
+            <div className="absolute top-0 bottom-0 left-[66.66%] w-[1px] bg-white/20 pointer-events-none" />
+          </div>
+        </div>
+
         {/* 3 Clickable Timeline Chapter Tabs */}
-        <div className="grid grid-cols-1 md:grid-cols-3 border-t divide-y md:divide-y-0 md:divide-x divide-white/[0.08] bg-[#12151B]">
+        <div className="grid grid-cols-1 md:grid-cols-3 bg-[#17120C]">
           {chapters.map((ch) => {
             const Icon = ch.icon;
-            const isActive = activeStep === ch.step;
+            const isActive = currentScene === ch.step;
+            const sceneStart = (ch.step - 1) * 5;
+            const sceneProgress = Math.max(0, Math.min(100, ((currentTime - sceneStart) / 5) * 100));
+
             return (
               <button
                 key={ch.step}
                 type="button"
-                onClick={() => {
-                  setActiveStep(ch.step as 1 | 2 | 3);
-                  setStepProgress(0);
-                }}
-                className={`p-4 text-left transition-colors relative group ${
-                  isActive ? "bg-[#161920]" : "hover:bg-[#0E1014]"
+                onClick={() => jumpToChapter(ch.step)}
+                className={`p-4 text-left transition-colors relative group border-t border-[#F3E5AB]/10 ${
+                  isActive ? "bg-[#2A2016]/90" : "hover:bg-[#1E1710]"
                 }`}
                 aria-pressed={isActive}
               >
                 {/* Active Progress Bar */}
                 {isActive && (
-                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#12151B]">
+                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#17120C]">
                     <div
-                      className="h-full bg-[#10B981] transition-all duration-100 ease-linear"
-                      style={{ width: `${stepProgress}%` }}
+                      className="h-full bg-[#F3E5AB] transition-all duration-75 ease-linear"
+                      style={{ width: `${sceneProgress}%` }}
                     />
                   </div>
                 )}
@@ -366,8 +453,8 @@ export function HowItWorksWalkthrough({
                     <div
                       className={`w-6 h-6 rounded flex items-center justify-center text-xs ${
                         isActive
-                          ? "bg-white text-black font-mono font-bold"
-                          : "bg-[#08090B] text-text-muted border border-white/[0.08]"
+                          ? "bg-[#F3E5AB] text-[#17120C] font-mono font-bold"
+                          : "bg-[#2A2016] text-[#A1A1AA] border border-[#F3E5AB]/20"
                       }`}
                     >
                       <Icon className="w-3.5 h-3.5" />
@@ -376,12 +463,12 @@ export function HowItWorksWalkthrough({
                       {ch.title}
                     </span>
                   </div>
-                  <span className="font-mono text-[10px] text-text-muted">
+                  <span className="font-mono text-[10px] text-[#A1A1AA]">
                     {ch.timecode}
                   </span>
                 </div>
 
-                <p className="text-[11px] text-text-secondary leading-snug line-clamp-2 font-sans">
+                <p className="text-[11px] text-[#A1A1AA] leading-snug line-clamp-2 font-sans">
                   {ch.description}
                 </p>
               </button>
@@ -389,21 +476,78 @@ export function HowItWorksWalkthrough({
           })}
         </div>
 
-        {/* Direct Action Footer with Magnet */}
-        <div className="p-4 bg-[#0E1014] flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/[0.07]">
-          <span className="text-xs text-text-muted font-sans">
-            Want to see how your own videos look with 98-virality auto-framing?
+        {/* Direct Action Footer with Cult UI ExpandableScreen */}
+        <div className="p-4 bg-[#1E1710] flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#F3E5AB]/10">
+          <span className="text-xs text-[#A1A1AA] font-sans">
+            Ready to test this exact autonomous pipeline on your own videos?
           </span>
-          <Magnet strength={0.2} radius={45}>
-            <button
-              type="button"
-              onClick={onLoadWorkflowSample}
-              className="w-full sm:w-auto px-4 py-2 rounded-lg bg-white hover:bg-[#F4F4F6] text-[#08090B] font-semibold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95"
-            >
-              <span>Try This Exact Workflow Now</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </button>
-          </Magnet>
+
+          <ExpandableScreen
+            layoutId="cinema-workflow-modal"
+            trigger={
+              <Magnet strength={0.2} radius={45}>
+                <div className="px-4 py-2 rounded-lg bg-[#F3E5AB] hover:bg-white text-[#17120C] font-semibold text-xs flex items-center justify-center gap-1.5 shadow-md transition-all active:scale-95">
+                  <span>Try This Exact Workflow Now</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </div>
+              </Magnet>
+            }
+          >
+            {/* Expanded Modal Content */}
+            <div className="space-y-6 text-left">
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981] font-mono text-xs">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>PIPELINE SPECIFICATION READY</span>
+                </div>
+                <h3 className="font-display font-bold text-2xl text-[#F4F4F6]">
+                  Launch Autonomous Pipeline: Lex Fridman #387 DeepDive
+                </h3>
+                <p className="text-xs text-[#A1A1AA] font-sans leading-relaxed">
+                  ClipMax will ingest the 2h 14m podcast, detect speakers, extract the top 6 hook climaxes, style 9:16 vertical kinetic subtitles, and push to your Telegram queue.
+                </p>
+              </div>
+
+              {/* 3 Step Pipeline Setup */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="p-3.5 rounded-xl bg-[#2A2016] border border-[#F3E5AB]/15 space-y-1.5">
+                  <div className="text-[10px] font-mono text-[#D99B52] uppercase">Step 1 • Ingest</div>
+                  <div className="text-xs font-semibold text-white">4K Longform Stream</div>
+                  <p className="text-[11px] text-[#A1A1AA]">2h 14m cached at zero credit cost</p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[#2A2016] border border-[#F3E5AB]/15 space-y-1.5">
+                  <div className="text-[10px] font-mono text-[#D99B52] uppercase">Step 2 • Slicing</div>
+                  <div className="text-xs font-semibold text-white">Dual-Speaker 9:16</div>
+                  <p className="text-[11px] text-[#A1A1AA]">Auto face-track + kinetic subtitles</p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[#2A2016] border border-[#F3E5AB]/15 space-y-1.5">
+                  <div className="text-[10px] font-mono text-[#D99B52] uppercase">Step 3 • Output</div>
+                  <div className="text-xs font-semibold text-white">Telegram + Escrow</div>
+                  <p className="text-[11px] text-[#A1A1AA]">1-click approve or earn $2/1K views</p>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-4 border-t border-[#F3E5AB]/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <span className="text-xs font-mono text-[#10B981]">
+                  Guarantee: 0 credits burned on preview or ranking.
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    onLoadWorkflowSample();
+                  }}
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#10B981] hover:bg-[#059669] text-black font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#10B981]/20 active:scale-95"
+                >
+                  <Sliders className="w-4 h-4" />
+                  <span>Execute This Pipeline in Studio</span>
+                </button>
+              </div>
+            </div>
+          </ExpandableScreen>
         </div>
       </div>
     </section>

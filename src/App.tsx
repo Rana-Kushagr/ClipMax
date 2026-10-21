@@ -11,6 +11,7 @@ import { OutputOnlyPricing } from "./components/bounties/OutputOnlyPricing";
 import { StudioFooter } from "./components/footer/StudioFooter";
 import { NoiseOverlay } from "./components/react-bits/NoiseOverlay";
 import { BlurText } from "./components/react-bits/BlurText";
+import { Grainient } from "./components/backgrounds/Grainient";
 import { useClipMaxGsap } from "./hooks/useClipMaxGsap";
 import { CheckCircle2, X } from "lucide-react";
 
@@ -53,7 +54,7 @@ export function App() {
 
   const handleSelectCampaign = (url: string) => {
     setVideoUrl(url);
-    const heroCard = document.getElementById("hero-command-center");
+    const heroCard = document.getElementById("hero");
     if (heroCard) {
       heroCard.scrollIntoView({ behavior: "smooth" });
     }
@@ -61,7 +62,7 @@ export function App() {
 
   const handleLoadWorkflowSample = () => {
     setVideoUrl("https://youtube.com/watch?v=LexFridman_AI_Architecture_DeepDive");
-    const heroCard = document.getElementById("hero-command-center");
+    const heroCard = document.getElementById("hero");
     if (heroCard) {
       heroCard.scrollIntoView({ behavior: "smooth" });
     }
@@ -79,11 +80,11 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090A0D] text-zinc-100 selection:bg-emerald-500/20 selection:text-emerald-300 relative overflow-x-hidden font-sans">
+    <div className="min-h-screen bg-[#221B12] text-[#F4F4F6] selection:bg-[#F3E5AB]/25 selection:text-[#F3E5AB] relative overflow-x-hidden font-sans">
       {/* 1. Top Viewport GSAP Scroll Progress Ribbon */}
       <div
         ref={progressBarRef}
-        className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-400 via-[#E06D3B] to-emerald-400 origin-left z-50 pointer-events-none scale-x-0"
+        className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#10B981] via-[#D99B52] to-[#F3E5AB] origin-left z-50 pointer-events-none scale-x-0"
       />
 
       {/* 2. Normal Scrolling Cinema Desk Background - Moves Naturally with Page Content */}
@@ -95,10 +96,10 @@ export function App() {
       {/* 4. Global App Header */}
       <AppHeader freeExportsCount={optimisticFreeExports} />
 
-      {/* 5. Hero Section with Viewfinder HUD and Command Center */}
+      {/* 5. Hero Section with Viewfinder HUD and Command Center (No bottom border!) */}
       <section
         id="hero"
-        className="relative min-h-[92vh] pt-32 pb-20 flex flex-col justify-center overflow-hidden border-b border-white/[0.06]"
+        className="relative min-h-[92vh] pt-32 pb-24 flex flex-col justify-center overflow-hidden"
       >
         {/* GSAP Dissolving Viewfinder HUD */}
         <HeroViewfinderHud hudRef={hudContainerRef} isInputActive={videoUrl.length > 0} />
@@ -126,128 +127,208 @@ export function App() {
         </div>
       </section>
 
-      {/* 6. Section 01: How It Works 60FPS Walkthrough */}
-      <section id="walkthrough" className="py-24 relative overflow-hidden">
-        {/* Subtle Warm Tungsten Floor Reflection */}
-        <div
-          className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[600px] h-[350px] pointer-events-none -z-10 blur-[130px]"
-          style={{ background: "rgba(224, 109, 59, 0.05)" }}
-          aria-hidden="true"
-        />
-        <HowItWorksWalkthrough onLoadWorkflowSample={handleLoadWorkflowSample} />
-      </section>
-
-      {/* 7. Section 02: AI Studio Interactive Workspace */}
-      <section id="studio" className="py-24 relative border-t border-white/[0.08] overflow-hidden">
-        {/* Subtle Studio Emerald Floor Reflection */}
-        <div
-          className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[600px] h-[350px] pointer-events-none -z-10 blur-[130px]"
-          style={{ background: "rgba(16, 185, 129, 0.05)" }}
-          aria-hidden="true"
-        />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
-            <span className="text-xs font-mono uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-              CINEMA PRODUCTION SUITE
-            </span>
-            <BlurText
-              text="Cinema-grade AI studio, built for retention"
-              className="text-3xl sm:text-4xl font-display font-bold text-zinc-100"
-            />
-            <p className="text-sm text-zinc-400 font-sans">
-              Inspect autonomous viral scoring, fine-tune multi-speaker crop boundaries, style
-              word-by-word kinetic captions, and sync with Telegram approval bots.
-            </p>
-          </div>
-
-          <InteractiveStudioShowcase
-            activeStudioTab={activeStudioTab}
-            setActiveStudioTab={setActiveStudioTab}
-            onExportSuccess={handleExportSuccess}
+      {/* =========================================================================
+          COLOUR BLOCK 1: Pastel Sunlit Sand & Warm Parchment Umber (#221B12)
+          Contains: Section 01: How ClipMax Works Walkthrough
+          ========================================================================= */}
+      <div className="relative bg-[#221B12]">
+        {/* Organic Grainient Background Atmosphere */}
+        <div className="absolute inset-0 pointer-events-none opacity-25 overflow-hidden">
+          <Grainient
+            colors={["#17120C", "#221B12", "#4A351D", "#D99B52", "#F3E5AB"]}
+            flow={0.5}
+            softness={1.2}
+            speed={0.25}
           />
         </div>
-      </section>
 
-      {/* 8. Section 03: Bounty Marketplace */}
-      <section id="bounties" className="py-24 relative border-t border-white/[0.08] overflow-hidden">
-        {/* Subtle Warm Tungsten Floor Reflection */}
+        {/* Section 01: How It Works 60FPS Walkthrough */}
+        <section id="walkthrough" className="py-24 relative overflow-hidden z-10">
+          {/* Subtle Warm Amber Refraction Glow */}
+          <div
+            className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[650px] h-[350px] pointer-events-none -z-10 blur-[130px]"
+            style={{ background: "rgba(217, 155, 82, 0.08)" }}
+            aria-hidden="true"
+          />
+          <HowItWorksWalkthrough onLoadWorkflowSample={handleLoadWorkflowSample} />
+        </section>
+
+        {/* 160px Soft Gradient Feather: Block 1 (#221B12) -> Block 2 (#17120C) */}
         <div
-          className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[650px] h-[350px] pointer-events-none -z-10 blur-[130px]"
-          style={{ background: "rgba(224, 109, 59, 0.05)" }}
+          className="h-40 w-full bg-gradient-to-b from-[#221B12] to-[#17120C] pointer-events-none relative z-10"
           aria-hidden="true"
         />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="text-center max-w-3xl mx-auto space-y-4">
-            <span className="text-xs font-mono uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-              CREATOR MONETIZATION MARKETPLACE
-            </span>
-            <BlurText
-              text="Monetize your clipping skills with instant bounties"
-              className="text-3xl sm:text-4xl font-display font-bold text-zinc-100"
-            />
-            <p className="text-sm text-zinc-400 font-sans">
-              Browse verified brand campaigns, generate high-performing shorts in 1-click, and
-              claim direct payouts from locked escrow pools.
-            </p>
-          </div>
+      </div>
 
-          <BountyCampaignGrid onSelectCampaign={handleSelectCampaign} />
+      {/* =========================================================================
+          COLOUR BLOCK 2: Burnished Honey Terracotta & Deep Espresso Hearth (#17120C)
+          Contains: Section 02: AI Studio Interactive Workspace
+          ========================================================================= */}
+      <div className="relative bg-[#17120C]">
+        {/* Organic Grainient Background Atmosphere */}
+        <div className="absolute inset-0 pointer-events-none opacity-20 overflow-hidden">
+          <Grainient
+            colors={["#17120C", "#2B1E13", "#5C3A1E", "#D99B52", "#E06D3B"]}
+            flow={0.45}
+            softness={1.2}
+            speed={0.2}
+          />
         </div>
-      </section>
 
-      {/* 9. Earnings Profit Simulator */}
-      <section id="simulator" className="py-24 relative border-t border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="text-center max-w-3xl mx-auto space-y-4">
-            <span className="text-xs font-mono uppercase tracking-wider text-[#E06D3B] px-3 py-1 rounded-full bg-[#E06D3B]/10 border border-[#E06D3B]/20">
-              PREDICTIVE FINANCIAL MODEL
-            </span>
-            <BlurText
-              text="Calculate your monthly short-form earnings"
-              className="text-3xl sm:text-4xl font-display font-bold text-zinc-100"
+        {/* Section 02: AI Studio Interactive Workspace (No top border!) */}
+        <section id="studio" className="py-24 relative overflow-hidden z-10">
+          {/* Subtle Studio Warm Terracotta Floor Reflection */}
+          <div
+            className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[600px] h-[350px] pointer-events-none -z-10 blur-[130px]"
+            style={{ background: "rgba(224, 109, 59, 0.06)" }}
+            aria-hidden="true"
+          />
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
+              <span className="text-xs font-mono uppercase tracking-wider text-[#F3E5AB] px-3.5 py-1 rounded-full bg-[#F3E5AB]/10 border border-[#F3E5AB]/20">
+                CINEMA PRODUCTION SUITE
+              </span>
+              <BlurText
+                text="Cinema-grade AI studio, built for retention"
+                italicWords={["retention"]}
+                className="text-3xl sm:text-4xl font-display font-bold text-[#F4F4F6]"
+              />
+              <p className="text-sm text-[#A1A1AA] font-sans">
+                Inspect autonomous viral scoring, fine-tune multi-speaker crop boundaries, style
+                word-by-word kinetic captions, and sync with Telegram approval bots.
+              </p>
+            </div>
+
+            <InteractiveStudioShowcase
+              activeStudioTab={activeStudioTab}
+              setActiveStudioTab={setActiveStudioTab}
+              onExportSuccess={handleExportSuccess}
             />
-            <p className="text-sm text-zinc-400 font-sans">
-              Real-time projection based on verified CPMs ($3.50 – $4.25 / 1K views) across YouTube
-              Shorts, TikTok, and Instagram Reels.
-            </p>
           </div>
+        </section>
 
-          <ProfitSimulator />
+        {/* 160px Soft Gradient Feather: Block 2 (#17120C) -> Block 1 (#221B12) */}
+        <div
+          className="h-40 w-full bg-gradient-to-b from-[#17120C] to-[#221B12] pointer-events-none relative z-10"
+          aria-hidden="true"
+        />
+      </div>
+
+      {/* =========================================================================
+          COLOUR BLOCK 1: Pastel Sunlit Sand & Warm Parchment Umber (#221B12)
+          Contains: Section 03: Bounty Marketplace & Profit Simulator
+          ========================================================================= */}
+      <div className="relative bg-[#221B12]">
+        {/* Organic Grainient Background Atmosphere */}
+        <div className="absolute inset-0 pointer-events-none opacity-25 overflow-hidden">
+          <Grainient
+            colors={["#17120C", "#221B12", "#4A351D", "#D99B52", "#F3E5AB"]}
+            flow={0.5}
+            softness={1.2}
+            speed={0.25}
+          />
         </div>
-      </section>
 
-      {/* 10. Output-Only Pricing */}
-      <section id="pricing" className="py-24 relative border-t border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="text-center max-w-3xl mx-auto space-y-4">
-            <span className="text-xs font-mono uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-              OUTPUT-ONLY PRICING ARCHITECTURE
-            </span>
-            <BlurText
-              text="Zero credits burned on previews. Pay only for finished exports."
-              className="text-3xl sm:text-4xl font-display font-bold text-zinc-100"
-            />
-            <p className="text-sm text-zinc-400 font-sans">
-              No subscriptions that expire unused. All plans include 100% credit rollover and zero
-              watermarks.
-            </p>
+        {/* Section 03: Bounty Marketplace (No top border!) */}
+        <section id="bounties" className="py-24 relative overflow-hidden z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            <div className="text-center max-w-3xl mx-auto space-y-4">
+              <span className="text-xs font-mono uppercase tracking-wider text-[#10B981] px-3.5 py-1 rounded-full bg-[#10B981]/10 border border-[#10B981]/20">
+                CREATOR MONETIZATION MARKETPLACE
+              </span>
+              <BlurText
+                text="Monetize your clipping skills with instant bounties"
+                italicWords={["instant", "bounties"]}
+                className="text-3xl sm:text-4xl font-display font-bold text-[#F4F4F6]"
+              />
+              <p className="text-sm text-[#A1A1AA] font-sans">
+                Browse verified brand campaigns, generate high-performing shorts in 1-click, and
+                claim direct payouts from locked escrow pools.
+              </p>
+            </div>
+
+            <BountyCampaignGrid onSelectCampaign={handleSelectCampaign} />
           </div>
+        </section>
 
-          <OutputOnlyPricing />
+        {/* Section 03b: Earnings Profit Simulator (No top border!) */}
+        <section id="simulator" className="py-24 relative overflow-hidden z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            <div className="text-center max-w-3xl mx-auto space-y-4">
+              <span className="text-xs font-mono uppercase tracking-wider text-[#D99B52] px-3.5 py-1 rounded-full bg-[#D99B52]/10 border border-[#D99B52]/20">
+                PREDICTIVE FINANCIAL MODEL
+              </span>
+              <BlurText
+                text="Calculate your monthly short-form earnings"
+                italicWords={["monthly"]}
+                className="text-3xl sm:text-4xl font-display font-bold text-[#F4F4F6]"
+              />
+              <p className="text-sm text-[#A1A1AA] font-sans">
+                Real-time projection based on verified CPMs ($3.50 – $4.25 / 1K views) across YouTube
+                Shorts, TikTok, and Instagram Reels.
+              </p>
+            </div>
+
+            <ProfitSimulator />
+          </div>
+        </section>
+
+        {/* 160px Soft Gradient Feather: Block 1 (#221B12) -> Block 2 (#17120C) */}
+        <div
+          className="h-40 w-full bg-gradient-to-b from-[#221B12] to-[#17120C] pointer-events-none relative z-10"
+          aria-hidden="true"
+        />
+      </div>
+
+      {/* =========================================================================
+          COLOUR BLOCK 2: Burnished Honey Terracotta & Deep Espresso Hearth (#17120C)
+          Contains: Section 04: Pricing & Studio Footer
+          ========================================================================= */}
+      <div className="relative bg-[#17120C]">
+        {/* Organic Grainient Background Atmosphere */}
+        <div className="absolute inset-0 pointer-events-none opacity-20 overflow-hidden">
+          <Grainient
+            colors={["#17120C", "#2B1E13", "#5C3A1E", "#D99B52", "#E06D3B"]}
+            flow={0.45}
+            softness={1.2}
+            speed={0.2}
+          />
         </div>
-      </section>
 
-      {/* 11. Studio Footer */}
-      <StudioFooter />
+        {/* Section 04: Output-Only Pricing (No top border!) */}
+        <section id="pricing" className="py-24 relative overflow-hidden z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            <div className="text-center max-w-3xl mx-auto space-y-4">
+              <span className="text-xs font-mono uppercase tracking-wider text-[#F3E5AB] px-3.5 py-1 rounded-full bg-[#F3E5AB]/10 border border-[#F3E5AB]/20">
+                OUTPUT-ONLY PRICING ARCHITECTURE
+              </span>
+              <BlurText
+                text="Zero credits burned on previews. Pay only for finished exports."
+                italicWords={["finished", "exports"]}
+                className="text-3xl sm:text-4xl font-display font-bold text-[#F4F4F6]"
+              />
+              <p className="text-sm text-[#A1A1AA] font-sans">
+                No subscriptions that expire unused. All plans include 100% credit rollover and zero
+                watermarks.
+              </p>
+            </div>
+
+            <OutputOnlyPricing />
+          </div>
+        </section>
+
+        {/* Studio Footer */}
+        <StudioFooter />
+      </div>
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl bg-[#0E1015] border border-emerald-500/40 text-xs font-mono text-zinc-200 shadow-xl shadow-black/60 animate-bounce">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl bg-[#1E1710] border border-[#10B981]/50 text-xs font-mono text-[#F4F4F6] shadow-2xl shadow-black/80 animate-bounce">
+          <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0" />
           <span>{toastMessage}</span>
           <button
             onClick={() => setToastMessage(null)}
-            className="p-1 text-zinc-500 hover:text-zinc-300"
+            className="p-1 text-[#A1A1AA] hover:text-white"
           >
             <X className="w-3.5 h-3.5" />
           </button>
