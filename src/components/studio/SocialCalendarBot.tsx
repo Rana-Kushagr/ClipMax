@@ -232,11 +232,9 @@ export function SocialCalendarBot() {
                 >
                   <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                   <span>
-                    {isSubmittingApproval
-                      ? "Syncing..."
-                      : approvalBot.status === "approved"
-                      ? "Queued"
-                      : "✓ Approve & Queue"}
+                    {isSubmittingApproval && "Syncing..."}
+                    {!isSubmittingApproval && approvalBot.status === "approved" && "Queued"}
+                    {!isSubmittingApproval && approvalBot.status !== "approved" && "✓ Approve & Queue"}
                   </span>
                 </button>
 

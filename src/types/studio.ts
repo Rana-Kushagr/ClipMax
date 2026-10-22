@@ -61,7 +61,7 @@ export interface BountyCampaign {
   brandName?: string;
   logo?: string;
   brandCategory: string;
-  niche?: "Developer Tools" | "Cloud Infrastructure" | "AI Systems" | "Productivity Tools" | string;
+  niche?: string;
   cpmRateUsd?: number;
   payoutPerK: number;
   escrowRemainingUsd?: number;

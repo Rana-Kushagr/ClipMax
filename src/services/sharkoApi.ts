@@ -5,8 +5,7 @@
 
 import { BountyCampaign } from "../types/studio";
 
-export const API_BASE_URL =
-  (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_BASE_URL) || "";
+export const API_BASE_URL = import.meta.env?.VITE_API_BASE_URL ?? "";
 
 export interface ApiResponse<T> {
   ok: boolean;
@@ -34,7 +33,7 @@ export async function safeApiRequest<T>(
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        ...(options.headers || {}),
+        ...options.headers,
       },
     });
     clearTimeout(timer);

@@ -7,9 +7,6 @@ import {
   Filter,
   DollarSign,
   X,
-  Sparkles,
-  CheckCircle2,
-  Lock,
 } from "lucide-react";
 import { BountyCampaign } from "../../types/studio";
 import { BorderGlow } from "../ui/BorderGlow";
@@ -81,7 +78,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
       }
     }
 
-    fetchLiveBounties();
+    void fetchLiveBounties();
     return () => {
       mounted = false;
       controller.abort();
@@ -454,10 +451,11 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                 />
 
                 <div>
-                  <label className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                  <label htmlFor="brand-name-input" className="block text-xs font-mono text-[#E5E0D8] mb-1">
                     Brand / Company Name *
                   </label>
                   <input
+                    id="brand-name-input"
                     type="text"
                     required
                     value={brandForm.brandName}
@@ -469,10 +467,11 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                    <label htmlFor="sponsor-email-input" className="block text-xs font-mono text-[#E5E0D8] mb-1">
                       Sponsor Contact Email *
                     </label>
                     <input
+                      id="sponsor-email-input"
                       type="email"
                       required
                       value={brandForm.contactEmail}
@@ -482,10 +481,11 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                    <label htmlFor="budget-input" className="block text-xs font-mono text-[#E5E0D8] mb-1">
                       Total Escrow Budget ($ / ₹) *
                     </label>
                     <input
+                      id="budget-input"
                       type="text"
                       required
                       value={brandForm.budgetUsd}
@@ -498,10 +498,11 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                    <label htmlFor="cpm-rate-input" className="block text-xs font-mono text-[#E5E0D8] mb-1">
                       Target CPM Rate (per 1K views) *
                     </label>
                     <input
+                      id="cpm-rate-input"
                       type="text"
                       required
                       value={brandForm.cpmRate}
@@ -511,10 +512,11 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                    <label htmlFor="niche-select-input" className="block text-xs font-mono text-[#E5E0D8] mb-1">
                       Niche / Category
                     </label>
                     <select
+                      id="niche-select-input"
                       value={brandForm.niche}
                       onChange={(e) => setBrandForm({ ...brandForm, niche: e.target.value })}
                       className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
@@ -528,10 +530,11 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                  <label htmlFor="source-video-input" className="block text-xs font-mono text-[#E5E0D8] mb-1">
                     Source Stream / Podcast Video URL *
                   </label>
                   <input
+                    id="source-video-input"
                     type="url"
                     required
                     value={brandForm.sourceVideoUrl}
@@ -542,10 +545,11 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                  <label htmlFor="notes-textarea-input" className="block text-xs font-mono text-[#E5E0D8] mb-1">
                     Campaign Goals & Clip Instructions
                   </label>
                   <textarea
+                    id="notes-textarea-input"
                     rows={2}
                     value={brandForm.notes}
                     onChange={(e) => setBrandForm({ ...brandForm, notes: e.target.value })}
