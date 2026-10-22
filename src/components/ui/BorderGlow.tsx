@@ -24,6 +24,11 @@ export const BorderGlow: React.FC<BorderGlowProps> = ({
   borderRadius = 22,
   animated = false,
   colors = ['#F3E5AB', '#D99B52', '#10B981'],
+  glowColor,
+  glowRadius,
+  glowIntensity,
+  coneSpread,
+  edgeSensitivity,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const rafPendingRef = useRef(false);
@@ -81,6 +86,11 @@ export const BorderGlow: React.FC<BorderGlowProps> = ({
           '--c1': c1,
           '--c2': c2,
           '--c3': c3,
+          '--glow-color': glowColor || c1,
+          '--glow-radius': glowRadius ? `${glowRadius}px` : undefined,
+          '--glow-intensity': glowIntensity !== undefined ? `${glowIntensity}` : undefined,
+          '--cone-spread': coneSpread !== undefined ? `${coneSpread}deg` : undefined,
+          '--edge-sensitivity': edgeSensitivity !== undefined ? `${edgeSensitivity}` : undefined,
         } as React.CSSProperties
       }
     >

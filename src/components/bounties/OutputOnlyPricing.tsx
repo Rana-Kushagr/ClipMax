@@ -29,11 +29,22 @@ export const OutputOnlyPricing: React.FC = () => {
     setSubmittingTierId(null);
 
     if (res.ok && res.data?.checkoutUrl) {
-      window.location.href = res.data.checkoutUrl;
-    } else {
-      const hero = document.getElementById("hero") || document.getElementById("studio-command");
-      if (hero) hero.scrollIntoView({ behavior: "smooth" });
+      try {
+        const checkoutUrlObj = new URL(res.data.checkoutUrl);
+        const allowedHosts = ["checkout.stripe.com", "buy.stripe.com", "billing.stripe.com"];
+        const isAllowed = allowedHosts.some(
+          (host) => checkoutUrlObj.hostname === host || checkoutUrlObj.hostname.endsWith(`.${host}`)
+        );
+        if (checkoutUrlObj.protocol === "https:" && isAllowed) {
+          window.location.assign(checkoutUrlObj.href);
+          return;
+        }
+      } catch {
+        // Fallback to hero navigation
+      }
     }
+    const hero = document.getElementById("hero") || document.getElementById("studio-command");
+    if (hero) hero.scrollIntoView({ behavior: "smooth" });
   };
 
   const tiers = [

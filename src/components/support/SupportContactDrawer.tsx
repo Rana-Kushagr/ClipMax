@@ -7,7 +7,6 @@ import {
   Send,
   ExternalLink,
   X,
-  MessageCircle,
   Sparkles,
 } from "lucide-react";
 
@@ -27,7 +26,9 @@ export const SupportContactDrawer: React.FC<Readonly<SupportContactDrawerProps>>
   )}`;
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText(email);
+    void navigator.clipboard.writeText(email).catch(() => {
+      // Fallback
+    });
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };

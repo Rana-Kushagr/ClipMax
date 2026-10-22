@@ -145,7 +145,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
     await sharkoApi.submitBrandCampaign({
       brandName,
       contactEmail: sponsorEmail,
-      budgetUsd: parseFloat(budget.replace(/[^0-9.]/g, "")) || 5000,
+      budgetUsd: Number.parseFloat(budget.replace(/[^0-9.]/g, "")) || 5000,
       niche,
       sourceVideoUrl: sourceUrl,
     });
@@ -444,6 +444,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                   type="text"
                   name="website_hp"
                   tabIndex={-1}
+                  aria-hidden="true"
                   autoComplete="off"
                   className="hidden"
                   value={brandForm.website_hp}

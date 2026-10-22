@@ -6,12 +6,12 @@ import {
   Trash2,
   RefreshCw,
   Mail,
-  UserCheck,
   X,
   CheckCircle2,
   Clock,
   Building,
 } from "lucide-react";
+import { sanitizeUserText } from "../../utils/security";
 
 interface DpdpRightsModalProps {
   isOpen: boolean;
@@ -59,7 +59,7 @@ export const DpdpRightsModal: React.FC<Readonly<DpdpRightsModalProps>> = ({
     link.download = `Sharko_DPDP_Data_Export_${Date.now()}.json`;
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+    link.remove();
     URL.revokeObjectURL(url);
     notify("Exported machine-readable DPDP data summary (.json).");
   };
@@ -95,14 +95,20 @@ export const DpdpRightsModal: React.FC<Readonly<DpdpRightsModalProps>> = ({
   // 5. Right to Nominate (Sec. 14)
   const handleSaveNominee = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nomineeEmail) return;
+    const candidate = nomineeEmail.trim();
+    const safeEmailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/;
+    if (!candidate || !safeEmailPattern.test(candidate)) {
+      notify("Please provide a valid nominee email address.");
+      return;
+    }
+    const cleanNominee = sanitizeUserText(candidate, 80);
     try {
-      localStorage.setItem("sharko_dpdp_nominee", nomineeEmail);
+      localStorage.setItem("sharko_dpdp_nominee", encodeURIComponent(cleanNominee));
     } catch {
       // Ignore
     }
     setNomineeSaved(true);
-    notify(`Nominee recorded: ${nomineeEmail}`);
+    notify(`Nominee recorded: ${cleanNominee}`);
     setTimeout(() => setNomineeSaved(false), 3000);
   };
 

@@ -5,7 +5,6 @@ import {
   RotateCcw,
   Sliders,
   Download,
-  Sparkles,
   Layers,
 } from "lucide-react";
 import { CAPTION_STYLES } from "../../lib/constants";

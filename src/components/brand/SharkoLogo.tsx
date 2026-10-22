@@ -7,7 +7,15 @@ export const SharkoLogo: React.FC<{ className?: string; showTagline?: boolean }>
   <div className={`inline-flex items-center gap-3 select-none group ${className}`}>
     {/* Geometric Shark + Play-Button Fin Icon */}
     <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#18130E] border border-[#F3E5AB]/25 shadow-[0_0_20px_rgba(217,155,82,0.18)] group-hover:border-[#10B981]/50 transition-colors duration-200">
-      <svg viewBox="0 0 120 120" className="h-8 w-8 overflow-visible" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        viewBox="0 0 120 120"
+        className="h-8 w-8 overflow-visible"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        role="img"
+        aria-label="Sharko Logo"
+      >
+        <title>Sharko Logo</title>
         <defs>
           <linearGradient id="sharkoBodyGrad" x1="15" y1="15" x2="105" y2="95" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor="#F3E5AB" />
