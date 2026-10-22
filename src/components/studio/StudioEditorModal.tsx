@@ -142,6 +142,7 @@ export function StudioEditorModal({
                   onExport(`${title} (${aspect} • ${mode})`);
                   onClose();
                 }}
+                clipScore={clip?.viralityScore || 98}
               />
             ) : (
               <KineticCaptionStudio

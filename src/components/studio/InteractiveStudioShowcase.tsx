@@ -47,7 +47,7 @@ export function InteractiveStudioShowcase({
 
   const handleExportClip = (clip: VideoClip) => {
     onExportSuccess(
-      `1080p HD Exported: "${clip.title}" (1 clip credit used • Watermark-free)`
+      `Exported 1080p 60fps MP4 (${clip.aspectRatio} • ${clip.speakerType}) — 0 watermarks.`
     );
   };
 

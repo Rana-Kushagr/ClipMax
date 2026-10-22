@@ -161,7 +161,7 @@ export function App() {
       {/* 5. Hero Section with Viewfinder HUD and Command Center (No bottom border!) */}
       <section
         id="hero"
-        className="relative min-h-[92vh] pt-32 pb-24 flex flex-col justify-center overflow-hidden"
+        className="relative min-h-[92vh] pt-28 lg:pt-36 pb-24 flex flex-col justify-center overflow-hidden"
       >
         {/* GSAP Dissolving Viewfinder HUD */}
         <HeroViewfinderHud hudRef={hudContainerRef} isInputActive={videoUrl.length > 0} />
@@ -176,6 +176,7 @@ export function App() {
             setActiveTool={setActiveTool}
             videoUrl={videoUrl}
             setVideoUrl={setVideoUrl}
+            onSelectStudioTab={setActiveStudioTab}
           />
         </div>
       </section>
@@ -244,6 +245,7 @@ export function App() {
       <SandyBlock variant="sand" showBottomFeather>
         {/* Section 03: Bounty Marketplace (No top border!) */}
         <section id="bounties" className="py-24 relative overflow-hidden z-10">
+          <span id="section-bounties" className="absolute -top-20" aria-hidden="true" />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             <div className="text-center max-w-3xl mx-auto space-y-4">
               <motion.h2
@@ -251,10 +253,10 @@ export function App() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false, amount: 0.2 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
-                className="text-3xl sm:text-4xl font-display font-bold text-[#F4F4F6] tracking-tight"
+                className="font-display text-3xl sm:text-5xl font-extrabold tracking-tight text-[#F4F5F7]"
               >
                 Monetize your clipping skills with{" "}
-                <span className="serif-italic text-[#D99B52]">instant bounties.</span>
+                <span className="serif-italic font-normal text-[#F3E5AB]">instant bounties.</span>
               </motion.h2>
               <p className="text-sm text-[#A1A1AA] font-sans">
                 Browse verified brand campaigns, generate high-performing shorts in 1-click, and
@@ -268,6 +270,7 @@ export function App() {
 
         {/* Section 03b: Earnings Profit Simulator (No top border!) */}
         <section id="simulator" className="py-24 relative overflow-hidden z-10">
+          <span id="section-calculator" className="absolute -top-20" aria-hidden="true" />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             <div className="text-center max-w-3xl mx-auto space-y-4">
               <motion.h2

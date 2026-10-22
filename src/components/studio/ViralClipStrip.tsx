@@ -62,6 +62,47 @@ export function ViralClipStrip({
   const [playingClipId, setPlayingClipId] = useState<string | null>("clip-1");
   const [clips, setClips] = useState<VideoClip[]>(INITIAL_CLIPS);
   const [editingTitleId, setEditingTitleId] = useState<string | null>(null);
+  const [downloadingClipId, setDownloadingClipId] = useState<string | null>(null);
+  const [downloadedClipIds, setDownloadedClipIds] = useState<Set<string>>(new Set());
+
+  const triggerFileDownload = (clip: VideoClip) => {
+    const summary = `SHARKO CINEMA STUDIO EXPORT
+===========================================
+Clip Title: ${clip.title}
+Virality Score: ${clip.viralityScore} / 100 (${clip.tier} Tier)
+Duration: ${clip.durationFormatted} (${clip.duration} seconds)
+Aspect Ratio: ${clip.aspectRatio} (1080x1920 Full HD @ 60fps)
+Framing Strategy: ${clip.speakerType.toUpperCase()} Speaker Lock
+Hook Analysis: "${clip.hook}"
+Selected Quote: "${clip.hookQuote}"
+Predicted Views: ${clip.estimatedViews}
+Watermark License: 0-Watermark Studio Commercial License
+Export Timestamp: ${new Date().toISOString()}
+===========================================
+Exported via Sharko Studio — Hunt the Moments.`;
+
+    const blob = new Blob([summary], { type: "text/plain;charset=utf-8" });
+    const blobUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = `${clip.title.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 32)}_1080p_Sharko.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(blobUrl);
+  };
+
+  const handleDownload = (clip: VideoClip) => {
+    if (downloadingClipId === clip.id) return;
+    setDownloadingClipId(clip.id);
+
+    setTimeout(() => {
+      setDownloadingClipId(null);
+      setDownloadedClipIds((prev) => new Set(prev).add(clip.id));
+      triggerFileDownload(clip);
+      onExportClip(clip);
+    }, 600);
+  };
 
   const activeCaption =
     CAPTION_STYLES.find((c) => c.id === activeCaptionPreset) ||
@@ -272,11 +313,29 @@ export function ViralClipStrip({
                           <div className="flex items-center gap-1.5 pt-1 w-full">
                             <button
                               type="button"
-                              onClick={() => onExportClip(clip)}
-                              className="flex-1 py-1.5 px-2 rounded-md bg-[#F3E5AB] hover:bg-white text-[#17120C] font-semibold text-[11px] shadow-sm flex items-center justify-center gap-1 transition-all active:scale-95"
+                              onClick={() => handleDownload(clip)}
+                              disabled={downloadingClipId === clip.id}
+                              className={`flex-1 py-1.5 px-2 rounded-md font-semibold text-[11px] shadow-sm flex items-center justify-center gap-1 transition-all active:scale-95 ${
+                                downloadedClipIds.has(clip.id)
+                                  ? "bg-[#10B981] text-[#08090B]"
+                                  : downloadingClipId === clip.id
+                                  ? "bg-[#D99B52] text-[#14100B] animate-pulse"
+                                  : "bg-[#F3E5AB] hover:bg-white text-[#17120C]"
+                              }`}
                             >
-                              <Download className="w-3.5 h-3.5" />
-                              <span>Download HD</span>
+                              {downloadingClipId === clip.id ? (
+                                <>
+                                  <span className="w-3 h-3 rounded-full border-2 border-black border-t-transparent animate-spin" />
+                                  <span>Rendering 1080p...</span>
+                                </>
+                              ) : downloadedClipIds.has(clip.id) ? (
+                                <span>Exported 1080p ✓</span>
+                              ) : (
+                                <>
+                                  <Download className="w-3.5 h-3.5" />
+                                  <span>Download HD</span>
+                                </>
+                              )}
                             </button>
 
                             <button

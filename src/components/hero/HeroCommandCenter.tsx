@@ -20,6 +20,7 @@ import { Magnet } from "../react-bits/Magnet";
 import { BorderGlow } from "../ui/BorderGlow";
 import { SmartOptionsDrawer, SmartOptionsState } from "./SmartOptionsDrawer";
 import { StudioQuickDock } from "./StudioQuickDock";
+import { StudioTabId } from "../studio/InteractiveStudioShowcase";
 
 interface HeroCommandCenterProps {
   studioMode: "lightning" | "studio";
@@ -30,6 +31,7 @@ interface HeroCommandCenterProps {
   setActiveTool: (t: string) => void;
   videoUrl: string;
   setVideoUrl: (u: string) => void;
+  onSelectStudioTab?: (tab: StudioTabId) => void;
 }
 
 export function HeroCommandCenter({
@@ -41,6 +43,7 @@ export function HeroCommandCenter({
   setActiveTool,
   videoUrl,
   setVideoUrl,
+  onSelectStudioTab,
 }: Readonly<HeroCommandCenterProps>) {
   const [protocolBadge, setProtocolBadge] = useState<string>("https://");
   const [platform, setPlatform] = useState<"youtube" | "twitch" | "kick" | "rumble" | "drive" | "file" | "unknown">("unknown");
@@ -217,6 +220,7 @@ export function HeroCommandCenter({
             {/* Widen input flex track (min-w-0 flex-1) to eliminate truncation! */}
             <div className="relative min-w-0 flex-1 w-full">
               <input
+                id="hero-url-input"
                 type="text"
                 value={videoUrl}
                 onChange={(e) => {
@@ -373,6 +377,7 @@ export function HeroCommandCenter({
         <StudioQuickDock
           activeTool={activeTool}
           setActiveTool={setActiveTool}
+          onSelectStudioTab={onSelectStudioTab}
         />
       </div>
     </section>

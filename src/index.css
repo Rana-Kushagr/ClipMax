@@ -124,6 +124,16 @@ body {
   border-right: 1px solid rgba(255, 255, 255, 0.07);
 }
 
+/* Hormozi Style Caption */
+.cap-hormozi {
+  font-family: 'Cabinet Grotesk', system-ui, sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+}
+
 /* Prefers-reduced-motion fallback */
 @media (prefers-reduced-motion: reduce) {
   html:focus-within {
