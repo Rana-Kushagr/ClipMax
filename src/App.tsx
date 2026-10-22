@@ -148,7 +148,7 @@ export function App() {
       {/* 5. Hero Section with Viewfinder HUD and Command Center (No bottom border!) */}
       <section
         id="hero"
-        className="relative min-h-[92vh] pt-28 lg:pt-36 pb-24 flex flex-col justify-center overflow-hidden"
+        className="relative min-h-[92vh] pt-28 lg:pt-36 pb-24 flex flex-col justify-center overflow-hidden scroll-mt-20 sm:scroll-mt-24"
       >
         {/* GSAP Dissolving Viewfinder HUD */}
         <HeroViewfinderHud hudRef={hudContainerRef} isInputActive={videoUrl.length > 0} />
@@ -174,7 +174,7 @@ export function App() {
           ========================================================================= */}
       <SharkoBlock variant="block-a">
         {/* Section 01: How It Works 60FPS Walkthrough */}
-        <section id="walkthrough" className="py-24 relative overflow-hidden z-10">
+        <section id="walkthrough" className="py-24 relative overflow-hidden z-10 scroll-mt-20 sm:scroll-mt-24">
           {/* Subtle Cobalt Refraction Glow */}
           <div
             className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[650px] h-[350px] pointer-events-none -z-10 blur-[130px]"
@@ -191,7 +191,7 @@ export function App() {
           ========================================================================= */}
       <SharkoBlock variant="block-b">
         {/* Section 02: AI Studio Interactive Workspace (No top border!) */}
-        <section id="studio" className="py-24 relative overflow-hidden z-10">
+        <section id="studio" className="py-24 relative overflow-hidden z-10 scroll-mt-20 sm:scroll-mt-24">
           {/* Subtle Studio Sky Blue Floor Reflection */}
           <div
             className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[600px] h-[350px] pointer-events-none -z-10 blur-[130px]"
@@ -234,7 +234,7 @@ export function App() {
         <WhySharkoComparison />
 
         {/* Section 03: Bounty Marketplace (No top border!) */}
-        <section id="bounties" className="py-24 relative overflow-hidden z-10">
+        <section id="bounties" className="py-24 relative overflow-hidden z-10 scroll-mt-20 sm:scroll-mt-24">
           <span id="section-bounties" className="absolute -top-20" aria-hidden="true" />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             <div className="text-center max-w-3xl mx-auto space-y-4">
@@ -262,7 +262,7 @@ export function App() {
         </section>
 
         {/* Section 03b: Earnings Profit Simulator (No top border!) */}
-        <section id="simulator" className="py-24 relative overflow-hidden z-10">
+        <section id="simulator" className="py-24 relative overflow-hidden z-10 scroll-mt-20 sm:scroll-mt-24">
           <span id="section-calculator" className="absolute -top-20" aria-hidden="true" />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             <div className="text-center max-w-3xl mx-auto space-y-4">
@@ -293,7 +293,7 @@ export function App() {
           ========================================================================= */}
       <SharkoBlock variant="block-b">
         {/* Section 04: Output-Only Pricing (No top border!) */}
-        <section id="pricing" className="py-24 relative overflow-hidden z-10">
+        <section id="pricing" className="py-24 relative overflow-hidden z-10 scroll-mt-20 sm:scroll-mt-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             <div className="text-center max-w-3xl mx-auto space-y-4">
               <motion.h2

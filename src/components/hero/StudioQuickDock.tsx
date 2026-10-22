@@ -24,19 +24,30 @@ export function StudioQuickDock({
   onSelectStudioTab,
   onFocusIngest,
 }: Readonly<StudioQuickDockProps>) {
+  const scrollToTarget = (id: string, fallbackId?: string) => {
+    const elem = document.getElementById(id) || (fallbackId ? document.getElementById(fallbackId) : null);
+    if (elem) {
+      const navHeight = window.innerWidth < 768 ? 64 : 76;
+      const targetTop = Math.max(0, elem.getBoundingClientRect().top + window.scrollY - navHeight);
+      window.scrollTo({ top: targetTop, behavior: "smooth" });
+    }
+  };
+
   const tools = [
     {
       id: "ingest",
       name: "Ingest Stream",
       icon: UploadCloud,
       action: () => {
-        const input = document.getElementById("hero-url-input") as HTMLInputElement | null;
+        const input = (document.getElementById("heroVideoUrlInput") ||
+          document.getElementById("hero-url-input")) as HTMLInputElement | null;
         if (input) {
           input.focus();
-          input.scrollIntoView({ behavior: "smooth", block: "center" });
+          const navHeight = window.innerWidth < 768 ? 64 : 76;
+          const targetTop = Math.max(0, input.getBoundingClientRect().top + window.scrollY - navHeight - 40);
+          window.scrollTo({ top: targetTop, behavior: "smooth" });
         } else {
-          const hero = document.getElementById("hero") || document.getElementById("section-overview");
-          if (hero) hero.scrollIntoView({ behavior: "smooth" });
+          window.scrollTo({ top: 0, behavior: "smooth" });
         }
         if (onFocusIngest) onFocusIngest();
       },
@@ -47,8 +58,7 @@ export function StudioQuickDock({
       icon: Scissors,
       action: () => {
         if (onSelectStudioTab) onSelectStudioTab("strip");
-        const elem = document.getElementById("studio") || document.getElementById("playgrounds");
-        if (elem) elem.scrollIntoView({ behavior: "smooth" });
+        scrollToTarget("studio", "playgrounds");
       },
     },
     {
@@ -57,8 +67,7 @@ export function StudioQuickDock({
       icon: Crop,
       action: () => {
         if (onSelectStudioTab) onSelectStudioTab("reframe");
-        const elem = document.getElementById("studio") || document.getElementById("playgrounds");
-        if (elem) elem.scrollIntoView({ behavior: "smooth" });
+        scrollToTarget("studio", "playgrounds");
       },
     },
     {
@@ -67,8 +76,7 @@ export function StudioQuickDock({
       icon: Subtitles,
       action: () => {
         if (onSelectStudioTab) onSelectStudioTab("captions");
-        const elem = document.getElementById("studio") || document.getElementById("playgrounds");
-        if (elem) elem.scrollIntoView({ behavior: "smooth" });
+        scrollToTarget("studio", "playgrounds");
       },
     },
     {
@@ -77,8 +85,7 @@ export function StudioQuickDock({
       icon: Calendar,
       action: () => {
         if (onSelectStudioTab) onSelectStudioTab("schedule");
-        const elem = document.getElementById("studio") || document.getElementById("playgrounds");
-        if (elem) elem.scrollIntoView({ behavior: "smooth" });
+        scrollToTarget("studio", "playgrounds");
       },
     },
     {
@@ -86,8 +93,7 @@ export function StudioQuickDock({
       name: "Bounty Board",
       icon: Coins,
       action: () => {
-        const elem = document.getElementById("section-bounties") || document.getElementById("bounties");
-        if (elem) elem.scrollIntoView({ behavior: "smooth" });
+        scrollToTarget("bounties", "section-bounties");
       },
     },
     {
@@ -95,8 +101,7 @@ export function StudioQuickDock({
       name: "Profit Calculator",
       icon: Calculator,
       action: () => {
-        const elem = document.getElementById("section-calculator") || document.getElementById("simulator");
-        if (elem) elem.scrollIntoView({ behavior: "smooth" });
+        scrollToTarget("simulator", "section-calculator");
       },
     },
   ];

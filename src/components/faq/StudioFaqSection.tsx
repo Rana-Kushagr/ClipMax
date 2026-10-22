@@ -59,7 +59,7 @@ export const StudioFaqSection: React.FC = () => {
   };
 
   return (
-    <section id="section-faq" className="py-24 relative overflow-hidden z-10 select-none">
+    <section id="section-faq" className="py-24 relative overflow-hidden z-10 select-none scroll-mt-20 sm:scroll-mt-24">
       <span id="faq" className="absolute -top-20" aria-hidden="true" />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Header */}

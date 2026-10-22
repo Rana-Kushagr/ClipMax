@@ -19,6 +19,26 @@ interface AppHeaderProps {
   onOpenAuth?: (mode?: 'login' | 'signup') => void;
 }
 
+const SECTION_ALIASES: Record<string, string[]> = {
+  hero: ["hero", "overview", "section-overview"],
+  walkthrough: ["walkthrough", "how-it-works"],
+  studio: ["studio", "section-studio", "playgrounds"],
+  "why-sharko": ["why-sharko", "comparison"],
+  bounties: ["bounties", "section-bounties", "bounty-board"],
+  simulator: ["simulator", "section-calculator", "calculator"],
+  pricing: ["pricing", "section-pricing"],
+  faq: ["section-faq", "faq"],
+};
+
+const getTargetElement = (id: string): HTMLElement | null => {
+  const candidateIds = SECTION_ALIASES[id] || [id];
+  for (const cid of candidateIds) {
+    const el = document.getElementById(cid);
+    if (el) return el;
+  }
+  return document.getElementById(id);
+};
+
 export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
   freeExportsCount,
   onOpenSupport,
@@ -29,54 +49,104 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
 
   const navItems = [
-    { id: "hero", label: "Overview & Command" },
-    { id: "walkthrough", label: "How It Works" },
-    { id: "studio", label: "Cinema AI Studio" },
-    { id: "why-sharko", label: "Why Sharko" },
-    { id: "bounties", label: "Bounties & Escrow" },
-    { id: "simulator", label: "Profit Calculator" },
-    { id: "pricing", label: "Pricing" },
-    { id: "faq", label: "FAQs" },
+    { id: "hero", label: "Overview", fullLabel: "Overview & Command" },
+    { id: "walkthrough", label: "How It Works", fullLabel: "How It Works" },
+    { id: "studio", label: "Studio", fullLabel: "Cinema AI Studio" },
+    { id: "why-sharko", label: "Why Sharko", fullLabel: "Why Sharko" },
+    { id: "bounties", label: "Bounties", fullLabel: "Bounties & Escrow" },
+    { id: "simulator", label: "Calculator", fullLabel: "Profit Calculator" },
+    { id: "pricing", label: "Pricing", fullLabel: "Output Pricing" },
+    { id: "faq", label: "FAQs", fullLabel: "FAQs" },
   ];
+
+  const scrollToSection = (id: string) => {
+    setMobileMenuOpen(false);
+    setActiveSection(id);
+
+    if (id === "hero" || id === "overview") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      return;
+    }
+
+    const el = getTargetElement(id);
+    if (el) {
+      const navHeight = window.innerWidth < 768 ? 64 : 76;
+      const targetTop = Math.max(0, el.getBoundingClientRect().top + window.scrollY - navHeight);
+      window.scrollTo({ top: targetTop, behavior: "smooth" });
+      window.history.replaceState(null, "", `#${id}`);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);
 
-      const sections = [
-        "hero",
-        "walkthrough",
-        "studio",
-        "why-sharko",
-        "bounties",
-        "simulator",
-        "pricing",
-        "section-faq",
-      ];
-      const scrollPos = window.scrollY + 200;
+      // Near top of document -> hero
+      if (window.scrollY < 180) {
+        setActiveSection("hero");
+        return;
+      }
 
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const el = document.getElementById(sections[i]);
-        if (el && el.offsetTop <= scrollPos) {
-          const matched = sections[i] === "section-faq" ? "faq" : sections[i];
-          setActiveSection(matched);
-          break;
+      // Near bottom of document -> faq
+      const atBottom =
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 60;
+      if (atBottom) {
+        setActiveSection("faq");
+        return;
+      }
+
+      // Target focal line: 140px down from viewport top (clear below the fixed header)
+      const targetLine = 140;
+      let foundSection = "";
+      let closestTop = -Infinity;
+      let fallbackSection = "hero";
+
+      for (const item of navItems) {
+        const el = getTargetElement(item.id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= targetLine && rect.bottom > targetLine) {
+            foundSection = item.id;
+            break;
+          }
+          if (rect.top <= targetLine && rect.top > closestTop) {
+            closestTop = rect.top;
+            fallbackSection = item.id;
+          }
         }
       }
+
+      setActiveSection(foundSection || fallbackSection);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToSection = (id: string) => {
-    setMobileMenuOpen(false);
-    const targetId = id === "faq" ? "section-faq" : id;
-    const el = document.getElementById(targetId);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
+  // Initial deep hash jump on mount
+  useEffect(() => {
+    const initialHash = window.location.hash.replace("#", "");
+    if (initialHash) {
+      const timer = setTimeout(() => {
+        scrollToSection(initialHash);
+      }, 150);
+      return () => clearTimeout(timer);
     }
-  };
+  }, []);
+
+  // Handle browser back/forward and hash changes
+  useEffect(() => {
+    const onHashChange = () => {
+      const hash = window.location.hash.replace("#", "");
+      if (hash) {
+        scrollToSection(hash);
+      }
+    };
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
 
   return (
     <>
@@ -89,14 +159,22 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* Brand Logo & Tagline */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              onClick={() => scrollToSection("hero")}
               className="text-left group transition-transform active:scale-95 touch-manipulation"
               aria-label="Sharko — Hunt the Moments"
             >
               <SharkoLogo />
             </button>
+
+            {/* Mobile Active Section Badge (Shows live which section is currently viewed) */}
+            <div className="md:hidden flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#050D1E] border border-[#89CFF0]/25 text-[11px] font-mono text-[#89CFF0] max-w-[140px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#89CFF0] shrink-0 animate-pulse" />
+              <span className="truncate">
+                {navItems.find((n) => n.id === activeSection)?.label || "Overview"}
+              </span>
+            </div>
           </div>
 
           {/* Center Desktop Navigation Pill Bar */}
@@ -231,7 +309,10 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
                           : "text-zinc-300 hover:text-white hover:bg-[#050D1E] border border-transparent"
                       }`}
                     >
-                      <span>{item.label}</span>
+                      <div className="flex items-center gap-2">
+                        {isActive && <span className="w-2 h-2 rounded-full bg-[#89CFF0] animate-pulse" />}
+                        <span>{item.fullLabel || item.label}</span>
+                      </div>
                       <ArrowRight className={`w-4 h-4 ${isActive ? "text-[#89CFF0]" : "text-zinc-600"}`} />
                     </button>
                   );

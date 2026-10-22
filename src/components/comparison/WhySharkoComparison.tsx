@@ -118,7 +118,7 @@ export const WhySharkoComparison: React.FC = () => {
   ];
 
   return (
-    <section id="why-sharko" className="py-24 relative overflow-hidden z-10 select-none">
+    <section id="why-sharko" className="py-24 relative overflow-hidden z-10 select-none scroll-mt-20 sm:scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
