@@ -12,8 +12,59 @@ import { OutputOnlyPricing } from "./components/bounties/OutputOnlyPricing";
 import { StudioFooter } from "./components/footer/StudioFooter";
 import { NoiseOverlay } from "./components/react-bits/NoiseOverlay";
 import { Grainient } from "./components/backgrounds/Grainient";
+import { SmartOptionsState } from "./components/hero/SmartOptionsDrawer";
 import { useClipMaxGsap } from "./hooks/useClipMaxGsap";
 import { CheckCircle2, X } from "lucide-react";
+
+interface SandyBlockProps {
+  variant: "sand" | "terracotta";
+  children: React.ReactNode;
+  showBottomFeather?: boolean;
+}
+
+const SANDY_CONFIG = {
+  sand: {
+    bg: "bg-[#221B12]",
+    opacity: "opacity-25",
+    colors: ["#17120C", "#221B12", "#4A351D", "#D99B52", "#F3E5AB"],
+    flow: 0.5,
+    softness: 1.2,
+    speed: 0.25,
+    feather: "from-[#221B12] to-[#17120C]",
+  },
+  terracotta: {
+    bg: "bg-[#17120C]",
+    opacity: "opacity-20",
+    colors: ["#17120C", "#2B1E13", "#5C3A1E", "#D99B52", "#E06D3B"],
+    flow: 0.45,
+    softness: 1.2,
+    speed: 0.2,
+    feather: "from-[#17120C] to-[#221B12]",
+  },
+};
+
+function SandyBlock({ variant, children, showBottomFeather = false }: Readonly<SandyBlockProps>) {
+  const cfg = SANDY_CONFIG[variant];
+  return (
+    <div className={`relative ${cfg.bg}`}>
+      <div className={`absolute inset-0 pointer-events-none ${cfg.opacity} overflow-hidden`}>
+        <Grainient
+          colors={cfg.colors}
+          flow={cfg.flow}
+          softness={cfg.softness}
+          speed={cfg.speed}
+        />
+      </div>
+      {children}
+      {showBottomFeather && (
+        <div
+          className={`h-40 w-full bg-gradient-to-b ${cfg.feather} pointer-events-none relative z-10`}
+          aria-hidden="true"
+        />
+      )}
+    </div>
+  );
+}
 
 export function App() {
   const { progressBarRef, hudContainerRef } = useClipMaxGsap();
@@ -79,6 +130,19 @@ export function App() {
     }, 4500);
   };
 
+  const smartOptions: SmartOptionsState = {
+    selectedPersona,
+    setSelectedPersona,
+    startTime,
+    setStartTime,
+    endTime,
+    setEndTime,
+    promptQuery,
+    setPromptQuery,
+    selectedGenres,
+    setSelectedGenres,
+  };
+
   return (
     <div className="min-h-screen bg-[#221B12] text-[#F4F4F6] selection:bg-[#F3E5AB]/25 selection:text-[#F3E5AB] relative overflow-x-hidden font-sans">
       {/* 1. Top Viewport GSAP Scroll Progress Ribbon */}
@@ -109,16 +173,7 @@ export function App() {
             studioMode={studioMode}
             setStudioMode={setStudioMode}
             onClipsGenerated={handleClipsGenerated}
-            selectedGenres={selectedGenres}
-            setSelectedGenres={setSelectedGenres}
-            promptQuery={promptQuery}
-            setPromptQuery={setPromptQuery}
-            startTime={startTime}
-            setStartTime={setStartTime}
-            endTime={endTime}
-            setEndTime={setEndTime}
-            selectedPersona={selectedPersona}
-            setSelectedPersona={setSelectedPersona}
+            options={smartOptions}
             activeTool={activeTool}
             setActiveTool={setActiveTool}
             videoUrl={videoUrl}
@@ -131,17 +186,7 @@ export function App() {
           COLOUR BLOCK 1: Pastel Sunlit Sand & Warm Parchment Umber (#221B12)
           Contains: Section 01: How ClipMax Works Walkthrough
           ========================================================================= */}
-      <div className="relative bg-[#221B12]">
-        {/* Organic Grainient Background Atmosphere */}
-        <div className="absolute inset-0 pointer-events-none opacity-25 overflow-hidden">
-          <Grainient
-            colors={["#17120C", "#221B12", "#4A351D", "#D99B52", "#F3E5AB"]}
-            flow={0.5}
-            softness={1.2}
-            speed={0.25}
-          />
-        </div>
-
+      <SandyBlock variant="sand" showBottomFeather>
         {/* Section 01: How It Works 60FPS Walkthrough */}
         <section id="walkthrough" className="py-24 relative overflow-hidden z-10">
           {/* Subtle Warm Amber Refraction Glow */}
@@ -152,29 +197,13 @@ export function App() {
           />
           <HowItWorksWalkthrough onLoadWorkflowSample={handleLoadWorkflowSample} />
         </section>
-
-        {/* 160px Soft Gradient Feather: Block 1 (#221B12) -> Block 2 (#17120C) */}
-        <div
-          className="h-40 w-full bg-gradient-to-b from-[#221B12] to-[#17120C] pointer-events-none relative z-10"
-          aria-hidden="true"
-        />
-      </div>
+      </SandyBlock>
 
       {/* =========================================================================
           COLOUR BLOCK 2: Burnished Honey Terracotta & Deep Espresso Hearth (#17120C)
           Contains: Section 02: AI Studio Interactive Workspace
           ========================================================================= */}
-      <div className="relative bg-[#17120C]">
-        {/* Organic Grainient Background Atmosphere */}
-        <div className="absolute inset-0 pointer-events-none opacity-20 overflow-hidden">
-          <Grainient
-            colors={["#17120C", "#2B1E13", "#5C3A1E", "#D99B52", "#E06D3B"]}
-            flow={0.45}
-            softness={1.2}
-            speed={0.2}
-          />
-        </div>
-
+      <SandyBlock variant="terracotta" showBottomFeather>
         {/* Section 02: AI Studio Interactive Workspace (No top border!) */}
         <section id="studio" className="py-24 relative overflow-hidden z-10">
           {/* Subtle Studio Warm Terracotta Floor Reflection */}
@@ -208,29 +237,13 @@ export function App() {
             />
           </div>
         </section>
-
-        {/* 160px Soft Gradient Feather: Block 2 (#17120C) -> Block 1 (#221B12) */}
-        <div
-          className="h-40 w-full bg-gradient-to-b from-[#17120C] to-[#221B12] pointer-events-none relative z-10"
-          aria-hidden="true"
-        />
-      </div>
+      </SandyBlock>
 
       {/* =========================================================================
           COLOUR BLOCK 1: Pastel Sunlit Sand & Warm Parchment Umber (#221B12)
           Contains: Section 03: Bounty Marketplace & Profit Simulator
           ========================================================================= */}
-      <div className="relative bg-[#221B12]">
-        {/* Organic Grainient Background Atmosphere */}
-        <div className="absolute inset-0 pointer-events-none opacity-25 overflow-hidden">
-          <Grainient
-            colors={["#17120C", "#221B12", "#4A351D", "#D99B52", "#F3E5AB"]}
-            flow={0.5}
-            softness={1.2}
-            speed={0.25}
-          />
-        </div>
-
+      <SandyBlock variant="sand" showBottomFeather>
         {/* Section 03: Bounty Marketplace (No top border!) */}
         <section id="bounties" className="py-24 relative overflow-hidden z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
@@ -278,29 +291,13 @@ export function App() {
             <ProfitSimulator />
           </div>
         </section>
-
-        {/* 160px Soft Gradient Feather: Block 1 (#221B12) -> Block 2 (#17120C) */}
-        <div
-          className="h-40 w-full bg-gradient-to-b from-[#221B12] to-[#17120C] pointer-events-none relative z-10"
-          aria-hidden="true"
-        />
-      </div>
+      </SandyBlock>
 
       {/* =========================================================================
           COLOUR BLOCK 2: Burnished Honey Terracotta & Deep Espresso Hearth (#17120C)
           Contains: Section 04: Pricing & Studio Footer
           ========================================================================= */}
-      <div className="relative bg-[#17120C]">
-        {/* Organic Grainient Background Atmosphere */}
-        <div className="absolute inset-0 pointer-events-none opacity-20 overflow-hidden">
-          <Grainient
-            colors={["#17120C", "#2B1E13", "#5C3A1E", "#D99B52", "#E06D3B"]}
-            flow={0.45}
-            softness={1.2}
-            speed={0.2}
-          />
-        </div>
-
+      <SandyBlock variant="terracotta">
         {/* Section 04: Output-Only Pricing (No top border!) */}
         <section id="pricing" className="py-24 relative overflow-hidden z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
@@ -327,7 +324,7 @@ export function App() {
 
         {/* Studio Footer */}
         <StudioFooter />
-      </div>
+      </SandyBlock>
 
       {/* Toast Notification */}
       {toastMessage && (

@@ -10,7 +10,7 @@ import {
 import { GENRE_LIST, EDITING_STYLE_PRESETS } from "../../lib/constants";
 import { EditingStylePreset } from "../../types/studio";
 
-interface SmartOptionsDrawerProps {
+export interface SmartOptionsState {
   selectedGenres: string[];
   setSelectedGenres: React.Dispatch<React.SetStateAction<string[]>>;
   promptQuery: string;
@@ -22,6 +22,8 @@ interface SmartOptionsDrawerProps {
   selectedPersona: string;
   setSelectedPersona: (personaId: string) => void;
 }
+
+export type SmartOptionsDrawerProps = SmartOptionsState;
 
 export function SmartOptionsDrawer({
   selectedGenres,

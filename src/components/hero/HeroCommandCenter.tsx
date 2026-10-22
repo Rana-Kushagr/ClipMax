@@ -18,23 +18,14 @@ import { DecryptedText } from "../react-bits/DecryptedText";
 import { SpotlightCard } from "../react-bits/SpotlightCard";
 import { Magnet } from "../react-bits/Magnet";
 import { BorderGlow } from "../ui/BorderGlow";
-import { SmartOptionsDrawer } from "./SmartOptionsDrawer";
+import { SmartOptionsDrawer, SmartOptionsState } from "./SmartOptionsDrawer";
 import { StudioQuickDock } from "./StudioQuickDock";
 
 interface HeroCommandCenterProps {
   studioMode: "lightning" | "studio";
   setStudioMode: (mode: "lightning" | "studio") => void;
   onClipsGenerated: () => void;
-  selectedGenres: string[];
-  setSelectedGenres: React.Dispatch<React.SetStateAction<string[]>>;
-  promptQuery: string;
-  setPromptQuery: (q: string) => void;
-  startTime: number;
-  setStartTime: (t: number) => void;
-  endTime: number;
-  setEndTime: (t: number) => void;
-  selectedPersona: string;
-  setSelectedPersona: (p: string) => void;
+  options: SmartOptionsState;
   activeTool: string;
   setActiveTool: (t: string) => void;
   videoUrl: string;
@@ -45,16 +36,7 @@ export function HeroCommandCenter({
   studioMode,
   setStudioMode,
   onClipsGenerated,
-  selectedGenres,
-  setSelectedGenres,
-  promptQuery,
-  setPromptQuery,
-  startTime,
-  setStartTime,
-  endTime,
-  setEndTime,
-  selectedPersona,
-  setSelectedPersona,
+  options,
   activeTool,
   setActiveTool,
   videoUrl,
@@ -382,18 +364,7 @@ export function HeroCommandCenter({
       {/* Expandable Opus-Style Smart Drawer */}
       {studioMode === "studio" && (
         <div className="mt-4">
-          <SmartOptionsDrawer
-            selectedGenres={selectedGenres}
-            setSelectedGenres={setSelectedGenres}
-            promptQuery={promptQuery}
-            setPromptQuery={setPromptQuery}
-            startTime={startTime}
-            setStartTime={setStartTime}
-            endTime={endTime}
-            setEndTime={setEndTime}
-            selectedPersona={selectedPersona}
-            setSelectedPersona={setSelectedPersona}
-          />
+          <SmartOptionsDrawer {...options} />
         </div>
       )}
 
