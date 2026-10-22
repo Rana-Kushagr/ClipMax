@@ -1,0 +1,7 @@
+# Sharko Security & Architecture Rules
+
+- Never place secret keys or service-role keys in client code or VITE_ env vars.
+- Enforce Row-Level Security (auth.uid() = user_id) on every database table.
+- Validate all inputs with strict allowlists and parameterized queries on the server.
+- Calculate all checkout prices and credit deductions strictly on the server—never trust browser payloads.
+- Retain transient video files for maximum 72h per India DPDP Act 2023 regulations.

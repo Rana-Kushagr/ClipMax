@@ -4,6 +4,7 @@ import {
   Menu,
   X,
   ArrowRight,
+  Headphones,
 } from "lucide-react";
 import { Magnet } from "../react-bits/Magnet";
 import { DecryptedText } from "../react-bits/DecryptedText";
@@ -11,9 +12,14 @@ import { SharkoLogo } from "../brand/SharkoLogo";
 
 interface AppHeaderProps {
   freeExportsCount: number;
+  onOpenSupport?: () => void;
+  onOpenDpdp?: () => void;
 }
 
-export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({ freeExportsCount }) => {
+export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
+  freeExportsCount,
+  onOpenSupport,
+}) => {
   const [activeSection, setActiveSection] = useState<string>("hero");
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
@@ -21,22 +27,34 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({ freeExportsCount
   const navItems = [
     { id: "walkthrough", label: "Walkthrough" },
     { id: "studio", label: "AI Studio" },
+    { id: "why-sharko", label: "Why Sharko" },
     { id: "bounties", label: "Bounties" },
     { id: "simulator", label: "Simulator" },
     { id: "pricing", label: "Pricing" },
+    { id: "faq", label: "FAQ" },
   ];
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);
 
-      const sections = ["hero", "walkthrough", "studio", "bounties", "simulator", "pricing"];
+      const sections = [
+        "hero",
+        "walkthrough",
+        "studio",
+        "why-sharko",
+        "bounties",
+        "simulator",
+        "pricing",
+        "section-faq",
+      ];
       const scrollPos = window.scrollY + 200;
 
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.getElementById(sections[i]);
         if (el && el.offsetTop <= scrollPos) {
-          setActiveSection(sections[i]);
+          const matched = sections[i] === "section-faq" ? "faq" : sections[i];
+          setActiveSection(matched);
           break;
         }
       }
@@ -100,7 +118,19 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({ freeExportsCount
         </nav>
 
         {/* Right Controls: Credit Counter & Magnet CTA */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          {/* Support & Founder Contact Desk Button */}
+          {onOpenSupport && (
+            <button
+              type="button"
+              onClick={onOpenSupport}
+              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#F3E5AB]/25 bg-[#1F1811] hover:bg-[#2A2016] text-[#F3E5AB] font-mono text-xs transition-colors"
+            >
+              <Headphones className="w-3.5 h-3.5 text-[#10B981]" />
+              <span>Support & Contact</span>
+            </button>
+          )}
+
           {/* Credit Counter */}
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0E1014] border border-white/[0.08] font-mono text-xs">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -158,6 +188,19 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({ freeExportsCount
                 {item.label}
               </button>
             ))}
+            {onOpenSupport && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenSupport();
+                }}
+                className="w-full text-left px-3 py-2 rounded-lg text-xs font-mono text-[#F3E5AB] bg-[#F3E5AB]/10 border border-[#F3E5AB]/20 flex items-center gap-2"
+              >
+                <Headphones className="w-3.5 h-3.5 text-[#10B981]" />
+                <span>Official Support & Contact Desk</span>
+              </button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

@@ -9,6 +9,11 @@ import { InteractiveStudioShowcase, StudioTabId } from "./components/studio/Inte
 import { BountyCampaignGrid } from "./components/bounties/BountyCampaignGrid";
 import { ProfitSimulator } from "./components/bounties/ProfitSimulator";
 import { OutputOnlyPricing } from "./components/bounties/OutputOnlyPricing";
+import { WhySharkoComparison } from "./components/comparison/WhySharkoComparison";
+import { StudioFaqSection } from "./components/faq/StudioFaqSection";
+import { DpdpConsentBanner } from "./components/compliance/DpdpConsentBanner";
+import { DpdpRightsModal } from "./components/compliance/DpdpRightsModal";
+import { SupportContactDrawer } from "./components/support/SupportContactDrawer";
 import { StudioFooter } from "./components/footer/StudioFooter";
 import { NoiseOverlay } from "./components/react-bits/NoiseOverlay";
 import { Grainient } from "./components/backgrounds/Grainient";
@@ -94,6 +99,10 @@ export function App() {
   // Export success notification state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  // Support & India DPDP Act modal states
+  const [isSupportOpen, setIsSupportOpen] = useState(false);
+  const [isDpdpRightsOpen, setIsDpdpRightsOpen] = useState(false);
+
   const handleClipsGenerated = () => {
     const studioSection = document.getElementById("studio");
     if (studioSection) {
@@ -156,7 +165,11 @@ export function App() {
       <NoiseOverlay opacity={0.024} />
 
       {/* 4. Global App Header */}
-      <AppHeader freeExportsCount={optimisticFreeExports} />
+      <AppHeader
+        freeExportsCount={optimisticFreeExports}
+        onOpenSupport={() => setIsSupportOpen(true)}
+        onOpenDpdp={() => setIsDpdpRightsOpen(true)}
+      />
 
       {/* 5. Hero Section with Viewfinder HUD and Command Center (No bottom border!) */}
       <section
@@ -240,9 +253,12 @@ export function App() {
 
       {/* =========================================================================
           COLOUR BLOCK 1: Pastel Sunlit Sand & Warm Parchment Umber (#221B12)
-          Contains: Section 03: Bounty Marketplace & Profit Simulator
+          Contains: Section 02b: Why Sharko, Section 03: Bounty Marketplace & Profit Simulator
           ========================================================================= */}
       <SandyBlock variant="sand" showBottomFeather>
+        {/* Section 02b: Why Sharko — Architecture & Competitor Comparison (No top border!) */}
+        <WhySharkoComparison />
+
         {/* Section 03: Bounty Marketplace (No top border!) */}
         <section id="bounties" className="py-24 relative overflow-hidden z-10">
           <span id="section-bounties" className="absolute -top-20" aria-hidden="true" />
@@ -326,9 +342,33 @@ export function App() {
           </div>
         </section>
 
-        {/* Studio Footer */}
-        <StudioFooter />
+        {/* Section 05: Frequently Asked Questions (No top border!) */}
+        <StudioFaqSection />
+
+        {/* Studio Footer with Direct Contact Hub & DPDP Links */}
+        <StudioFooter
+          onOpenSupport={() => setIsSupportOpen(true)}
+          onOpenDpdp={() => setIsDpdpRightsOpen(true)}
+        />
       </SandyBlock>
+
+      {/* Official Support & Founder Contact Desk Drawer */}
+      <SupportContactDrawer
+        isOpen={isSupportOpen}
+        onClose={() => setIsSupportOpen(false)}
+      />
+
+      {/* India DPDP Act 2023 Statutory Rights Center Modal */}
+      <DpdpRightsModal
+        isOpen={isDpdpRightsOpen}
+        onClose={() => setIsDpdpRightsOpen(false)}
+        triggerToast={(msg) => setToastMessage(msg)}
+      />
+
+      {/* India DPDP Act 2023 Itemized Consent Banner */}
+      <DpdpConsentBanner
+        onOpenRightsModal={() => setIsDpdpRightsOpen(true)}
+      />
 
       {/* Toast Notification */}
       {toastMessage && (

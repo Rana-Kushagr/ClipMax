@@ -22,6 +22,12 @@ import { SmartOptionsDrawer, SmartOptionsState } from "./SmartOptionsDrawer";
 import { StudioQuickDock } from "./StudioQuickDock";
 import { StudioTabId } from "../studio/InteractiveStudioShowcase";
 import { sharkoApi } from "../../services/sharkoApi";
+import {
+  validateSafeVideoUrl,
+  validateVideoUploadFile,
+  checkRateLimit,
+  sanitizeUserText,
+} from "../../utils/security";
 
 interface HeroCommandCenterProps {
   studioMode: "lightning" | "studio";
@@ -91,6 +97,11 @@ export function HeroCommandCenter({
     if (isProcessing) return;
     setIngestError(null);
 
+    if (!checkRateLimit("hero-ingest", 5, 60000)) {
+      setIngestError("Rate limit exceeded (5 requests/min). Please wait 60 seconds before retrying.");
+      return;
+    }
+
     const effectiveUrl =
       videoUrl.trim() ||
       (uploadedFileName
@@ -98,15 +109,9 @@ export function HeroCommandCenter({
         : "https://youtube.com/watch?v=SystemArchitecture_Discussion");
 
     if (!uploadedFileName && videoUrl.trim()) {
-      const isValid =
-        /^https?:\/\/(www\.)?(youtube\.com|youtu\.be|twitch\.tv|kick\.com|rumble\.com|drive\.google\.com)\/.+/i.test(
-          videoUrl.trim()
-        ) || /\.(mp4|mov|webm)$/i.test(videoUrl.trim());
-
-      if (!isValid) {
-        setIngestError(
-          "Please enter a valid video link (YouTube, Twitch, Kick, Rumble, Google Drive) or upload a media file."
-        );
+      const urlCheck = validateSafeVideoUrl(videoUrl.trim());
+      if (!urlCheck.valid) {
+        setIngestError(urlCheck.reason || "Invalid video link.");
         return;
       }
     }
@@ -122,7 +127,7 @@ export function HeroCommandCenter({
     const res = await sharkoApi.ingestVideoJob({
       sourceUrl: effectiveUrl,
       genres: options.selectedGenres,
-      customPrompt: options.promptQuery,
+      customPrompt: sanitizeUserText(options.promptQuery || "", 500),
       timeframeStartSec: options.startTime,
       timeframeEndSec: options.endTime,
       stylePreset: options.selectedPersona,
@@ -174,8 +179,14 @@ export function HeroCommandCenter({
     setDragActive(false);
     if (e.dataTransfer.files?.[0]) {
       const file = e.dataTransfer.files[0];
+      const check = validateVideoUploadFile(file);
+      if (!check.valid) {
+        setIngestError(check.reason || "Invalid video file.");
+        return;
+      }
       setUploadedFileName(file.name);
       setVideoUrl(`local-file://${file.name}`);
+      setIngestError(null);
     }
   };
 
@@ -318,13 +329,19 @@ export function HeroCommandCenter({
               <input
                 id="file-upload"
                 type="file"
-                accept="video/*"
+                accept="video/mp4,video/quicktime,video/webm,video/x-matroska"
                 className="sr-only"
                 onChange={(e) => {
                   if (e.target.files?.[0]) {
                     const file = e.target.files[0];
+                    const check = validateVideoUploadFile(file);
+                    if (!check.valid) {
+                      setIngestError(check.reason || "Invalid video file.");
+                      return;
+                    }
                     setUploadedFileName(file.name);
                     setVideoUrl(`local-file://${file.name}`);
+                    setIngestError(null);
                   }
                 }}
               />

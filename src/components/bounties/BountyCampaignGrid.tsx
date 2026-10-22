@@ -15,6 +15,7 @@ import { BountyCampaign } from "../../types/studio";
 import { BorderGlow } from "../ui/BorderGlow";
 import { Magnet } from "../react-bits/Magnet";
 import { sharkoApi } from "../../services/sharkoApi";
+import { sanitizeUserText } from "../../utils/security";
 
 interface BountyCampaignGridProps {
   onSelectCampaign: (url: string) => void;
@@ -43,11 +44,15 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
   const [brandForm, setBrandForm] = useState({
     brandName: "",
     contactEmail: "",
-    budgetUsd: 5000,
+    budgetUsd: "$5,000 USD",
+    cpmRate: "$2.50 / 1K views",
     niche: "Developer Tools",
     sourceVideoUrl: "",
+    notes: "",
+    website_hp: "",
   });
   const [isSubmittingBrand, setIsSubmittingBrand] = useState(false);
+  const [lastEmailUrls, setLastEmailUrls] = useState<{ mailto: string; gmail: string } | null>(null);
 
   const showToast = (msg: string) => {
     if (triggerToast) {
@@ -102,66 +107,99 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
 
   const handleBrandSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!brandForm.brandName || !brandForm.contactEmail || !brandForm.sourceVideoUrl) {
+    // Anti-bot honeypot check: if filled by bot, silently abort
+    if (brandForm.website_hp) {
+      setShowBrandApplicationModal(false);
+      return;
+    }
+
+    const brandName = sanitizeUserText(brandForm.brandName, 100);
+    const sponsorEmail = sanitizeUserText(brandForm.contactEmail, 100);
+    const budget = sanitizeUserText(brandForm.budgetUsd, 60);
+    const cpmRate = sanitizeUserText(brandForm.cpmRate, 60);
+    const niche = sanitizeUserText(brandForm.niche, 60);
+    const sourceUrl = sanitizeUserText(brandForm.sourceVideoUrl, 300);
+    const notes = sanitizeUserText(brandForm.notes, 500);
+
+    if (!brandName || !sponsorEmail || !sourceUrl) {
       showToast("Please fill all required campaign fields.");
       return;
     }
+
+    const recipient = "kushagrrana7345@gmail.com";
+    const subject = encodeURIComponent(`[Sharko Brand Bounty Request] ${brandName} — Budget: ${budget}`);
+    const body = encodeURIComponent(
+      `Hi Kushagr,\n\nWe want to launch a verified Brand Bounty Campaign on Sharko ("Hunt the Moments").\n\n` +
+      `• Brand / Sponsor Name: ${brandName}\n` +
+      `• Official Contact Email: ${sponsorEmail}\n` +
+      `• Proposed Campaign Pool Budget: ${budget}\n` +
+      `• Target CPM Payout Rate: ${cpmRate}\n` +
+      `• Niche / Category: ${niche}\n` +
+      `• Source Video / Stream URL: ${sourceUrl}\n` +
+      `• Campaign Requirements:\n${notes}\n\n` +
+      `Submitted via Sharko Verified Escrow Portal.`
+    );
+    const mailtoUrl = `mailto:${recipient}?subject=${subject}&body=${body}`;
+    const gmailWebUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${recipient}&su=${subject}&body=${body}`;
+
+    setLastEmailUrls({ mailto: mailtoUrl, gmail: gmailWebUrl });
+
     setIsSubmittingBrand(true);
-    const res = await sharkoApi.submitBrandCampaign(brandForm);
-    setIsSubmittingBrand(false);
-    setShowBrandApplicationModal(false);
-
-    if (res.ok) {
-      showToast(`Campaign registered: "${brandForm.brandName}". Escrow deposit invoice sent.`);
-    } else {
-      showToast(
-        res.isOfflineFallback
-          ? `Campaign registered in review queue: "${brandForm.brandName}". We will contact you at ${brandForm.contactEmail}.`
-          : (res.error || "Failed to register campaign.")
-      );
-    }
-
-    setBrandForm({
-      brandName: "",
-      contactEmail: "",
-      budgetUsd: 5000,
-      niche: "Developer Tools",
-      sourceVideoUrl: "",
+    await sharkoApi.submitBrandCampaign({
+      brandName,
+      contactEmail: sponsorEmail,
+      budgetUsd: parseFloat(budget.replace(/[^0-9.]/g, "")) || 5000,
+      niche,
+      sourceVideoUrl: sourceUrl,
     });
+    setIsSubmittingBrand(false);
+
+    showToast(`Campaign request generated for "${brandName}". Redirecting to email...`);
+    window.location.href = mailtoUrl;
   };
 
   return (
     <div className="w-full select-none" id="section-bounties-grid">
-      {/* Category Filter Pills */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-none mb-6">
-        <div className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#A1A1AA] font-mono tracking-wider shrink-0 mr-2">
-          <Filter className="w-3.5 h-3.5 text-[#D99B52]" />
-          <span>FILTER:</span>
+      {/* Category Filter Pills & Launch Brand CTA */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none w-full md:w-auto">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#A1A1AA] font-mono tracking-wider shrink-0 mr-1">
+            <Filter className="w-3.5 h-3.5 text-[#D99B52]" />
+            <span>FILTER:</span>
+          </div>
+          {CATEGORIES.map((cat) => {
+            const isActive = activeNiche === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setActiveNiche(cat)}
+                className={`relative px-4 py-2 text-xs font-mono font-medium rounded-xl transition-all duration-200 shrink-0 ${
+                  isActive
+                    ? "text-[#17120C] font-semibold"
+                    : "text-[#A1A1AA] bg-[#2A2016]/60 border border-[#F3E5AB]/10 hover:text-white hover:bg-[#382B1E]"
+                }`}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="bountyCategoryActivePill"
+                    className="absolute inset-0 rounded-xl bg-[#F3E5AB] shadow-md -z-10"
+                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                  />
+                )}
+                {cat}
+              </button>
+            );
+          })}
         </div>
-        {CATEGORIES.map((cat) => {
-          const isActive = activeNiche === cat;
-          return (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setActiveNiche(cat)}
-              className={`relative px-4 py-2 text-xs font-mono font-medium rounded-xl transition-all duration-200 shrink-0 ${
-                isActive
-                  ? "text-[#17120C] font-semibold"
-                  : "text-[#A1A1AA] bg-[#2A2016]/60 border border-[#F3E5AB]/10 hover:text-white hover:bg-[#382B1E]"
-              }`}
-            >
-              {isActive && (
-                <motion.div
-                  layoutId="bountyCategoryActivePill"
-                  className="absolute inset-0 rounded-xl bg-[#F3E5AB] shadow-md -z-10"
-                  transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                />
-              )}
-              {cat}
-            </button>
-          );
-        })}
+
+        <button
+          type="button"
+          onClick={() => setShowBrandApplicationModal(true)}
+          className="shrink-0 px-4 py-2.5 rounded-xl bg-[#F3E5AB] hover:bg-white text-[#17120C] font-mono text-xs font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5"
+        >
+          <span>+ Sponsor / Launch a Verified Brand Campaign</span>
+        </button>
       </div>
 
       {/* Grid Content Area: Loading vs Real Live Campaigns vs Authentic Empty State */}
@@ -404,9 +442,20 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
               </div>
 
               <form onSubmit={handleBrandSubmit} className="space-y-4">
+                {/* Anti-bot honeypot */}
+                <input
+                  type="text"
+                  name="website_hp"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  className="hidden"
+                  value={brandForm.website_hp}
+                  onChange={(e) => setBrandForm({ ...brandForm, website_hp: e.target.value })}
+                />
+
                 <div>
                   <label className="block text-xs font-mono text-[#E5E0D8] mb-1">
-                    Brand / Channel Name *
+                    Brand / Company Name *
                   </label>
                   <input
                     type="text"
@@ -414,14 +463,14 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                     value={brandForm.brandName}
                     onChange={(e) => setBrandForm({ ...brandForm, brandName: e.target.value })}
                     placeholder="e.g. Supabase, Convex, Linear"
-                    className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
+                    className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-mono text-[#E5E0D8] mb-1">
-                      Business Email *
+                      Sponsor Contact Email *
                     </label>
                     <input
                       type="email"
@@ -429,39 +478,53 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                       value={brandForm.contactEmail}
                       onChange={(e) => setBrandForm({ ...brandForm, contactEmail: e.target.value })}
                       placeholder="sponsor@yourbrand.com"
-                      className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
+                      className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-mono text-[#E5E0D8] mb-1">
-                      Escrow Pool (USD) *
+                      Total Escrow Budget ($ / ₹) *
                     </label>
                     <input
-                      type="number"
+                      type="text"
                       required
-                      min={500}
-                      step={500}
                       value={brandForm.budgetUsd}
-                      onChange={(e) => setBrandForm({ ...brandForm, budgetUsd: Number(e.target.value) })}
-                      className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
+                      onChange={(e) => setBrandForm({ ...brandForm, budgetUsd: e.target.value })}
+                      placeholder="e.g. $5,000 USD or ₹4,00,000 INR"
+                      className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
                     />
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-mono text-[#E5E0D8] mb-1">
-                    Target Niche
-                  </label>
-                  <select
-                    value={brandForm.niche}
-                    onChange={(e) => setBrandForm({ ...brandForm, niche: e.target.value })}
-                    className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
-                  >
-                    <option value="Developer Tools">Developer Tools</option>
-                    <option value="Cloud Infrastructure">Cloud Infrastructure</option>
-                    <option value="AI Systems">AI Systems</option>
-                    <option value="Productivity Tools">Productivity Tools</option>
-                  </select>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                      Target CPM Rate (per 1K views) *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={brandForm.cpmRate}
+                      onChange={(e) => setBrandForm({ ...brandForm, cpmRate: e.target.value })}
+                      placeholder="e.g. $2.50 / 1K views"
+                      className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                      Niche / Category
+                    </label>
+                    <select
+                      value={brandForm.niche}
+                      onChange={(e) => setBrandForm({ ...brandForm, niche: e.target.value })}
+                      className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
+                    >
+                      <option value="Developer Tools">Developer Tools</option>
+                      <option value="Cloud Infrastructure">Cloud Infrastructure</option>
+                      <option value="AI Systems">AI Systems</option>
+                      <option value="Productivity Tools">Productivity Tools</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div>
@@ -474,18 +537,43 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                     value={brandForm.sourceVideoUrl}
                     onChange={(e) => setBrandForm({ ...brandForm, sourceVideoUrl: e.target.value })}
                     placeholder="https://youtube.com/watch?v=..."
-                    className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
+                    className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
                   />
                 </div>
 
-                <div className="pt-2">
+                <div>
+                  <label className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                    Campaign Goals & Clip Instructions
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={brandForm.notes}
+                    onChange={(e) => setBrandForm({ ...brandForm, notes: e.target.value })}
+                    placeholder="Highlight our API speed benchmark, terminal workflows, and mention link in bio..."
+                    className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#F3E5AB] resize-none"
+                  />
+                </div>
+
+                <div className="pt-2 space-y-2">
                   <button
                     type="submit"
                     disabled={isSubmittingBrand}
                     className="w-full rounded-xl bg-[#F3E5AB] hover:bg-white text-[#17120C] py-3 font-display font-bold text-sm transition-all shadow-md active:scale-95 disabled:opacity-50"
                   >
-                    {isSubmittingBrand ? "Registering Escrow..." : "Deposit Escrow & Launch Campaign →"}
+                    {isSubmittingBrand ? "Generating Request..." : "Send Campaign Request to Kushagr →"}
                   </button>
+
+                  {/* 1-Click Open in Gmail Web */}
+                  {lastEmailUrls?.gmail && (
+                    <a
+                      href={lastEmailUrls.gmail}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-center w-full rounded-xl border border-[#F3E5AB]/30 bg-[#2A2016] hover:bg-[#382B1E] text-[#F3E5AB] py-2 font-mono text-xs font-semibold transition-all"
+                    >
+                      Open Directly in Gmail Web ↗
+                    </a>
+                  )}
                 </div>
               </form>
             </motion.div>
