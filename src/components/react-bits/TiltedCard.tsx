@@ -26,7 +26,11 @@ export function TiltedCard({
   const cardScale = useSpring(1, springConfig);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (shouldReduceMotion || !cardRef.current) return;
+    if (
+      shouldReduceMotion ||
+      !cardRef.current ||
+      (typeof window !== "undefined" && !window.matchMedia("(hover: hover) and (pointer: fine)").matches)
+    ) return;
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;

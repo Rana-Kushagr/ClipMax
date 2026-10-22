@@ -75,19 +75,19 @@ export const SupportContactDrawer: React.FC<Readonly<SupportContactDrawerProps>>
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 16 }}
             transition={{ duration: 0.2 }}
-            className="relative w-full max-w-lg rounded-3xl border border-[#F3E5AB]/30 bg-[#16120D] p-6 sm:p-8 shadow-2xl text-[#F4F4F6] space-y-6"
+            className="relative w-full max-w-lg rounded-3xl border border-[#89CFF0]/30 bg-[#000816] p-6 sm:p-8 shadow-2xl text-[#FFFFFF] space-y-6"
           >
             {/* Header */}
-            <div className="flex items-start justify-between pb-4 border-b border-[#F3E5AB]/15">
+            <div className="flex items-start justify-between pb-4 border-b border-[#89CFF0]/15">
               <div className="space-y-1">
-                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-[#10B981]/15 border border-[#10B981]/30 text-[11px] font-mono text-[#34D399]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
+                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-[#0047AB]/25 border border-[#89CFF0]/35 text-[11px] font-mono text-[#89CFF0]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#89CFF0] animate-pulse" />
                   <span>Founder Desk • 24h SLA</span>
                 </div>
                 <h3 className="font-display font-bold text-2xl text-white">
                   Official Support & Direct Contact
                 </h3>
-                <p className="text-xs text-[#E5E0D8]/70 font-sans">
+                <p className="text-xs text-zinc-400 font-sans">
                   Direct line to Kushagr Rana (Founder & Lead Architect). Inquiries, custom studio
                   integrations, or brand sponsorships.
                 </p>
@@ -95,7 +95,7 @@ export const SupportContactDrawer: React.FC<Readonly<SupportContactDrawerProps>>
               <button
                 type="button"
                 onClick={onClose}
-                className="p-2 rounded-xl bg-[#2A2016] text-[#A1A1AA] hover:text-white border border-[#F3E5AB]/15"
+                className="p-2 rounded-xl bg-[#040C1E] text-zinc-400 hover:text-white border border-[#89CFF0]/20"
                 aria-label="Close support dialog"
               >
                 <X className="w-4 h-4" />
@@ -103,26 +103,26 @@ export const SupportContactDrawer: React.FC<Readonly<SupportContactDrawerProps>>
             </div>
 
             {/* Email Primary Card */}
-            <div className="rounded-2xl border border-[#F3E5AB]/25 bg-[#1F1811] p-4 space-y-3">
+            <div className="rounded-2xl border border-[#89CFF0]/25 bg-[#00040A] p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs font-mono uppercase text-[#D99B52]">
-                  <Mail className="w-4 h-4 text-[#F3E5AB]" />
+                <div className="flex items-center gap-2 text-xs font-mono uppercase text-[#89CFF0]">
+                  <Mail className="w-4 h-4 text-[#89CFF0]" />
                   <span>Official Support & Sponsorship Email</span>
                 </div>
-                <span className="text-[10px] font-mono text-[#10B981]">Priority Inbox</span>
+                <span className="text-[10px] font-mono text-[#89CFF0]">Priority Inbox</span>
               </div>
 
-              <div className="flex items-center justify-between rounded-xl bg-[#14100B] px-3.5 py-2.5 border border-[#F3E5AB]/10 text-xs sm:text-sm font-mono text-white">
+              <div className="flex items-center justify-between rounded-xl bg-[#040C1E] px-3.5 py-2.5 border border-[#89CFF0]/15 text-xs sm:text-sm font-mono text-white">
                 <span className="truncate">{email}</span>
                 <button
                   type="button"
                   onClick={handleCopyEmail}
-                  className="flex items-center gap-1 text-[11px] font-mono text-[#F3E5AB] hover:text-white px-2 py-1 rounded bg-[#2A2016] ml-2 shrink-0 transition-colors"
+                  className="flex items-center gap-1 text-[11px] font-mono text-[#89CFF0] hover:text-white px-2 py-1 rounded bg-[#050D1E] ml-2 shrink-0 transition-colors"
                 >
                   {copied ? (
                     <>
-                      <Check className="w-3 h-3 text-[#10B981]" />
-                      <span className="text-[#10B981]">Copied</span>
+                      <Check className="w-3 h-3 text-[#89CFF0]" />
+                      <span className="text-[#89CFF0]">Copied</span>
                     </>
                   ) : (
                     <>
@@ -136,7 +136,7 @@ export const SupportContactDrawer: React.FC<Readonly<SupportContactDrawerProps>>
               <div className="grid grid-cols-2 gap-2 pt-1">
                 <a
                   href={`mailto:${email}`}
-                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#F3E5AB] hover:bg-white text-[#17120C] font-mono text-xs font-semibold transition-all shadow-md active:scale-95 text-center"
+                  className="btn-sharko-primary flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all shadow-md active:scale-95 text-center"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>Open Mail App</span>
@@ -145,7 +145,7 @@ export const SupportContactDrawer: React.FC<Readonly<SupportContactDrawerProps>>
                   href={gmailComposeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-[#F3E5AB]/30 bg-[#2A2016] hover:bg-[#382B1E] text-[#F3E5AB] font-mono text-xs font-semibold transition-all text-center"
+                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-[#89CFF0]/30 bg-[#040C1E] hover:bg-[#0047AB]/25 text-[#89CFF0] font-mono text-xs font-semibold transition-all text-center"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
                   <span>Mail in Gmail Web</span>
@@ -155,7 +155,7 @@ export const SupportContactDrawer: React.FC<Readonly<SupportContactDrawerProps>>
 
             {/* Social Direct Desks */}
             <div className="space-y-2">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-[#A1A1AA] block">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 block">
                 Direct Messaging Channels
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
@@ -165,15 +165,15 @@ export const SupportContactDrawer: React.FC<Readonly<SupportContactDrawerProps>>
                     href={s.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex flex-col justify-between p-3 rounded-xl border border-[#F3E5AB]/15 bg-[#1F1811] hover:border-[#F3E5AB]/40 hover:bg-[#2A2016] transition-all group"
+                    className="flex flex-col justify-between p-3 rounded-xl border border-[#89CFF0]/15 bg-[#00040A] hover:border-[#89CFF0]/40 hover:bg-[#000B1D] transition-all group"
                   >
-                    <div className="flex items-center justify-between text-[10px] font-mono text-[#A1A1AA]">
+                    <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400">
                       <span>{s.badge}</span>
                       <ExternalLink className="w-3 h-3 text-white/40 group-hover:text-white transition-colors" />
                     </div>
                     <div className="mt-2">
                       <div className="text-xs font-bold text-white font-display">{s.name}</div>
-                      <div className="text-[11px] font-mono text-[#D99B52] truncate">{s.handle}</div>
+                      <div className="text-[11px] font-mono text-[#89CFF0] truncate">{s.handle}</div>
                     </div>
                   </a>
                 ))}
@@ -181,9 +181,9 @@ export const SupportContactDrawer: React.FC<Readonly<SupportContactDrawerProps>>
             </div>
 
             {/* SLA Trust Footer */}
-            <div className="flex items-center justify-between pt-2 border-t border-[#F3E5AB]/10 text-[11px] font-mono text-[#A1A1AA]">
+            <div className="flex items-center justify-between pt-2 border-t border-[#89CFF0]/15 text-[11px] font-mono text-zinc-400">
               <span className="flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5 text-[#10B981]" />
+                <Sparkles className="w-3.5 h-3.5 text-[#89CFF0]" />
                 Direct founder replies • Zero bot redirects
               </span>
               <button

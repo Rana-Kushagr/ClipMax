@@ -64,8 +64,8 @@ export const StudioFaqSection: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Header */}
         <div className="text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1F1811] border border-[#F3E5AB]/20 text-xs font-mono text-[#D99B52]">
-            <HelpCircle className="w-3.5 h-3.5 text-[#10B981]" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#000B1D] border border-[#89CFF0]/25 text-xs font-mono text-[#89CFF0]">
+            <HelpCircle className="w-3.5 h-3.5 text-[#89CFF0]" />
             <span>Frequently Asked Questions</span>
           </div>
           <motion.h2
@@ -73,12 +73,12 @@ export const StudioFaqSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="text-3xl sm:text-5xl font-display font-extrabold text-[#F4F4F6] tracking-tight"
+            className="text-3xl sm:text-5xl font-display font-extrabold text-[#FFFFFF] tracking-tight"
           >
             Everything you need to know about{" "}
-            <span className="serif-italic text-[#F3E5AB]">Sharko.</span>
+            <span className="serif-italic text-[#89CFF0]">Sharko.</span>
           </motion.h2>
-          <p className="text-sm text-[#A1A1AA] font-sans">
+          <p className="text-sm text-zinc-400 font-sans">
             Clear answers about output-only billing, anti-hallucination Telegram controls, and DPDP
             Act 2023 compliance.
           </p>
@@ -93,8 +93,8 @@ export const StudioFaqSection: React.FC = () => {
                 key={item.q}
                 className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
                   isOpen
-                    ? "border-[#F3E5AB]/35 bg-[#1C1610] shadow-xl shadow-black/40"
-                    : "border-[#F3E5AB]/15 bg-[#16120D] hover:border-[#F3E5AB]/25"
+                    ? "border-[#89CFF0]/40 bg-[#000816] shadow-xl shadow-black/40"
+                    : "border-[#89CFF0]/15 bg-[#00040A] hover:border-[#89CFF0]/30"
                 }`}
               >
                 <button
@@ -105,7 +105,7 @@ export const StudioFaqSection: React.FC = () => {
                 >
                   <div className="space-y-1 flex-1 pr-2">
                     {item.tag && (
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-[#D99B52] block">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-[#89CFF0] block">
                         {item.tag}
                       </span>
                     )}
@@ -114,8 +114,8 @@ export const StudioFaqSection: React.FC = () => {
                     </span>
                   </div>
                   <div
-                    className={`p-1.5 rounded-lg bg-[#2A2016] text-[#F3E5AB] transition-transform duration-200 shrink-0 ${
-                      isOpen ? "rotate-180 bg-[#F3E5AB] text-[#17120C]" : ""
+                    className={`p-1.5 rounded-lg bg-[#040C1E] text-[#89CFF0] transition-transform duration-200 shrink-0 ${
+                      isOpen ? "rotate-180 bg-[#89CFF0] text-[#000000]" : ""
                     }`}
                   >
                     <ChevronDown className="w-4 h-4" />
@@ -131,7 +131,7 @@ export const StudioFaqSection: React.FC = () => {
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden"
                     >
-                      <div className="px-5 sm:px-6 pb-5 pt-1 border-t border-[#F3E5AB]/10 text-xs sm:text-[13.5px] leading-relaxed text-[#E5E0D8]/85 font-sans">
+                      <div className="px-5 sm:px-6 pb-5 pt-1 border-t border-[#89CFF0]/15 text-xs sm:text-[13.5px] leading-relaxed text-zinc-300 font-sans">
                         {item.a}
                       </div>
                     </motion.div>
@@ -144,11 +144,11 @@ export const StudioFaqSection: React.FC = () => {
 
         {/* Footer Prompt */}
         <div className="text-center pt-4">
-          <p className="text-xs font-mono text-[#A1A1AA]">
+          <p className="text-xs font-mono text-zinc-400">
             Have a technical or custom pipeline question?{" "}
             <a
               href="mailto:kushagrrana7345@gmail.com"
-              className="text-[#F3E5AB] underline hover:text-white"
+              className="text-[#89CFF0] underline hover:text-white"
             >
               Email founder Kushagr Rana directly →
             </a>

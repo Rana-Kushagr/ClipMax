@@ -160,8 +160,8 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
       {/* Category Filter Pills & Launch Brand CTA */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mb-6">
         <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none w-full md:w-auto">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#A1A1AA] font-mono tracking-wider shrink-0 mr-1">
-            <Filter className="w-3.5 h-3.5 text-[#D99B52]" />
+          <div className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-400 font-mono tracking-wider shrink-0 mr-1">
+            <Filter className="w-3.5 h-3.5 text-[#89CFF0]" />
             <span>FILTER:</span>
           </div>
           {CATEGORIES.map((cat) => {
@@ -173,14 +173,14 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                 onClick={() => setActiveNiche(cat)}
                 className={`relative px-4 py-2 text-xs font-mono font-medium rounded-xl transition-all duration-200 shrink-0 ${
                   isActive
-                    ? "text-[#17120C] font-semibold"
-                    : "text-[#A1A1AA] bg-[#2A2016]/60 border border-[#F3E5AB]/10 hover:text-white hover:bg-[#382B1E]"
+                    ? "text-[#000000] font-bold"
+                    : "text-zinc-400 bg-[#040C1E] border border-[#89CFF0]/15 hover:text-white hover:bg-[#0047AB]/20"
                 }`}
               >
                 {isActive && (
                   <motion.div
                     layoutId="bountyCategoryActivePill"
-                    className="absolute inset-0 rounded-xl bg-[#F3E5AB] shadow-md -z-10"
+                    className="absolute inset-0 rounded-xl bg-[#89CFF0] shadow-[0_0_15px_rgba(137,207,240,0.4)] -z-10"
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
                   />
                 )}
@@ -193,7 +193,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
         <button
           type="button"
           onClick={() => setShowBrandApplicationModal(true)}
-          className="shrink-0 px-4 py-2.5 rounded-xl bg-[#F3E5AB] hover:bg-white text-[#17120C] font-mono text-xs font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5"
+          className="btn-sharko-primary shrink-0 px-4 py-2.5 rounded-xl font-mono text-xs font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5"
         >
           <span>+ Sponsor / Launch a Verified Brand Campaign</span>
         </button>
@@ -201,9 +201,9 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
 
       {/* Grid Content Area: Loading vs Real Live Campaigns vs Authentic Empty State */}
       {isLoadingBounties ? (
-        <div className="mt-8 rounded-3xl border border-[#F3E5AB]/15 bg-[#14100B]/90 p-12 text-center shadow-2xl">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-[#F3E5AB] border-t-transparent" />
-          <p className="mt-3 font-mono text-xs uppercase tracking-widest text-[#F3E5AB]">
+        <div className="mt-8 rounded-3xl border border-[#89CFF0]/20 bg-[#000816] p-12 text-center shadow-2xl">
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-[#89CFF0] border-t-transparent" />
+          <p className="mt-3 font-mono text-xs uppercase tracking-widest text-[#89CFF0]">
             Syncing Verified Escrow Ledger...
           </p>
         </div>
@@ -214,9 +214,9 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
               key={campaign.id}
               animated={true}
               borderRadius={18}
-              glowColor="42 80 78"
-              backgroundColor="#1E1710"
-              colors={["#F3E5AB", "#D99B52", "#10B981"]}
+              glowColor="0 71 171"
+              backgroundColor="#000816"
+              colors={["#89CFF0", "#0047AB", "#757500"]}
               className="h-full shadow-2xl"
             >
               <div className="flex flex-col justify-between h-full p-5 group">
@@ -224,34 +224,34 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                   {/* Header: Brand & Security Badges */}
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-[#2A2016] border border-[#F3E5AB]/20 flex items-center justify-center font-mono font-bold text-xs text-[#F3E5AB] group-hover:border-[#F3E5AB]/40 transition-colors">
+                      <div className="w-10 h-10 rounded-lg bg-[#040C1E] border border-[#89CFF0]/25 flex items-center justify-center font-mono font-bold text-xs text-[#89CFF0] group-hover:border-[#89CFF0]/50 transition-colors">
                         {campaign.logo || (campaign.brandName || campaign.brand || "BR").slice(0, 3).toUpperCase()}
                       </div>
                       <div>
-                        <h3 className="text-sm font-semibold text-[#F4F4F6] group-hover:text-[#F3E5AB] transition-colors font-display">
+                        <h3 className="text-sm font-semibold text-[#FFFFFF] group-hover:text-[#89CFF0] transition-colors font-display">
                           {campaign.brandName || campaign.brand}
                         </h3>
-                        <div className="text-[11px] font-mono text-[#A1A1AA]">
+                        <div className="text-[11px] font-mono text-zinc-400">
                           {campaign.niche || campaign.brandCategory}
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#10B981]/15 border border-[#10B981]/30 text-[#10B981] text-[11px] font-mono font-semibold">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0047AB]/25 border border-[#89CFF0]/35 text-[#89CFF0] text-[11px] font-mono font-semibold">
                       <DollarSign className="w-3 h-3" />
                       <span>${(campaign.cpmRateUsd || campaign.payoutPerK || 3.5).toFixed(2)}/1K</span>
                     </div>
                   </div>
 
                   {/* Title */}
-                  <h4 className="text-sm font-medium text-[#F4F4F6] line-clamp-2 mb-3 leading-snug group-hover:text-white font-sans">
+                  <h4 className="text-sm font-medium text-[#FFFFFF] line-clamp-2 mb-3 leading-snug group-hover:text-white font-sans">
                     {campaign.title}
                   </h4>
 
                   {/* Hook Guide Callout */}
                   {campaign.hookGuide && (
-                    <div className="p-3 rounded-lg bg-[#2A2016]/80 border border-[#F3E5AB]/10 text-xs text-[#A1A1AA] leading-relaxed mb-4">
-                      <span className="text-[#D99B52] font-mono text-[10px] uppercase tracking-wider block mb-1">
+                    <div className="p-3 rounded-lg bg-[#040C1E] border border-[#89CFF0]/15 text-xs text-zinc-300 leading-relaxed mb-4">
+                      <span className="text-[#89CFF0] font-mono text-[10px] uppercase tracking-wider block mb-1">
                         Creative Direction:
                       </span>
                       {campaign.hookGuide}
@@ -259,14 +259,14 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                   )}
 
                   {/* Anti-Bot & Meta Row */}
-                  <div className="flex items-center gap-3 text-[11px] font-mono text-[#A1A1AA] mb-4 pb-4 border-b border-[#F3E5AB]/10">
-                    <div className="flex items-center gap-1 text-[#10B981]" title="OAuth 2.0 Direct Platform Verification">
-                      <ShieldCheck className="w-3.5 h-3.5 text-[#10B981]" />
+                  <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-400 mb-4 pb-4 border-b border-[#89CFF0]/15">
+                    <div className="flex items-center gap-1 text-[#89CFF0]" title="OAuth 2.0 Direct Platform Verification">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#89CFF0]" />
                       <span>OAuth Verified</span>
                     </div>
                     <span className="text-white/20">•</span>
-                    <div className="flex items-center gap-1 text-[#A1A1AA]">
-                      <Clock className="w-3 h-3 text-[#D99B52]" />
+                    <div className="flex items-center gap-1 text-zinc-400">
+                      <Clock className="w-3 h-3 text-[#89CFF0]" />
                       <span>Min {campaign.minDuration || "30s"}</span>
                     </div>
                   </div>
@@ -274,20 +274,20 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                   {/* Pool Progress */}
                   <div className="space-y-1.5 mb-5">
                     <div className="flex justify-between items-center text-xs font-mono">
-                      <span className="text-[#A1A1AA]">Campaign Pool</span>
-                      <span className="text-[#F4F4F6]">
-                        <span className="text-[#10B981] font-semibold">
+                      <span className="text-zinc-400">Campaign Pool</span>
+                      <span className="text-[#FFFFFF]">
+                        <span className="text-[#89CFF0] font-semibold">
                           ${(campaign.escrowRemainingUsd || campaign.remainingPool || 0).toLocaleString()}
                         </span>
-                        <span className="text-[#A1A1AA]">
+                        <span className="text-zinc-400">
                           {" "}
                           / ${(campaign.escrowTotalUsd || campaign.totalPool || 0).toLocaleString()}
                         </span>
                       </span>
                     </div>
-                    <div className="w-full h-1.5 bg-[#2A2016] rounded-full overflow-hidden border border-[#F3E5AB]/10">
+                    <div className="w-full h-1.5 bg-[#050D1E] rounded-full overflow-hidden border border-[#89CFF0]/15">
                       <div
-                        className="h-full bg-gradient-to-r from-[#10B981] via-[#D99B52] to-[#F3E5AB] rounded-full transition-all duration-500"
+                        className="h-full bg-gradient-to-r from-[#0047AB] via-[#89CFF0] to-[#FFFFFF] rounded-full transition-all duration-500"
                         style={{ width: `${100 - (campaign.claimedPercent || 0)}%` }}
                       />
                     </div>
@@ -299,7 +299,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                   <button
                     type="button"
                     onClick={() => handleClipCampaign(campaign)}
-                    className="w-full py-2.5 px-4 rounded-lg bg-[#F3E5AB] hover:bg-white text-[#17120C] text-xs font-mono font-semibold flex items-center justify-center gap-2 transition-all duration-200 shadow-md active:scale-95"
+                    className="btn-sharko-primary w-full py-2.5 px-4 rounded-lg text-xs font-mono font-semibold flex items-center justify-center gap-2 transition-all duration-200 shadow-md active:scale-95"
                   >
                     <span>Clip This Campaign</span>
                     <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -311,60 +311,60 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
         </div>
       ) : (
         /* REAL, OG VERIFIED ESCROW BOARD (ZERO FAKE CAMPAIGNS) */
-        <div className="mt-6 rounded-3xl border border-[#F3E5AB]/20 bg-gradient-to-b from-[#1A140E] to-[#110D09] p-8 sm:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.65)]">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#F3E5AB]/12 pb-5">
-            <div className="inline-flex items-center gap-2.5 rounded-full border border-[#10B981]/35 bg-[#10B981]/10 px-3.5 py-1">
-              <span className="h-2 w-2 rounded-full bg-[#10B981] animate-pulse" />
-              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#34D399]">
+        <div className="mt-6 rounded-3xl border border-[#89CFF0]/25 bg-gradient-to-b from-[#000816] to-[#000000] p-8 sm:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.65)]">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#89CFF0]/15 pb-5">
+            <div className="inline-flex items-center gap-2.5 rounded-full border border-[#89CFF0]/35 bg-[#0047AB]/20 px-3.5 py-1">
+              <span className="h-2 w-2 rounded-full bg-[#89CFF0] animate-pulse" />
+              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#89CFF0]">
                 100% Real Escrow Policy • 0 Fake Listings
               </span>
             </div>
-            <span className="font-mono text-[11px] text-[#E5E0D8]/65">
-              Filter: <strong className="text-[#F3E5AB]">{activeNiche}</strong> • Live Backend Endpoint:{" "}
-              <code className="text-[#34D399]">GET /api/v1/bounties</code>
+            <span className="font-mono text-[11px] text-zinc-400">
+              Filter: <strong className="text-[#89CFF0]">{activeNiche}</strong> • Live Backend Endpoint:{" "}
+              <code className="text-[#89CFF0]">GET /api/v1/bounties</code>
             </span>
           </div>
 
           <div className="mt-7 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-center">
             <div className="lg:col-span-7">
-              <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-[#F4F5F7] tracking-tight">
+              <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-[#FFFFFF] tracking-tight">
                 No simulated campaigns. Only verified brand escrow pools appear here.
               </h3>
-              <p className="mt-3 text-[15px] leading-relaxed text-[#E5E0D8]/75">
+              <p className="mt-3 text-[15px] leading-relaxed text-zinc-300">
                 Sharko never lists placeholder or fake brand bounties. Every campaign that goes live on this board is backed by locked USDC/Stripe/UPI escrow and verified OAuth view tracking across TikTok, YouTube Shorts, Instagram Reels, and X.
               </p>
 
               <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <div className="rounded-2xl border border-[#F3E5AB]/12 bg-[#14100B] p-3.5">
-                  <div className="font-mono text-[10px] uppercase tracking-wider text-[#D99B52]">
+                <div className="rounded-2xl border border-[#89CFF0]/15 bg-[#00040A] p-3.5">
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-[#89CFF0]">
                     01 // LOCKED ESCROW
                   </div>
                   <div className="mt-1 font-display text-sm font-bold text-white">
                     100% Pre-Funded Pools
                   </div>
-                  <p className="mt-0.5 text-xs text-[#E5E0D8]/65">
+                  <p className="mt-0.5 text-xs text-zinc-400">
                     Brands lock real payout budgets before clippers cut a single frame.
                   </p>
                 </div>
-                <div className="rounded-2xl border border-[#F3E5AB]/12 bg-[#14100B] p-3.5">
-                  <div className="font-mono text-[10px] uppercase tracking-wider text-[#34D399]">
+                <div className="rounded-2xl border border-[#89CFF0]/15 bg-[#00040A] p-3.5">
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-[#89CFF0]">
                     02 // OAUTH TELEMETRY
                   </div>
                   <div className="mt-1 font-display text-sm font-bold text-white">
                     Real View Verification
                   </div>
-                  <p className="mt-0.5 text-xs text-[#E5E0D8]/65">
+                  <p className="mt-0.5 text-xs text-zinc-400">
                     Direct API polling verifies organic short-form impressions automatically.
                   </p>
                 </div>
-                <div className="rounded-2xl border border-[#F3E5AB]/12 bg-[#14100B] p-3.5">
-                  <div className="font-mono text-[10px] uppercase tracking-wider text-[#F3E5AB]">
+                <div className="rounded-2xl border border-[#89CFF0]/15 bg-[#00040A] p-3.5">
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-[#89CFF0]">
                     03 // INSTANT SETTLEMENT
                   </div>
                   <div className="mt-1 font-display text-sm font-bold text-white">
                     0% Reinvest Fee
                   </div>
-                  <p className="mt-0.5 text-xs text-[#E5E0D8]/65">
+                  <p className="mt-0.5 text-xs text-zinc-400">
                     Withdraw via UPI/Stripe or convert earnings into Studio HD credits.
                   </p>
                 </div>
@@ -372,11 +372,11 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
             </div>
 
             {/* Right Column: Action Cards for Clippers & Brands */}
-            <div className="lg:col-span-5 flex flex-col gap-3.5 rounded-2xl border border-[#F3E5AB]/15 bg-[#14100B] p-6 shadow-xl">
-              <div className="font-mono text-[11px] uppercase tracking-wider text-[#F3E5AB]">
+            <div className="lg:col-span-5 flex flex-col gap-3.5 rounded-2xl border border-[#89CFF0]/20 bg-[#00040A] p-6 shadow-xl">
+              <div className="font-mono text-[11px] uppercase tracking-wider text-[#89CFF0]">
                 BOUNTY NETWORK ONBOARDING
               </div>
-              <p className="text-xs leading-relaxed text-[#E5E0D8]/75">
+              <p className="text-xs leading-relaxed text-zinc-300">
                 Get pinged on <strong className="text-white">@SharkoStudioBot</strong> the second a verified brand pool drops, or fund a campaign for your own stream/product.
               </p>
 
@@ -388,8 +388,8 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                 }}
                 className={`w-full rounded-xl py-3 px-4 font-display text-[13.5px] font-bold transition-all ${
                   clipperAlertSubscribed
-                    ? "bg-[#10B981] text-[#08090B]"
-                    : "bg-[#F3E5AB] text-[#14100B] hover:bg-[#FFF3C4]"
+                    ? "bg-[#0047AB] text-white border border-[#89CFF0]"
+                    : "btn-sharko-primary"
                 }`}
               >
                 {clipperAlertSubscribed
@@ -400,7 +400,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
               <button
                 type="button"
                 onClick={() => setShowBrandApplicationModal(true)}
-                className="w-full rounded-xl border border-[#F3E5AB]/25 bg-[#1E1810] py-3 px-4 font-display text-[13.5px] font-bold text-[#F3E5AB] hover:border-[#F3E5AB]/50 hover:bg-[#261E14] transition-all"
+                className="w-full rounded-xl border border-[#89CFF0]/30 bg-[#050D1E] py-3 px-4 font-display text-[13.5px] font-bold text-[#89CFF0] hover:border-[#89CFF0] hover:bg-[#0047AB]/25 transition-all"
               >
                 + Launch a Verified Brand Campaign
               </button>
@@ -412,26 +412,26 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
       {/* Brand Campaign Application Modal */}
       <AnimatePresence>
         {showBrandApplicationModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-lg rounded-3xl border border-[#F3E5AB]/30 bg-[#16120D] p-6 sm:p-8 shadow-2xl text-[#F4F4F6]"
+              className="relative w-full max-w-lg rounded-3xl border border-[#89CFF0]/30 bg-[#000816] p-6 sm:p-8 shadow-2xl text-[#FFFFFF]"
             >
-              <div className="flex items-center justify-between pb-4 border-b border-[#F3E5AB]/15 mb-6">
+              <div className="flex items-center justify-between pb-4 border-b border-[#89CFF0]/20 mb-6">
                 <div>
                   <h4 className="font-display font-bold text-xl text-white">
                     Launch a Verified Brand Campaign
                   </h4>
-                  <p className="font-mono text-xs text-[#D99B52] mt-0.5">
+                  <p className="font-mono text-xs text-[#89CFF0] mt-0.5">
                     Pre-Funded Escrow Pool • Organic Viral Reach
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowBrandApplicationModal(false)}
-                  className="p-1.5 rounded-lg bg-[#2A2016] text-[#A1A1AA] hover:text-white"
+                  className="p-1.5 rounded-lg bg-[#040C1E] text-zinc-400 hover:text-white"
                   aria-label="Close brand modal"
                 >
                   <X className="w-4 h-4" />
@@ -452,7 +452,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                 />
 
                 <div>
-                  <label htmlFor="brand-name-input" className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                  <label htmlFor="brand-name-input" className="block text-xs font-mono text-zinc-300 mb-1">
                     Brand / Company Name *
                   </label>
                   <input
@@ -462,13 +462,13 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                     value={brandForm.brandName}
                     onChange={(e) => setBrandForm({ ...brandForm, brandName: e.target.value })}
                     placeholder="e.g. Supabase, Convex, Linear"
-                    className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
+                    className="w-full rounded-xl border border-[#89CFF0]/25 bg-[#00040A] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#89CFF0]"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label htmlFor="sponsor-email-input" className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                    <label htmlFor="sponsor-email-input" className="block text-xs font-mono text-zinc-300 mb-1">
                       Sponsor Contact Email *
                     </label>
                     <input
@@ -478,11 +478,11 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                       value={brandForm.contactEmail}
                       onChange={(e) => setBrandForm({ ...brandForm, contactEmail: e.target.value })}
                       placeholder="sponsor@yourbrand.com"
-                      className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
+                      className="w-full rounded-xl border border-[#89CFF0]/25 bg-[#00040A] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#89CFF0]"
                     />
                   </div>
                   <div>
-                    <label htmlFor="budget-input" className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                    <label htmlFor="budget-input" className="block text-xs font-mono text-zinc-300 mb-1">
                       Total Escrow Budget ($ / ₹) *
                     </label>
                     <input
@@ -492,14 +492,14 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                       value={brandForm.budgetUsd}
                       onChange={(e) => setBrandForm({ ...brandForm, budgetUsd: e.target.value })}
                       placeholder="e.g. $5,000 USD or ₹4,00,000 INR"
-                      className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
+                      className="w-full rounded-xl border border-[#89CFF0]/25 bg-[#00040A] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#89CFF0]"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label htmlFor="cpm-rate-input" className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                    <label htmlFor="cpm-rate-input" className="block text-xs font-mono text-zinc-300 mb-1">
                       Target CPM Rate (per 1K views) *
                     </label>
                     <input
@@ -509,18 +509,18 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                       value={brandForm.cpmRate}
                       onChange={(e) => setBrandForm({ ...brandForm, cpmRate: e.target.value })}
                       placeholder="e.g. $2.50 / 1K views"
-                      className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
+                      className="w-full rounded-xl border border-[#89CFF0]/25 bg-[#00040A] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#89CFF0]"
                     />
                   </div>
                   <div>
-                    <label htmlFor="niche-select-input" className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                    <label htmlFor="niche-select-input" className="block text-xs font-mono text-zinc-300 mb-1">
                       Niche / Category
                     </label>
                     <select
                       id="niche-select-input"
                       value={brandForm.niche}
                       onChange={(e) => setBrandForm({ ...brandForm, niche: e.target.value })}
-                      className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
+                      className="w-full rounded-xl border border-[#89CFF0]/25 bg-[#00040A] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#89CFF0]"
                     >
                       <option value="Developer Tools">Developer Tools</option>
                       <option value="Cloud Infrastructure">Cloud Infrastructure</option>
@@ -531,7 +531,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                 </div>
 
                 <div>
-                  <label htmlFor="source-video-input" className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                  <label htmlFor="source-video-input" className="block text-xs font-mono text-zinc-300 mb-1">
                     Source Stream / Podcast Video URL *
                   </label>
                   <input
@@ -541,12 +541,12 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                     value={brandForm.sourceVideoUrl}
                     onChange={(e) => setBrandForm({ ...brandForm, sourceVideoUrl: e.target.value })}
                     placeholder="https://youtube.com/watch?v=..."
-                    className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#F3E5AB]"
+                    className="w-full rounded-xl border border-[#89CFF0]/25 bg-[#00040A] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#89CFF0]"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="notes-textarea-input" className="block text-xs font-mono text-[#E5E0D8] mb-1">
+                  <label htmlFor="notes-textarea-input" className="block text-xs font-mono text-zinc-300 mb-1">
                     Campaign Goals & Clip Instructions
                   </label>
                   <textarea
@@ -555,7 +555,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                     value={brandForm.notes}
                     onChange={(e) => setBrandForm({ ...brandForm, notes: e.target.value })}
                     placeholder="Highlight our API speed benchmark, terminal workflows, and mention link in bio..."
-                    className="w-full rounded-xl border border-[#F3E5AB]/20 bg-[#1F1811] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#F3E5AB] resize-none"
+                    className="w-full rounded-xl border border-[#89CFF0]/25 bg-[#00040A] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#89CFF0] resize-none"
                   />
                 </div>
 
@@ -563,7 +563,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                   <button
                     type="submit"
                     disabled={isSubmittingBrand}
-                    className="w-full rounded-xl bg-[#F3E5AB] hover:bg-white text-[#17120C] py-3 font-display font-bold text-sm transition-all shadow-md active:scale-95 disabled:opacity-50"
+                    className="btn-sharko-primary w-full py-3 font-display font-bold text-sm transition-all shadow-md active:scale-95 disabled:opacity-50"
                   >
                     {isSubmittingBrand ? "Generating Request..." : "Send Campaign Request to Kushagr →"}
                   </button>
@@ -574,7 +574,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
                       href={lastEmailUrls.gmail}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block text-center w-full rounded-xl border border-[#F3E5AB]/30 bg-[#2A2016] hover:bg-[#382B1E] text-[#F3E5AB] py-2 font-mono text-xs font-semibold transition-all"
+                      className="block text-center w-full rounded-xl border border-[#89CFF0]/30 bg-[#040C1E] hover:bg-[#0047AB]/25 text-[#89CFF0] py-2 font-mono text-xs font-semibold transition-all"
                     >
                       Open Directly in Gmail Web ↗
                     </a>

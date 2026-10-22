@@ -61,7 +61,7 @@ const makeCaptionStyle = (
 export const CAPTION_STYLES: CaptionStylePreset[] = [
   makeCaptionStyle("sharko-emerald", "Sharko Mint", "High-velocity electric mint active word highlight with dark outline drop shadow.", "High Retention", "#10B981", "Most Popular"),
   makeCaptionStyle("bold-gold", "Hormozi Gold", "Solid golden-yellow keywords with subtle shadow and crisp word transitions.", "Word Tracking", "#E5C158", "High Visibility"),
-  makeCaptionStyle("high-contrast", "Vugola Signature", "Bold sans-serif typography with alternating terracotta amber emphasis.", "High Contrast", "#E06D3B", "Key Phrases", "font-display font-black tracking-normal uppercase"),
+  makeCaptionStyle("high-contrast", "Sharko Signature", "Bold sans-serif typography with electric sky blue emphasis.", "High Contrast", "#89CFF0", "Key Phrases", "font-display font-black tracking-normal uppercase"),
   makeCaptionStyle("clean-studio", "Studio Minimal", "Minimalist typography inside a frosted obsidian backdrop capsule with gentle fade.", "Clean Studio", "#F4F4F6", "Executive", "font-sans font-semibold tracking-normal"),
   makeCaptionStyle("vivid-pop", "Cyber Neon", "Punchy cyan and magenta emphasis with kinetic pop animation on major vocal hooks.", "Dynamic Hook", "#38BDF8", "Fast Paced", "font-display font-extrabold tracking-tight uppercase"),
 ];

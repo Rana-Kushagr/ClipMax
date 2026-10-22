@@ -28,12 +28,17 @@ export const CardContainer = ({
   useEffect(() => {
     const isTouch =
       typeof window !== "undefined" &&
-      (window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768);
+      (!window.matchMedia("(hover: hover) and (pointer: fine)").matches || window.innerWidth < 768);
     setIsTouchDevice(isTouch);
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isTouchDevice || !containerRef.current || rafPendingRef.current) return;
+    if (
+      isTouchDevice ||
+      !containerRef.current ||
+      rafPendingRef.current ||
+      (typeof window !== "undefined" && !window.matchMedia("(hover: hover) and (pointer: fine)").matches)
+    ) return;
     rafPendingRef.current = true;
     const clientX = e.clientX;
     const clientY = e.clientY;

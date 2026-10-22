@@ -92,28 +92,28 @@ export const WhySharkoComparison: React.FC = () => {
       title: "Zero Credits Burned on Previews",
       subtitle: "Output-Only Metering",
       desc: "OpusClip and Vizard charge 1 credit per minute of uploaded video upfront—a 3-hour stream burns 180 credits before you see a cut. Sharko scans, scores, and previews for 0 credits; pay only when you export a finished 1080p/4K MP4.",
-      accent: "#10B981",
+      accent: "#89CFF0",
     },
     {
       icon: Camera,
       title: "3 Neural Camera Modes & 5 Aspect Ratios",
       subtitle: "Dynamic Viewport",
       desc: "Switch live between 2-Speaker Split, Solo Face-Track (85mm portrait lock), and Auto Scene Switch across 9:16, 1:1, 16:9, 4:3, and 9:8 with SMPTE alignment and zero black bars.",
-      accent: "#D99B52",
+      accent: "#0047AB",
     },
     {
       icon: Smartphone,
       title: "1-Click Telegram Safety Gate",
       subtitle: "@SharkoStudioBot",
       desc: "Never let an AI hallucination post blindly to your main channel. Sharko sends a 10-second mobile push preview to your phone first so you can tap Approve & Queue or Regenerate.",
-      accent: "#F3E5AB",
+      accent: "#89CFF0",
     },
     {
       icon: Coins,
       title: "Built-In Creator Bounty Network",
       subtitle: "Verified Escrow Pools",
       desc: "Sharko is the only AI studio with an organic escrow marketplace where clippers earn real CPM payouts ($3.50 – $4.25 / 1K views) and sponsors launch campaigns directly with 0% reinvest fees.",
-      accent: "#34D399",
+      accent: "#757500",
     },
   ];
 
@@ -122,8 +122,8 @@ export const WhySharkoComparison: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1F1811] border border-[#F3E5AB]/20 text-xs font-mono text-[#D99B52]">
-            <ShieldCheck className="w-3.5 h-3.5 text-[#10B981]" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#000B1D] border border-[#89CFF0]/25 text-xs font-mono text-[#89CFF0]">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#89CFF0]" />
             <span>Architecture & Competitive Benchmark (2026 Specs)</span>
           </div>
           <motion.h2
@@ -131,12 +131,12 @@ export const WhySharkoComparison: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="text-3xl sm:text-5xl font-display font-extrabold text-[#F4F4F6] tracking-tight"
+            className="text-3xl sm:text-5xl font-display font-extrabold text-[#FFFFFF] tracking-tight"
           >
             Why creator teams switch from{" "}
-            <span className="serif-italic text-[#F3E5AB]">OpusClip & Vizard</span> to Sharko.
+            <span className="serif-italic text-[#89CFF0]">OpusClip & Vizard</span> to Sharko.
           </motion.h2>
-          <p className="text-sm text-[#A1A1AA] font-sans max-w-2xl mx-auto">
+          <p className="text-sm text-zinc-400 font-sans max-w-2xl mx-auto">
             Traditional AI clippers bill you for input duration and expire your unused credits. Sharko
             is architected from the ground up on output-only billing, multi-camera direction, and
             native creator bounties.
@@ -150,26 +150,26 @@ export const WhySharkoComparison: React.FC = () => {
             return (
               <div
                 key={p.title}
-                className="rounded-2xl border border-[#F3E5AB]/15 bg-[#1A140E] p-6 space-y-3 shadow-xl transition-all duration-300 hover:border-[#F3E5AB]/35 group"
+                className="rounded-2xl border border-[#89CFF0]/20 bg-[#000816] p-6 space-y-3 shadow-xl transition-all duration-300 hover:border-[#89CFF0]/50 group"
               >
                 <div className="flex items-center justify-between">
                   <div
                     className="w-10 h-10 rounded-xl flex items-center justify-center border border-white/10"
-                    style={{ backgroundColor: `${p.accent}15` }}
+                    style={{ backgroundColor: `${p.accent}20` }}
                   >
                     <Icon className="w-5 h-5" style={{ color: p.accent }} />
                   </div>
-                  <span className="font-mono text-[11px] text-[#A1A1AA]">0{i + 1}</span>
+                  <span className="font-mono text-[11px] text-zinc-500">0{i + 1}</span>
                 </div>
                 <div className="space-y-0.5">
-                  <div className="font-mono text-[10px] uppercase tracking-wider text-[#D99B52]">
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-[#89CFF0]">
                     {p.subtitle}
                   </div>
-                  <h3 className="font-display font-bold text-base text-white group-hover:text-[#F3E5AB] transition-colors">
+                  <h3 className="font-display font-bold text-base text-white group-hover:text-[#89CFF0] transition-colors">
                     {p.title}
                   </h3>
                 </div>
-                <p className="text-xs text-[#E5E0D8]/70 leading-relaxed font-sans">{p.desc}</p>
+                <p className="text-xs text-zinc-400 leading-relaxed font-sans">{p.desc}</p>
               </div>
             );
           })}
@@ -177,49 +177,49 @@ export const WhySharkoComparison: React.FC = () => {
 
         {/* Comparison Matrix Table */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-[#F3E5AB]/15">
+          <div className="flex items-center justify-between pb-2 border-b border-[#89CFF0]/20">
             <h3 className="font-display font-bold text-xl sm:text-2xl text-white">
               Head-to-Head Specification Matrix
             </h3>
-            <span className="text-xs font-mono text-[#D99B52]">Q4 2026 Verified Data</span>
+            <span className="text-xs font-mono text-[#89CFF0]">Q4 2026 Verified Data</span>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-[#F3E5AB]/20 bg-[#16120D] shadow-2xl">
+          <div className="overflow-x-auto rounded-2xl border border-[#89CFF0]/25 bg-[#00040A] shadow-2xl">
             <table className="w-full text-left text-xs font-mono border-collapse min-w-[760px]">
               <thead>
-                <tr className="border-b border-[#F3E5AB]/15 bg-[#1F1811]">
-                  <th className="py-4 px-5 text-[#A1A1AA] uppercase tracking-wider w-[28%] font-semibold">
+                <tr className="border-b border-[#89CFF0]/20 bg-[#000816]">
+                  <th className="py-4 px-5 text-zinc-400 uppercase tracking-wider w-[28%] font-semibold">
                     Feature / Capability
                   </th>
-                  <th className="py-4 px-5 text-[#10B981] font-bold w-[34%] bg-[#10B981]/10 border-x border-[#10B981]/25">
+                  <th className="py-4 px-5 text-[#89CFF0] font-bold w-[34%] bg-[#0047AB]/20 border-x border-[#89CFF0]/35">
                     Sharko ("Hunt the Moments")
                   </th>
-                  <th className="py-4 px-5 text-[#E5E0D8]/70 w-[19%]">OpusClip (2026)</th>
-                  <th className="py-4 px-5 text-[#E5E0D8]/70 w-[19%]">Vizard AI (2026)</th>
+                  <th className="py-4 px-5 text-zinc-400 w-[19%]">OpusClip (2026)</th>
+                  <th className="py-4 px-5 text-zinc-400 w-[19%]">Vizard AI (2026)</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F3E5AB]/10 text-xs">
+              <tbody className="divide-y divide-[#89CFF0]/10 text-xs">
                 {COMPARISON_DATA.map((row) => (
                   <tr
                     key={row.feature}
                     className={`transition-colors hover:bg-white/[0.02] ${
-                      row.highlight ? "bg-[#F3E5AB]/[0.03]" : ""
+                      row.highlight ? "bg-[#89CFF0]/[0.04]" : ""
                     }`}
                   >
                     <td className="py-3.5 px-5 font-semibold text-white/90">{row.feature}</td>
-                    <td className="py-3.5 px-5 text-[#F3E5AB] font-bold bg-[#10B981]/[0.05] border-x border-[#10B981]/20">
+                    <td className="py-3.5 px-5 text-[#89CFF0] font-bold bg-[#0047AB]/10 border-x border-[#89CFF0]/20">
                       <div className="flex items-start gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981] shrink-0 mt-0.5" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#89CFF0] shrink-0 mt-0.5" />
                         <span>{row.sharko}</span>
                       </div>
                     </td>
-                    <td className="py-3.5 px-5 text-[#A1A1AA]">
+                    <td className="py-3.5 px-5 text-zinc-400">
                       <div className="flex items-start gap-1.5">
                         <XCircle className="w-3.5 h-3.5 text-red-400/70 shrink-0 mt-0.5" />
                         <span>{row.opus}</span>
                       </div>
                     </td>
-                    <td className="py-3.5 px-5 text-[#A1A1AA]">
+                    <td className="py-3.5 px-5 text-zinc-400">
                       <div className="flex items-start gap-1.5">
                         <XCircle className="w-3.5 h-3.5 text-red-400/70 shrink-0 mt-0.5" />
                         <span>{row.vizard}</span>

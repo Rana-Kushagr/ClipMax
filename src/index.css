@@ -3,23 +3,98 @@
 @tailwind utilities;
 
 :root {
-  --color-canvas-deep: #050608;
-  --color-canvas: #090A0D;
-  --color-surface: #0E1015;
-  --color-surface-subtle: #12151B;
-  --color-surface-elevated: #161920;
-  --color-surface-strong: #1D222C;
-  --color-surface-glass: rgba(14, 16, 21, 0.78);
+  --bg-void: #000000;
+  --bg-cobalt-deep: #000B1D;
+  --bg-card: #050B16;
+  --bg-recessed: #030710;
+  --accent-cobalt: #0047AB;
+  --accent-sky: #89CFF0;
+  --accent-white: #FFFFFF;
+  --accent-olive: #757500;
+  --border-hairline: rgba(137, 207, 240, 0.14);
+  --border-cobalt: rgba(0, 71, 171, 0.55);
+  --border-olive: rgba(117, 117, 0, 0.45);
 
-  --color-mint: #10B981;
-  --color-amber: #E06D3B;
-  --color-gold: #E5C158;
-  --color-text-primary: #F4F4F6;
-  --color-text-secondary: #A1A1AA;
-  --color-text-muted: #71717A;
+  --color-canvas-deep: #000000;
+  --color-canvas: #00040A;
+  --color-surface: #050B16;
+  --color-surface-subtle: #091224;
+  --color-surface-elevated: #0C1A33;
+  --color-surface-strong: #102447;
+  --color-surface-glass: rgba(5, 11, 22, 0.82);
 
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-strong: rgba(255, 255, 255, 0.16);
+  --color-mint: #89CFF0;
+  --color-amber: #0047AB;
+  --color-gold: #757500;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #C8D7EC;
+  --color-text-muted: #8294AE;
+
+  --color-border: rgba(137, 207, 240, 0.15);
+  --color-border-strong: rgba(0, 71, 171, 0.55);
+}
+
+body {
+  background-color: #000000;
+  color: #FFFFFF;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Alternating Post-Hero Section Backgrounds (Zero Horizontal Lines, Pure GPU Gradients) */
+.sharko-block-a {
+  background-color: #000000;
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(0, 71, 171, 0.28) 0%, rgba(137, 207, 240, 0.06) 42%, transparent 75%),
+    radial-gradient(circle at 85% 80%, rgba(117, 117, 0, 0.14) 0%, transparent 60%);
+  transform: translate3d(0, 0, 0);
+}
+
+.sharko-block-b {
+  background-color: #000000;
+  background-image:
+    linear-gradient(180deg, #000000 0%, #000D24 48%, #000000 100%),
+    radial-gradient(circle at 80% 25%, rgba(137, 207, 240, 0.16) 0%, rgba(0, 71, 171, 0.22) 45%, transparent 78%);
+  transform: translate3d(0, 0, 0);
+}
+
+/* Synchronized Pill & Button Classes */
+.sky-pill {
+  background: rgba(137, 207, 240, 0.12);
+  border: 1px solid rgba(137, 207, 240, 0.38);
+  color: #89CFF0;
+}
+
+.cobalt-pill {
+  background: rgba(0, 71, 171, 0.25);
+  border: 1px solid rgba(0, 71, 171, 0.65);
+  color: #FFFFFF;
+}
+
+.olive-pill {
+  background: rgba(117, 117, 0, 0.22);
+  border: 1px solid rgba(117, 117, 0, 0.55);
+  color: #D4D446;
+}
+
+/* Primary High-Contrast Gradient CTA */
+.btn-sharko-primary {
+  background: linear-gradient(135deg, #89CFF0 0%, #FFFFFF 100%);
+  color: #000000;
+  font-weight: 700;
+  box-shadow: 0 0 24px rgba(137, 207, 240, 0.35);
+}
+.btn-sharko-primary:hover {
+  background: linear-gradient(135deg, #FFFFFF 0%, #89CFF0 100%);
+  box-shadow: 0 0 32px rgba(0, 71, 171, 0.65);
+}
+
+/* Cobalt Secondary CTA */
+.btn-sharko-cobalt {
+  background: linear-gradient(135deg, #0047AB 0%, #002D6E 100%);
+  border: 1px solid rgba(137, 207, 240, 0.45);
+  color: #FFFFFF;
+  font-weight: 600;
 }
 
 * {
@@ -29,19 +104,20 @@
 html {
   color-scheme: dark;
   scroll-behavior: smooth;
-  background-color: #090A0D;
-  color: #F4F4F6;
+  background-color: #000000;
+  color: #FFFFFF;
 }
 
 body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', sans-serif;
-  background-color: #090A0D;
-  color: #F4F4F6;
+  background-color: #000000;
+  color: #FFFFFF;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Serif Italic Editorial Accents */

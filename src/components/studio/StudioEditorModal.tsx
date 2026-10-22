@@ -7,6 +7,7 @@ import {
   Subtitles,
   Columns,
   Sparkles,
+  ArrowLeft,
 } from "lucide-react";
 import { VideoClip, CaptionPresetId } from "../../types/studio";
 import { SmartReframeStudio } from "./SmartReframeStudio";
@@ -69,35 +70,59 @@ export function StudioEditorModal({
   const modalContent = (
     <AnimatePresence>
       <div
-        className="fixed inset-0 z-[99999] flex items-center justify-center bg-[#0D0A07]/92 backdrop-blur-xl p-3 sm:p-6 overflow-y-auto overscroll-contain"
+        className="fixed inset-0 z-[99999] h-[100dvh] w-full overflow-y-auto bg-[#000000] flex flex-col sm:items-center sm:justify-center p-0 sm:p-6"
         onWheel={(e) => e.stopPropagation()}
       >
-        {/* Backdrop click to dismiss */}
+        {/* Backdrop click to dismiss (Desktop only) */}
         <button
           type="button"
           onClick={onClose}
-          className="fixed inset-0 -z-10 cursor-default bg-transparent border-none w-full h-full"
+          className="fixed inset-0 -z-10 cursor-default bg-transparent border-none w-full h-full hidden sm:block"
           aria-label="Dismiss editor modal"
           tabIndex={-1}
         />
 
+        {/* Sticky Mobile Top Action Bar (iOS/Android 44x44px Touch Targets) */}
+        <div className="sticky top-0 z-30 flex sm:hidden items-center justify-between bg-[#000000]/95 backdrop-blur-md px-4 py-3 border-b border-[#89CFF0]/20 w-full">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#050D1E] border border-[#89CFF0]/30 text-[#89CFF0] active:scale-95 transition touch-manipulation"
+            aria-label="Back to studio overview"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <span className="font-mono text-xs font-bold text-[#89CFF0] truncate max-w-[160px]">
+            {title}
+          </span>
+          <button
+            type="button"
+            onClick={handleExportClick}
+            disabled={isExporting}
+            className="btn-sharko-primary min-h-[40px] px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 active:scale-95 touch-manipulation"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Export</span>
+          </button>
+        </div>
+
         {/* Modal Window Container */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 16 }}
+          initial={{ opacity: 0, scale: 0.98, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 16 }}
-          transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-5xl max-h-[92vh] overflow-y-auto rounded-2xl bg-[#1E1710] border border-[#F3E5AB]/25 shadow-2xl p-5 sm:p-7 text-[#F4F4F6] space-y-6"
+          exit={{ opacity: 0, scale: 0.98, y: 12 }}
+          transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full max-w-5xl sm:max-h-[92vh] sm:overflow-y-auto rounded-none sm:rounded-2xl bg-[#000000] border-0 sm:border border-[#89CFF0]/25 shadow-2xl p-4 sm:p-7 text-[#FFFFFF] space-y-6 flex-1 sm:flex-initial"
         >
           {/* Header Bar */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-[#F3E5AB]/15">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-[#89CFF0]/20">
             <div className="space-y-1 flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
-                <span className="text-xs font-mono uppercase tracking-wider text-[#F3E5AB]">
+                <span className="w-2 h-2 rounded-full bg-[#89CFF0] animate-pulse" />
+                <span className="text-xs font-mono uppercase tracking-wider text-[#89CFF0] font-semibold">
                   SHARKO STUDIO INSPECTOR — HUNT THE MOMENTS
                 </span>
-                <span className="px-2 py-0.5 rounded-full bg-[#10B981]/20 border border-[#10B981]/40 text-[#10B981] text-[11px] font-mono font-bold">
+                <span className="px-2 py-0.5 rounded-full bg-[#0047AB]/30 border border-[#89CFF0]/40 text-[#89CFF0] text-[11px] font-mono font-bold">
                   {clip?.viralityScore || 98} VIRAL SCORE
                 </span>
               </div>
@@ -105,21 +130,21 @@ export function StudioEditorModal({
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full text-lg sm:text-xl font-display font-bold bg-transparent text-white focus:outline-none focus:ring-1 focus:ring-[#F3E5AB]/40 rounded px-1 -ml-1"
+                className="w-full text-lg sm:text-xl font-display font-bold bg-transparent text-white focus:outline-none focus:ring-1 focus:ring-[#89CFF0]/40 rounded px-1 -ml-1 text-[16px] sm:text-[20px]"
                 aria-label="Clip title"
               />
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-between sm:justify-end">
               {/* Tab Selector */}
-              <div className="p-1 rounded-lg bg-[#2A2016] border border-[#F3E5AB]/20 flex items-center gap-1">
+              <div className="p-1 rounded-xl bg-[#050D1E] border border-[#89CFF0]/25 flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => setActiveTab("reframe")}
-                  className={`px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors touch-manipulation ${
                     activeTab === "reframe"
-                      ? "bg-[#F3E5AB] text-[#17120C] font-semibold shadow"
-                      : "text-[#A1A1AA] hover:text-white"
+                      ? "bg-[#89CFF0] text-[#000000] font-bold shadow"
+                      : "text-zinc-400 hover:text-white"
                   }`}
                 >
                   <Columns className="w-3.5 h-3.5" />
@@ -128,10 +153,10 @@ export function StudioEditorModal({
                 <button
                   type="button"
                   onClick={() => setActiveTab("captions")}
-                  className={`px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors touch-manipulation ${
                     activeTab === "captions"
-                      ? "bg-[#F3E5AB] text-[#17120C] font-semibold shadow"
-                      : "text-[#A1A1AA] hover:text-white"
+                      ? "bg-[#89CFF0] text-[#000000] font-bold shadow"
+                      : "text-zinc-400 hover:text-white"
                   }`}
                 >
                   <Subtitles className="w-3.5 h-3.5" />
@@ -139,11 +164,11 @@ export function StudioEditorModal({
                 </button>
               </div>
 
-              {/* Close Button */}
+              {/* Close Button (Desktop) */}
               <button
                 type="button"
                 onClick={onClose}
-                className="p-2 rounded-lg bg-[#2A2016] hover:bg-[#382B1E] border border-[#F3E5AB]/20 text-[#A1A1AA] hover:text-white transition-colors"
+                className="hidden sm:flex p-2 rounded-xl bg-[#050D1E] hover:bg-[#0047AB]/30 border border-[#89CFF0]/25 text-zinc-300 hover:text-white transition-colors"
                 aria-label="Close studio editor"
               >
                 <X className="w-5 h-5" />
@@ -174,8 +199,8 @@ export function StudioEditorModal({
           </div>
 
           {/* Action Footer */}
-          <div className="pt-4 border-t border-[#F3E5AB]/15 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="flex items-center gap-2 text-xs font-mono text-[#10B981]">
+          <div className="pt-4 border-t border-[#89CFF0]/20 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-xs font-mono text-[#89CFF0]">
               <Sparkles className="w-4 h-4" />
               <span>Full HD 1080x1920 • 60 FPS • SMPTE-Timed</span>
             </div>
@@ -184,7 +209,7 @@ export function StudioEditorModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-[#2A2016] hover:bg-[#382B1E] border border-[#F3E5AB]/20 text-[#A1A1AA] hover:text-white font-mono text-xs transition-colors"
+                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-[#050D1E] hover:bg-[#0047AB]/25 border border-[#89CFF0]/25 text-zinc-300 hover:text-white font-mono text-xs transition-colors touch-manipulation"
               >
                 Cancel
               </button>
@@ -192,7 +217,7 @@ export function StudioEditorModal({
                 type="button"
                 onClick={handleExportClick}
                 disabled={isExporting}
-                className="flex-1 sm:flex-initial px-6 py-2 rounded-xl bg-[#F3E5AB] hover:bg-white text-[#17120C] font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95 disabled:opacity-75 disabled:cursor-wait"
+                className="btn-sharko-primary flex-1 sm:flex-initial px-6 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95 disabled:opacity-75 disabled:cursor-wait touch-manipulation"
               >
                 <Download className="w-4 h-4" />
                 <span>{isExporting ? "Exporting HD..." : "Export 1080p HD Watermark-Free"}</span>

@@ -102,12 +102,12 @@ export function StudioQuickDock({
   ];
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-1 sm:px-2 select-none" aria-label="Studio Quick Dock">
-      <div className="flex flex-col items-center gap-2 w-full overflow-x-auto scrollbar-none py-1">
+    <div className="w-full max-w-[94vw] sm:max-w-3xl mx-auto px-1 sm:px-2 select-none overflow-x-auto no-scrollbar" aria-label="Studio Quick Dock">
+      <div className="flex flex-col items-center gap-2 w-full overflow-x-auto no-scrollbar py-1">
         <Dock
           magnification={58}
           distance={120}
-          className="bg-[#1E1710] border-[#F3E5AB]/15 shadow-2xl h-14 sm:h-16 px-2 sm:px-4"
+          className="bg-[#000B1D]/95 border-[#89CFF0]/25 shadow-2xl h-14 sm:h-16 px-2 sm:px-4 shrink-0"
         >
           {tools.map((tool) => {
             const Icon = tool.icon;
@@ -121,23 +121,23 @@ export function StudioQuickDock({
                   setActiveTool(tool.id);
                   tool.action();
                 }}
-                className={`transition-all duration-200 relative group flex items-center justify-center ${
+                className={`transition-all duration-200 relative group flex items-center justify-center shrink-0 min-h-[40px] touch-manipulation ${
                   isActive
-                    ? "bg-[#F3E5AB] text-[#14100B] shadow-lg shadow-[#D99B52]/20 ring-2 ring-[#F3E5AB]/40 scale-105"
-                    : "bg-[#2A2016]/90 text-[#E5E0D8]/80 hover:text-[#F3E5AB] hover:bg-[#382B1E] border border-[#F3E5AB]/15"
+                    ? "bg-[#89CFF0] text-[#000000] shadow-lg shadow-[#0047AB]/40 ring-2 ring-[#89CFF0]/60 scale-105"
+                    : "bg-[#050D1E] text-zinc-300 hover:text-white hover:bg-[#0047AB]/30 border border-[#89CFF0]/20"
                 }`}
               >
                 <Icon className="w-5 h-5 stroke-[2]" />
                 {/* Floating Tooltip Badge */}
-                <span className="absolute -top-9 px-2.5 py-1 rounded-lg bg-[#14100B] border border-[#F3E5AB]/30 text-[11px] font-mono font-bold text-[#F3E5AB] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-2xl z-30">
+                <span className="absolute -top-9 px-2.5 py-1 rounded-lg bg-[#000000] border border-[#89CFF0]/40 text-[11px] font-mono font-bold text-[#89CFF0] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-2xl z-30">
                   {tool.name}
                 </span>
               </DockIcon>
             );
           })}
         </Dock>
-        <span className="text-[11px] font-mono text-[#F3E5AB]/60 uppercase tracking-widest mt-1">
-          7-Module Cinema Precision Dock
+        <span className="text-[11px] font-mono text-[#89CFF0]/70 uppercase tracking-widest mt-1">
+          7-Module Precision Dock
         </span>
       </div>
     </div>

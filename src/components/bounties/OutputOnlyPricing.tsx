@@ -114,8 +114,8 @@ export const OutputOnlyPricing: React.FC = () => {
           <span
             className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded-md border tracking-wider ${
               tier.highlight
-                ? "bg-[#F3E5AB]/20 text-[#F3E5AB] border-[#F3E5AB]/40"
-                : "bg-white/[0.05] text-[#A1A1AA] border-[#F3E5AB]/10"
+                ? "bg-[#0047AB]/30 text-[#89CFF0] border-[#89CFF0]/40"
+                : "bg-white/[0.05] text-zinc-400 border-[#89CFF0]/15"
             }`}
           >
             {tier.badge}
@@ -125,14 +125,14 @@ export const OutputOnlyPricing: React.FC = () => {
 
       <div>
         {/* Header */}
-        <h3 className="text-xl font-bold text-[#F4F4F6] mb-1 font-display">{tier.name}</h3>
-        <p className="text-xs text-[#A1A1AA] min-h-[36px] leading-relaxed mb-6 font-sans">
+        <h3 className="text-xl font-bold text-[#FFFFFF] mb-1 font-display">{tier.name}</h3>
+        <p className="text-xs text-zinc-400 min-h-[36px] leading-relaxed mb-6 font-sans">
           {tier.description}
         </p>
 
         {/* Price Display */}
-        <div className="flex items-baseline gap-2 mb-6 pb-6 border-b border-[#F3E5AB]/10">
-          <span className="text-4xl lg:text-5xl font-mono font-bold text-[#F4F4F6] tabular-nums inline-flex items-baseline overflow-hidden">
+        <div className="flex items-baseline gap-2 mb-6 pb-6 border-b border-[#89CFF0]/15">
+          <span className="text-4xl lg:text-5xl font-mono font-bold text-[#FFFFFF] tabular-nums inline-flex items-baseline overflow-hidden">
             <span>$</span>
             <AnimatePresence mode="popLayout" initial={false}>
               <motion.span
@@ -148,9 +148,9 @@ export const OutputOnlyPricing: React.FC = () => {
             </AnimatePresence>
           </span>
           <div className="space-y-0.5">
-            <span className="text-xs text-[#A1A1AA] block font-mono">/ month</span>
+            <span className="text-xs text-zinc-400 block font-mono">/ month</span>
             {isAnnual && price > 0 && (
-              <span className="text-[10px] text-[#D99B52] block font-mono">
+              <span className="text-[10px] text-[#89CFF0] block font-mono">
                 billed annually (${price * 12}/yr)
               </span>
             )}
@@ -159,17 +159,17 @@ export const OutputOnlyPricing: React.FC = () => {
 
         {/* Feature List */}
         <div className="space-y-3 mb-8">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-[#A1A1AA] block">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 block">
             What's Included:
           </span>
           <ul className="space-y-2.5">
             {tier.features.map((feature, idx) => (
-              <li key={`${tier.id}-feat-${idx}`} className="flex items-start gap-2.5 text-xs text-[#F4F4F6]">
+              <li key={`${tier.id}-feat-${idx}`} className="flex items-start gap-2.5 text-xs text-[#FFFFFF]">
                 <div
                   className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
                     tier.highlight
-                      ? "bg-[#10B981]/20 text-[#10B981]"
-                      : "bg-[#2A2016] text-[#A1A1AA]"
+                      ? "bg-[#0047AB]/40 text-[#89CFF0]"
+                      : "bg-[#040C1E] text-zinc-400"
                   }`}
                 >
                   <Check className="w-2.5 h-2.5" />
@@ -182,7 +182,7 @@ export const OutputOnlyPricing: React.FC = () => {
       </div>
 
       {/* Bottom CTA */}
-      <div className="space-y-2 pt-4 border-t border-[#F3E5AB]/10">
+      <div className="space-y-2 pt-4 border-t border-[#89CFF0]/15">
         <Magnet strength={0.2}>
           <button
             type="button"
@@ -190,15 +190,15 @@ export const OutputOnlyPricing: React.FC = () => {
             onClick={() => handleTierAction(tier.id)}
             className={`w-full py-3 px-4 rounded-xl font-mono text-xs font-semibold flex items-center justify-center gap-2 transition-all duration-200 shadow-md ${
               tier.highlight
-                ? "bg-[#F3E5AB] hover:bg-white text-[#17120C] shadow-lg shadow-[#D99B52]/20"
-                : "bg-[#2A2016] hover:bg-[#382B1E] text-[#F3E5AB] border border-[#F3E5AB]/20"
+                ? "btn-sharko-primary"
+                : "bg-[#040C1E] hover:bg-[#0047AB]/25 text-[#89CFF0] border border-[#89CFF0]/25"
             } disabled:opacity-75 disabled:cursor-wait`}
           >
             <span>{submittingTierId === tier.id ? "Connecting..." : tier.cta}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </Magnet>
-        <p className="text-[10px] font-mono text-center text-[#A1A1AA]">
+        <p className="text-[10px] font-mono text-center text-zinc-400">
           {tier.ctaSubtext}
         </p>
       </div>
@@ -209,18 +209,18 @@ export const OutputOnlyPricing: React.FC = () => {
     <div className="w-full">
       {/* Interactive Segmented Pill Billing Switch with Framer Motion Sliding Thumb */}
       <div className="flex items-center justify-center mb-12">
-        <div className="relative inline-flex p-1.5 rounded-full bg-[#1E1710] border border-[#F3E5AB]/20 shadow-2xl">
+        <div className="relative inline-flex p-1.5 rounded-full bg-[#000816] border border-[#89CFF0]/20 shadow-2xl">
           <button
             type="button"
             onClick={() => setBillingCycle("monthly")}
             className={`relative px-6 py-2.5 rounded-full text-xs font-mono font-semibold transition-colors duration-200 z-10 ${
-              !isAnnual ? "text-[#17120C]" : "text-[#A1A1AA] hover:text-[#F4F4F6]"
+              !isAnnual ? "text-[#000000] font-bold" : "text-zinc-400 hover:text-white"
             }`}
           >
             {!isAnnual && (
               <motion.div
                 layoutId="activeBillingThumb"
-                className="absolute inset-0 rounded-full bg-[#F3E5AB] shadow-md -z-10"
+                className="absolute inset-0 rounded-full bg-[#89CFF0] shadow-[0_0_15px_rgba(137,207,240,0.4)] -z-10"
                 transition={{ type: "spring", stiffness: 450, damping: 30 }}
               />
             )}
@@ -231,13 +231,13 @@ export const OutputOnlyPricing: React.FC = () => {
             type="button"
             onClick={() => setBillingCycle("annual")}
             className={`relative px-6 py-2.5 rounded-full text-xs font-mono font-semibold transition-colors duration-200 z-10 flex items-center gap-2 ${
-              isAnnual ? "text-[#17120C]" : "text-[#A1A1AA] hover:text-[#F4F4F6]"
+              isAnnual ? "text-[#000000] font-bold" : "text-zinc-400 hover:text-white"
             }`}
           >
             {isAnnual && (
               <motion.div
                 layoutId="activeBillingThumb"
-                className="absolute inset-0 rounded-full bg-[#F3E5AB] shadow-md -z-10"
+                className="absolute inset-0 rounded-full bg-[#89CFF0] shadow-[0_0_15px_rgba(137,207,240,0.4)] -z-10"
                 transition={{ type: "spring", stiffness: 450, damping: 30 }}
               />
             )}
@@ -245,8 +245,8 @@ export const OutputOnlyPricing: React.FC = () => {
             <span
               className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
                 isAnnual
-                  ? "bg-[#17120C]/15 text-[#17120C]"
-                  : "bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30"
+                  ? "bg-black/20 text-[#000000]"
+                  : "bg-[#0047AB]/30 text-[#89CFF0] border border-[#89CFF0]/30"
               }`}
             >
               SAVE 25%
@@ -266,9 +266,9 @@ export const OutputOnlyPricing: React.FC = () => {
                 <BorderGlow
                   animated={true}
                   borderRadius={20}
-                  glowColor="42 80 78"
-                  backgroundColor="#1E1710"
-                  colors={["#F3E5AB", "#D99B52", "#10B981"]}
+                  glowColor="0 71 171"
+                  backgroundColor="#000816"
+                  colors={["#89CFF0", "#0047AB", "#757500"]}
                   className="h-full flex-1 shadow-2xl"
                 >
                   {renderCardContent(tier, price)}
@@ -280,7 +280,7 @@ export const OutputOnlyPricing: React.FC = () => {
           return (
             <div
               key={tier.id}
-              className="flex flex-col justify-between h-full rounded-2xl bg-[#1E1710] border border-[#F3E5AB]/15 shadow-xl transition-all duration-300 hover:border-[#F3E5AB]/30"
+              className="flex flex-col justify-between h-full rounded-2xl bg-[#000816] border border-[#89CFF0]/20 shadow-xl transition-all duration-300 hover:border-[#89CFF0]/40"
             >
               {renderCardContent(tier, price)}
             </div>

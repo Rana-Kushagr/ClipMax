@@ -199,9 +199,11 @@ export function HeroCommandCenter({
           <DecryptedText text="Sharko Engine v3.8" speed={35} />
         </span>
         <span className="text-white/20">•</span>
-        <span className="text-[#D99B52] font-mono text-[11px] font-semibold tracking-wider">Hunt the Moments</span>
+        <span className="text-[#89CFF0] font-mono text-[11px] font-semibold tracking-wider">Sharko Engine v3.8</span>
+        <span className="text-white/20">•</span>
+        <span className="text-[#89CFF0] font-mono text-[11px] font-semibold tracking-wider">Hunt the Moments</span>
         <span className="text-white/20 hidden sm:inline">•</span>
-        <span className="text-[#10B981] font-mono font-medium hidden sm:inline">100% Rollover</span>
+        <span className="text-[#FFFFFF] font-mono font-medium hidden sm:inline">100% Rollover</span>
       </div>
 
       {/* Hero Display Heading with Crisp 0.25s GPU Reveal */}
@@ -213,7 +215,7 @@ export function HeroCommandCenter({
           className="font-display font-bold text-3xl sm:text-5xl md:text-6xl tracking-[-0.035em] text-[#F4F4F6] leading-[1.04] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]"
         >
           Paste one long video. Get{" "}
-          <span className="serif-italic text-[#F3E5AB]">viral shorts</span> in one click.
+          <span className="serif-italic text-[#89CFF0]">viral shorts</span> in one click.
         </motion.h1>
       </div>
 
@@ -250,44 +252,45 @@ export function HeroCommandCenter({
           style={{
             height: "1px",
             background:
-              "linear-gradient(90deg, transparent 5%, rgba(224,109,59,0.28) 35%, rgba(255,255,255,0.45) 50%, rgba(16,185,129,0.28) 65%, transparent 95%)",
-            boxShadow: "0 0 32px 2px rgba(224,109,59,0.12)",
+              "linear-gradient(90deg, transparent 5%, rgba(0,71,171,0.45) 35%, rgba(137,207,240,0.65) 50%, rgba(0,71,171,0.45) 65%, transparent 95%)",
+            boxShadow: "0 0 32px 2px rgba(0,71,171,0.25)",
           }}
           aria-hidden="true"
         />
         <BorderGlow
           animated={true}
-          borderRadius={18}
-          glowColor="42 80 78"
-          backgroundColor="#1E1710"
-          colors={['#F3E5AB', '#D99B52', '#10B981']}
+          borderRadius={24}
+          glowColor="#89CFF0"
+          backgroundColor="#000000"
+          colors={['#89CFF0', '#0047AB', '#FFFFFF']}
           className="w-full"
         >
           <SpotlightCard
-            spotlightColor="rgba(243, 229, 171, 0.16)"
-            className={`p-2 sm:p-2.5 transition-all shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-2xl bg-transparent border-none ${
+            spotlightColor="rgba(137, 207, 240, 0.18)"
+            className={`p-2 sm:p-2.5 transition-all shadow-[0_20px_60px_rgba(0,0,0,0.9)] backdrop-blur-2xl bg-transparent border-none ${
               dragActive
-                ? "ring-2 ring-[#F3E5AB]/60 bg-[#2A2016]/90"
+                ? "ring-2 ring-[#89CFF0]/60 bg-[#00102B]/90"
                 : ""
             }`}
           >
-          <div className="flex flex-col sm:flex-row items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-center gap-2.5 rounded-2xl sm:rounded-full p-2.5 sm:p-1.5 bg-[#000000]/90">
             {/* Live Protocol Badge Detection */}
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-2 rounded-lg bg-[#08090B] border border-white/[0.08] text-xs font-mono shrink-0 select-none">
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-2 rounded-lg bg-[#050D1E] border border-[#89CFF0]/20 text-xs font-mono shrink-0 select-none">
               {platform === "youtube" && <Youtube className="w-3.5 h-3.5 text-red-500" />}
               {platform === "twitch" && <Tv className="w-3.5 h-3.5 text-purple-400" />}
               {platform === "kick" && <Tv className="w-3.5 h-3.5 text-[#10B981]" />}
               {platform === "rumble" && <Tv className="w-3.5 h-3.5 text-[#10B981]" />}
               {platform === "drive" && <HardDrive className="w-3.5 h-3.5 text-blue-400" />}
-              {platform === "file" && <FileVideo className="w-3.5 h-3.5 text-[#E06D3B]" />}
+              {platform === "file" && <FileVideo className="w-3.5 h-3.5 text-[#89CFF0]" />}
               {platform === "unknown" && <Link2 className="w-3.5 h-3.5 text-text-muted" />}
-              <span className="text-[#10B981] font-semibold">{protocolBadge}</span>
+              <span className="text-[#89CFF0] font-semibold">{protocolBadge}</span>
             </div>
 
             {/* Widen input flex track (min-w-0 flex-1) to eliminate truncation! */}
             <div className="relative min-w-0 flex-1 w-full">
               <input
-                id="hero-url-input"
+                id="heroVideoUrlInput"
+                name="heroVideoUrlInput"
                 type="text"
                 value={videoUrl}
                 onChange={(e) => {
@@ -295,13 +298,13 @@ export function HeroCommandCenter({
                   setUploadedFileName(null);
                 }}
                 placeholder="Paste YouTube, Twitch, Kick, Rumble, or Drive URL — or drop MP4..."
-                className="w-full bg-transparent px-3 py-2 text-sm text-[#F4F4F6] placeholder:text-text-muted focus:outline-none font-sans"
+                className="w-full bg-transparent px-3 py-2.5 text-[16px] sm:text-[13.5px] text-[#FFFFFF] placeholder:text-zinc-500 focus:outline-none font-sans"
                 aria-label="Video URL or upload link"
                 disabled={isProcessing}
               />
 
               {uploadedFileName && (
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5 text-xs text-[#E06D3B] bg-[#E06D3B]/10 px-2 py-0.5 rounded-md border border-[#E06D3B]/20">
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5 text-xs text-[#89CFF0] bg-[#0047AB]/25 px-2 py-0.5 rounded-md border border-[#89CFF0]/30">
                   <span className="font-mono text-[11px] truncate max-w-[140px]">{uploadedFileName}</span>
                   <button
                     type="button"
@@ -347,23 +350,23 @@ export function HeroCommandCenter({
               />
             </label>
 
-            {/* Solid Studio White Primary Button wrapped in Magnet */}
+            {/* Solid High-Contrast Primary Button wrapped in Magnet */}
             <Magnet strength={0.2} radius={45}>
               <button
                 type="button"
                 onClick={handleStartGeneration}
                 disabled={isProcessing}
-                className="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-[#F4F4F6] hover:bg-white text-[#08090B] font-semibold text-sm transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-75 disabled:cursor-wait shrink-0 shadow-md"
+                className="btn-sharko-primary w-full sm:w-auto min-h-[48px] px-6 py-2.5 rounded-xl sm:rounded-full font-bold text-sm transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-75 disabled:cursor-wait shrink-0 shadow-lg touch-manipulation"
               >
                 {isProcessing ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin text-[#08090B]" />
+                    <Loader2 className="w-4 h-4 animate-spin text-[#000000]" />
                     <span>Processing {progressPercent}%</span>
                   </>
                 ) : (
                   <>
-                    <Zap className="w-4 h-4 fill-[#08090B] text-[#08090B]" />
-                    <span>Get Clips in 1 Click</span>
+                    <Zap className="w-4 h-4 fill-[#000000] text-[#000000]" />
+                    <span>Get Clips in 1 Click &rarr;</span>
                   </>
                 )}
               </button>
@@ -372,10 +375,10 @@ export function HeroCommandCenter({
 
           {/* Processing Simulation Bar */}
           {isProcessing && (
-            <div className="mt-3 pt-3 border-t border-white/[0.08] text-left px-2">
+            <div className="mt-3 pt-3 border-t border-[#89CFF0]/20 text-left px-2">
               <div className="flex justify-between items-center text-xs font-mono text-text-secondary mb-1.5">
                 <span className="flex items-center gap-2 text-white">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#89CFF0] animate-pulse" />
                   {processStep === 1 && "Phase 1/4: Ingesting 4K audio/video stream..."}
                   {processStep === 2 && "Phase 2/4: Diarizing dual-speaker audio & timestamps..."}
                   {processStep === 3 && "Phase 3/4: Scoring retention virality algorithms..."}
@@ -383,9 +386,9 @@ export function HeroCommandCenter({
                 </span>
                 <span className="text-white font-semibold tabular-nums">{progressPercent}%</span>
               </div>
-              <div className="w-full h-1 bg-[#08090B] rounded-full overflow-hidden">
+              <div className="w-full h-1 bg-[#000B1D] rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-[#10B981] to-[#E06D3B] transition-all duration-100 ease-out rounded-full"
+                  className="h-full bg-gradient-to-r from-[#0047AB] via-[#89CFF0] to-[#FFFFFF] transition-all duration-100 ease-out rounded-full"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -403,7 +406,7 @@ export function HeroCommandCenter({
             key={`sample-${s.name}`}
             type="button"
             onClick={() => setVideoUrl(s.url)}
-            className="text-text-secondary hover:text-white transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-[#10B981] font-mono text-[11px]"
+            className="text-zinc-400 hover:text-[#89CFF0] transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-[#89CFF0] font-mono text-[11px]"
           >
             {s.name}
           </button>
@@ -411,9 +414,9 @@ export function HeroCommandCenter({
       </div>
 
       {/* Output-Only Trust Metering Guarantee */}
-      <div className="mt-5 flex items-center justify-center gap-2 text-xs text-text-muted max-w-xl mx-auto bg-[#0E1014]/75 backdrop-blur-md border border-white/[0.07] rounded-lg py-2 px-3 shadow-md">
-        <ShieldCheck className="w-4 h-4 text-[#10B981] shrink-0" />
-        <span className="text-left sm:text-center text-[11px] leading-tight">
+      <div className="mt-5 flex items-center justify-center gap-2 text-xs text-text-muted max-w-xl mx-auto bg-[#000B1D]/80 backdrop-blur-md border border-[#89CFF0]/20 rounded-xl py-2.5 px-4 shadow-md">
+        <ShieldCheck className="w-4 h-4 text-[#89CFF0] shrink-0" />
+        <span className="text-left sm:text-center text-[11.5px] leading-tight text-zinc-300">
           <strong className="text-white">0 credits burned on upload</strong> — only pay when you export a clip (3 free 1080p watermark-free clips/mo with 100% credit rollover).
         </span>
       </div>

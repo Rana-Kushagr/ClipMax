@@ -182,12 +182,13 @@ export function SmartOptionsDrawer({
 
           <div className="relative">
             <input
-              id="prompt-input"
+              id="momentPromptInput"
+              name="momentPromptInput"
               type="text"
               value={promptQuery}
               onChange={(e) => setPromptQuery(e.target.value)}
               placeholder="e.g. Find moments where the speakers discuss architecture trade-offs and performance..."
-              className="w-full px-3.5 py-2.5 rounded-lg bg-[#12151B] border border-white/[0.08] focus:border-white/40 focus:ring-1 focus:ring-white/40 text-sm text-[#F4F4F6] placeholder:text-text-muted font-sans"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-[#030914] border border-[#89CFF0]/25 focus:border-[#89CFF0] focus:ring-1 focus:ring-[#89CFF0] text-[16px] sm:text-[13.5px] text-[#FFFFFF] placeholder:text-zinc-500 font-sans"
             />
             {promptQuery && (
               <button

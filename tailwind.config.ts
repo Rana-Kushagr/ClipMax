@@ -9,16 +9,33 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        void: "#000000",
+        cobalt: {
+          DEFAULT: "#0047AB",
+          deep: "#000B1D",
+          dark: "#002D6E",
+          subtle: "rgba(0, 71, 171, 0.25)",
+        },
+        sky: {
+          DEFAULT: "#89CFF0",
+          hover: "#A6DCF4",
+          subtle: "rgba(137, 207, 240, 0.14)",
+        },
+        olive: {
+          DEFAULT: "#757500",
+          text: "#E2E260",
+          subtle: "rgba(117, 117, 0, 0.22)",
+        },
         canvas: {
-          deep: "#040507",
-          DEFAULT: "#08090B",
+          deep: "#000000",
+          DEFAULT: "#00040A",
         },
         surface: {
-          DEFAULT: "#0E1014",
-          subtle: "#12151B",
-          elevated: "#161920",
-          strong: "#1D222C",
-          glass: "rgba(14, 16, 20, 0.78)",
+          DEFAULT: "#050B16",
+          subtle: "#091224",
+          elevated: "#0C1A33",
+          strong: "#102447",
+          glass: "rgba(5, 11, 22, 0.82)",
         },
         border: {
           DEFAULT: "rgba(255, 255, 255, 0.07)",

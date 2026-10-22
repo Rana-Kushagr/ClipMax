@@ -22,8 +22,8 @@ export function StudioEnvironmentBg({
       {/* 2. Soft Protective Contrast Tint for Flawless Text Readability */}
       <div className="absolute inset-0 bg-black/25 pointer-events-none" />
 
-      {/* 3. Smooth Seamless Fade into Colour Block 1 (#221B12) */}
-      <div className="absolute inset-x-0 bottom-0 h-[280px] bg-gradient-to-b from-transparent via-[#221B12]/80 to-[#221B12] pointer-events-none" />
+      {/* 3. Smooth Seamless Fade into Obsidian Void (#000000) */}
+      <div className="absolute inset-x-0 bottom-0 h-[280px] bg-gradient-to-b from-transparent via-[#000000]/80 to-[#000000] pointer-events-none" />
 
       {/* 4. Subtle Optical Perimeter Vignette */}
       <div

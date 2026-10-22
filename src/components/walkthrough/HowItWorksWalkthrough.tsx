@@ -181,7 +181,7 @@ export function HowItWorksWalkthrough({
 
       const width = canvas.width;
       const height = canvas.height;
-      ctx.fillStyle = "#110D09";
+      ctx.fillStyle = "#000511";
       ctx.fillRect(0, 0, width, height);
 
       const bars = 48;
@@ -199,7 +199,7 @@ export function HowItWorksWalkthrough({
         const x = i * (barWidth + 2);
         const y = height - clampedHeight;
 
-        ctx.fillStyle = isPeak ? "#F3E5AB" : "rgba(217, 155, 82, 0.4)";
+        ctx.fillStyle = isPeak ? "#89CFF0" : "rgba(0, 71, 171, 0.45)";
         ctx.beginPath();
         ctx.roundRect(x, y, barWidth, clampedHeight, 2);
         ctx.fill();
@@ -283,34 +283,34 @@ export function HowItWorksWalkthrough({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
-          className="font-display font-bold text-2xl sm:text-4xl text-[#F4F4F6] tracking-tight"
+          className="font-display font-bold text-2xl sm:text-4xl text-[#FFFFFF] tracking-tight"
         >
           How Sharko works in{" "}
-          <span className="serif-italic text-[#F3E5AB]">three simple steps.</span>
+          <span className="serif-italic text-[#89CFF0]">three simple steps.</span>
         </motion.h2>
-        <p className="text-[#A1A1AA] text-sm sm:text-base mt-2 font-sans">
+        <p className="text-zinc-400 text-sm sm:text-base mt-2 font-sans">
           Engineered with studio clarity so anyone can create viral shorts and claim escrow bounties in seconds.
         </p>
       </div>
 
       {/* Main Walkthrough Console Surface */}
-      <div className="relative rounded-2xl bg-[#1E1710] border border-[#F3E5AB]/15 shadow-2xl overflow-hidden">
+      <div className="relative rounded-2xl bg-[#000816] border border-[#89CFF0]/25 shadow-2xl overflow-hidden">
         {/* Top Player Header Bar */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 bg-[#17120C] text-xs">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 bg-[#00040A] text-xs border-b border-[#89CFF0]/15">
           <div className="flex items-center gap-2.5">
-            <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
-            <span className="font-mono text-[#F4F4F6] font-semibold tracking-wide text-[11px] sm:text-xs">
+            <span className="w-2 h-2 rounded-full bg-[#89CFF0] animate-pulse" />
+            <span className="font-mono text-[#FFFFFF] font-semibold tracking-wide text-[11px] sm:text-xs">
               AUTONOMOUS MOTION ENGINE
             </span>
             <span className="text-white/20 hidden sm:inline">•</span>
             <span
               ref={headerTimeRef}
-              className="font-mono text-[#D99B52] font-semibold hidden sm:inline tabular-nums"
+              className="font-mono text-[#89CFF0] font-semibold hidden sm:inline tabular-nums"
             >
               0.00s / 15.00s
             </span>
             <span className="text-white/20 hidden sm:inline">•</span>
-            <span className="font-mono text-[#F3E5AB]/75 hidden sm:inline">
+            <span className="font-mono text-zinc-400 hidden sm:inline">
               SCENE {currentScene}/3: {chapters[currentScene - 1].title}
             </span>
           </div>
@@ -319,7 +319,7 @@ export function HowItWorksWalkthrough({
             <button
               type="button"
               onClick={() => setIsPlaying(!isPlaying)}
-              className="p-1.5 rounded-lg bg-[#2A2016] hover:bg-[#382B1E] border border-[#F3E5AB]/20 text-[#F3E5AB] hover:text-white transition-colors"
+              className="p-1.5 rounded-lg bg-[#040C1E] hover:bg-[#0047AB]/30 border border-[#89CFF0]/25 text-[#89CFF0] hover:text-white transition-colors"
               aria-label={isPlaying ? "Pause walkthrough" : "Play walkthrough"}
             >
               {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
@@ -332,7 +332,7 @@ export function HowItWorksWalkthrough({
                 updateDom(0);
                 lastTimeRef.current = performance.now();
               }}
-              className="p-1.5 rounded-lg bg-[#2A2016] hover:bg-[#382B1E] border border-[#F3E5AB]/20 text-[#F3E5AB] hover:text-white transition-colors"
+              className="p-1.5 rounded-lg bg-[#040C1E] hover:bg-[#0047AB]/30 border border-[#89CFF0]/25 text-[#89CFF0] hover:text-white transition-colors"
               aria-label="Restart walkthrough"
             >
               <RotateCcw className="w-3.5 h-3.5" />
@@ -340,7 +340,7 @@ export function HowItWorksWalkthrough({
             <button
               type="button"
               onClick={() => setIsMuted(!isMuted)}
-              className="p-1.5 rounded-lg bg-[#2A2016] hover:bg-[#382B1E] border border-[#F3E5AB]/20 text-[#F3E5AB] hover:text-white transition-colors hidden sm:flex"
+              className="p-1.5 rounded-lg bg-[#040C1E] hover:bg-[#0047AB]/30 border border-[#89CFF0]/25 text-[#89CFF0] hover:text-white transition-colors hidden sm:flex"
               aria-label={isMuted ? "Unmute walkthrough" : "Mute walkthrough"}
             >
               {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
@@ -349,11 +349,11 @@ export function HowItWorksWalkthrough({
         </div>
 
         {/* 16:9 Cinema Stage */}
-        <div className="relative aspect-video w-full bg-[#110D09] overflow-hidden flex items-center justify-center">
+        <div className="relative aspect-video w-full bg-[#000000] overflow-hidden flex items-center justify-center">
           {/* SCENE 1: Ingest & Spectral Radar (0.0s - 5.0s) */}
           {currentScene === 1 && (
             <div className="w-full h-full relative flex flex-col items-center justify-center p-4 sm:p-8 animate-fadeIn">
-              <div className="relative w-full max-w-xl aspect-video rounded-xl bg-[#17120C] border border-[#F3E5AB]/20 overflow-hidden shadow-2xl flex flex-col justify-between p-3 sm:p-4">
+              <div className="relative w-full max-w-xl aspect-video rounded-xl bg-[#000B1D] border border-[#89CFF0]/25 overflow-hidden shadow-2xl flex flex-col justify-between p-3 sm:p-4">
                 <img
                   src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=900&auto=format&fit=crop&q=80"
                   alt="Raw studio recording"
@@ -361,30 +361,30 @@ export function HowItWorksWalkthrough({
                 />
 
                 {/* Animated Horizontal Laser Scan Line */}
-                <div className="absolute inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-[#F3E5AB] to-transparent shadow-[0_0_15px_#F3E5AB] animate-pulse top-1/2 -translate-y-1/2 pointer-events-none" />
+                <div className="absolute inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-[#89CFF0] to-transparent shadow-[0_0_15px_#89CFF0] animate-pulse top-1/2 -translate-y-1/2 pointer-events-none" />
 
                 {/* Top Telemetry */}
                 <div className="relative z-10 flex items-center justify-between text-[10px] sm:text-xs font-mono">
-                  <span className="px-2 py-0.5 rounded bg-black/70 text-[#10B981] border border-[#10B981]/40 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-ping" />
+                  <span className="px-2 py-0.5 rounded bg-black/70 text-[#89CFF0] border border-[#89CFF0]/40 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#89CFF0] animate-ping" />
                     INGESTING: 4K H.265 STREAM (2h 14m)
                   </span>
-                  <span className="px-2 py-0.5 rounded bg-black/70 text-[#F3E5AB] border border-[#F3E5AB]/40">
+                  <span className="px-2 py-0.5 rounded bg-black/70 text-white border border-[#89CFF0]/40">
                     SCAN SPEED: 1,840 FPS
                   </span>
                 </div>
 
                 {/* Audio Waveform Canvas */}
                 <div className="relative z-10 space-y-1.5 mt-auto">
-                  <div className="flex justify-between text-[10px] font-mono text-[#F4F4F6]">
+                  <div className="flex justify-between text-[10px] font-mono text-[#FFFFFF]">
                     <span>SPECTRAL FREQUENCY RADAR</span>
-                    <span className="text-[#10B981]">6 VIRAL CLIMAX PEAKS LOCATED</span>
+                    <span className="text-[#89CFF0]">6 VIRAL CLIMAX PEAKS LOCATED</span>
                   </div>
                   <canvas
                     ref={canvasRef}
                     width={520}
                     height={48}
-                    className="w-full h-10 sm:h-12 rounded-lg bg-black/80 border border-[#F3E5AB]/20"
+                    className="w-full h-10 sm:h-12 rounded-lg bg-black/80 border border-[#89CFF0]/20"
                   />
                 </div>
               </div>
@@ -396,47 +396,47 @@ export function HowItWorksWalkthrough({
             <div className="w-full h-full relative flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
               <div className="w-full max-w-2xl flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
                 {/* 16:9 Input Thumbnail with Speaker Bounding Boxes */}
-                <div className="relative w-48 sm:w-64 aspect-video rounded-xl bg-[#17120C] border border-[#F3E5AB]/20 overflow-hidden shadow-xl shrink-0">
+                <div className="relative w-48 sm:w-64 aspect-video rounded-xl bg-[#000B1D] border border-[#89CFF0]/25 overflow-hidden shadow-xl shrink-0">
                   <img
                     src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80"
                     alt="Speaker framing"
                     className="w-full h-full object-cover filter brightness-90"
                   />
-                  <div className="absolute top-2 left-2 w-14 h-16 border-2 border-[#10B981] rounded pointer-events-none">
-                    <span className="absolute -top-4 left-0 text-[8px] font-mono bg-[#10B981] text-black px-1 font-bold">
+                  <div className="absolute top-2 left-2 w-14 h-16 border-2 border-[#89CFF0] rounded pointer-events-none">
+                    <span className="absolute -top-4 left-0 text-[8px] font-mono bg-[#89CFF0] text-black px-1 font-bold">
                       HOST
                     </span>
                   </div>
-                  <div className="absolute top-4 right-3 w-14 h-16 border-2 border-[#D99B52] rounded pointer-events-none">
-                    <span className="absolute -top-4 left-0 text-[8px] font-mono bg-[#D99B52] text-[#17120C] px-1 font-bold">
+                  <div className="absolute top-4 right-3 w-14 h-16 border-2 border-[#0047AB] rounded pointer-events-none">
+                    <span className="absolute -top-4 left-0 text-[8px] font-mono bg-[#0047AB] text-white px-1 font-bold">
                       GUEST
                     </span>
                   </div>
                 </div>
 
-                <div className="text-center font-mono text-xs text-[#F3E5AB] flex flex-col items-center">
-                  <Sparkles className="w-5 h-5 text-[#10B981] animate-spin" />
+                <div className="text-center font-mono text-xs text-[#89CFF0] flex flex-col items-center">
+                  <Sparkles className="w-5 h-5 text-[#89CFF0] animate-spin" />
                   <span className="mt-1 text-[10px]">SPRING MORPH</span>
-                  <ArrowRight className="w-4 h-4 text-[#D99B52] rotate-90 sm:rotate-0" />
+                  <ArrowRight className="w-4 h-4 text-[#89CFF0] rotate-90 sm:rotate-0" />
                 </div>
 
                 {/* 9:16 Output Phone Preview with Kinetic Captions */}
-                <div className="relative w-36 sm:w-44 aspect-[9/16] rounded-xl bg-[#17120C] border-2 border-[#10B981] shadow-[0_0_25px_rgba(16,185,129,0.25)] overflow-hidden flex flex-col justify-between p-2 shrink-0">
-                  <div className="h-1/2 w-full rounded bg-[#2A2016] overflow-hidden relative mb-1">
+                <div className="relative w-36 sm:w-44 aspect-[9/16] rounded-xl bg-[#000B1D] border-2 border-[#89CFF0] shadow-[0_0_25px_rgba(137,207,240,0.3)] overflow-hidden flex flex-col justify-between p-2 shrink-0">
+                  <div className="h-1/2 w-full rounded bg-[#030917] overflow-hidden relative mb-1">
                     <img
                       src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80"
                       alt="Speaker 1"
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="h-1/2 w-full rounded bg-[#2A2016] overflow-hidden relative flex flex-col justify-end p-2">
+                  <div className="h-1/2 w-full rounded bg-[#030917] overflow-hidden relative flex flex-col justify-end p-2">
                     <img
                       src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80"
                       alt="Speaker 2"
                       className="absolute inset-0 w-full h-full object-cover filter brightness-85"
                     />
-                    <div className="relative z-10 text-center font-display font-black text-[10px] sm:text-xs text-[#F3E5AB] uppercase tracking-wider">
-                      <span className="text-[#10B981] underline">AUTONOMOUS</span> CLIPPING
+                    <div className="relative z-10 text-center font-display font-black text-[10px] sm:text-xs text-white uppercase tracking-wider">
+                      <span className="text-[#89CFF0] underline">AUTONOMOUS</span> CLIPPING
                     </div>
                   </div>
                 </div>
@@ -449,25 +449,25 @@ export function HowItWorksWalkthrough({
             <div className="w-full h-full relative flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
               <div className="w-full max-w-2xl flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
                 {/* Telegram / Mobile Bot Mockup */}
-                <div className="w-64 p-3.5 rounded-xl bg-[#1E1710] border border-[#F3E5AB]/20 shadow-xl space-y-2.5">
-                  <div className="flex items-center gap-1.5 text-xs font-semibold text-[#F4F4F6]">
-                    <Smartphone className="w-3.5 h-3.5 text-[#10B981]" />
+                <div className="w-64 p-3.5 rounded-xl bg-[#000816] border border-[#89CFF0]/25 shadow-xl space-y-2.5">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-[#FFFFFF]">
+                    <Smartphone className="w-3.5 h-3.5 text-[#89CFF0]" />
                     <span>Telegram Autopilot Bot</span>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-[#17120C] text-[11px] text-[#A1A1AA] space-y-2 border border-[#F3E5AB]/10">
-                    <div className="font-semibold text-[#F4F4F6]">
+                  <div className="p-2.5 rounded-lg bg-[#00040A] text-[11px] text-zinc-400 space-y-2 border border-[#89CFF0]/15">
+                    <div className="font-semibold text-[#FFFFFF]">
                       Ready for Approval: Neural Indexing (98 Score)
                     </div>
                     <div className="flex gap-2 pt-1">
                       <button
                         type="button"
-                        className="flex-1 py-1 rounded bg-[#F3E5AB] text-[#17120C] font-semibold text-[10px] text-center hover:bg-white transition-colors"
+                        className="flex-1 py-1 rounded bg-[#89CFF0] text-black font-semibold text-[10px] text-center hover:bg-white transition-colors"
                       >
                         ✓ Approve & Post
                       </button>
                       <button
                         type="button"
-                        className="py-1 px-2.5 rounded bg-[#2A2016] text-[#A1A1AA] text-[10px] border border-[#F3E5AB]/20 hover:text-white"
+                        className="py-1 px-2.5 rounded bg-[#040C1E] text-zinc-300 text-[10px] border border-[#89CFF0]/25 hover:text-white"
                       >
                         Regen
                       </button>
@@ -476,31 +476,31 @@ export function HowItWorksWalkthrough({
                 </div>
 
                 {/* Cash Bounty Earning Card with Live Counter */}
-                <div className="w-64 p-3.5 rounded-xl bg-[#1E1710] border border-[#10B981]/50 shadow-[0_0_30px_rgba(16,185,129,0.2)] space-y-2.5">
+                <div className="w-64 p-3.5 rounded-xl bg-[#000816] border border-[#89CFF0]/50 shadow-[0_0_30px_rgba(0,71,171,0.35)] space-y-2.5">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-[#F4F4F6] flex items-center gap-1">
-                      <DollarSign className="w-3.5 h-3.5 text-[#10B981]" />
+                    <span className="font-semibold text-[#FFFFFF] flex items-center gap-1">
+                      <DollarSign className="w-3.5 h-3.5 text-[#89CFF0]" />
                       Verified Bounty
                     </span>
                     <span
                       ref={bountyAmountRef}
-                      className="font-mono text-[#10B981] text-xs font-bold tabular-nums"
+                      className="font-mono text-[#89CFF0] text-xs font-bold tabular-nums"
                     >
                       +$0.00
                     </span>
                   </div>
-                  <div className="text-[11px] text-[#A1A1AA]">
+                  <div className="text-[11px] text-zinc-400">
                     <span
                       ref={bountyViewsRef}
-                      className="text-[#F4F4F6] font-mono font-medium tabular-nums"
+                      className="text-[#FFFFFF] font-mono font-medium tabular-nums"
                     >
                       0
                     </span>{" "}
                     Verified Sample Views @ $2.00 CPM Payout.
                   </div>
-                  <div className="pt-1.5 border-t border-[#F3E5AB]/10 flex items-center justify-between text-[10px] font-mono text-[#A1A1AA]">
+                  <div className="pt-1.5 border-t border-[#89CFF0]/15 flex items-center justify-between text-[10px] font-mono text-zinc-400">
                     <span>Fee: 0% Wallet Reinvest</span>
-                    <span className="text-[#10B981] font-semibold">READY TO WITHDRAW</span>
+                    <span className="text-[#89CFF0] font-semibold">READY TO WITHDRAW</span>
                   </div>
                 </div>
               </div>
@@ -509,12 +509,12 @@ export function HowItWorksWalkthrough({
         </div>
 
         {/* 15.00s Continuous Interactive Timeline Scrubber (Touch & Mouse Supported) */}
-        <div className="px-4 sm:px-6 py-3 bg-[#17120C] border-t border-[#F3E5AB]/10">
-          <div className="flex items-center justify-between text-[11px] font-mono text-[#A1A1AA] mb-1.5">
+        <div className="px-4 sm:px-6 py-3 bg-[#00040A] border-t border-[#89CFF0]/15">
+          <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400 mb-1.5">
             <span>00:00.00</span>
             <span
               ref={scrubberTextRef}
-              className="text-[#F3E5AB] font-semibold tabular-nums"
+              className="text-[#89CFF0] font-semibold tabular-nums"
             >
               SCRUBBER: 0.00s / 15.00s
             </span>
@@ -526,12 +526,12 @@ export function HowItWorksWalkthrough({
             onTouchStart={handleScrubberTouchStart}
             onTouchMove={handleScrubberTouchMove}
             onTouchEnd={handleScrubberTouchEnd}
-            className="relative w-full h-3 bg-[#2A2016] rounded-full cursor-pointer overflow-hidden group touch-none"
+            className="relative w-full h-3 bg-[#050D1E] rounded-full cursor-pointer overflow-hidden group touch-none"
           >
             {/* Played progress fill */}
             <div
               ref={scrubberFillRef}
-              className="h-full bg-gradient-to-r from-[#10B981] via-[#D99B52] to-[#F3E5AB] rounded-full"
+              className="h-full bg-gradient-to-r from-[#0047AB] via-[#89CFF0] to-[#FFFFFF] rounded-full"
               style={{ width: "0%" }}
             />
             {/* Chapter demarcation ticks */}
@@ -541,7 +541,7 @@ export function HowItWorksWalkthrough({
         </div>
 
         {/* 3 Clickable Timeline Chapter Tabs */}
-        <div className="grid grid-cols-1 md:grid-cols-3 bg-[#17120C]">
+        <div className="grid grid-cols-1 md:grid-cols-3 bg-[#00040A]">
           {chapters.map((ch) => {
             const Icon = ch.icon;
             const isActive = currentScene === ch.step;
@@ -557,16 +557,16 @@ export function HowItWorksWalkthrough({
                 key={ch.step}
                 type="button"
                 onClick={() => jumpToChapter(ch.step)}
-                className={`p-4 text-left transition-colors relative group border-t border-[#F3E5AB]/10 ${
-                  isActive ? "bg-[#2A2016]/90" : "hover:bg-[#1E1710]"
+                className={`p-4 text-left transition-colors relative group border-t border-[#89CFF0]/15 ${
+                  isActive ? "bg-[#030E26]" : "hover:bg-[#020712]"
                 }`}
                 aria-pressed={isActive}
               >
                 {/* Active Progress Bar */}
-                <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#17120C]">
+                <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#00040A]">
                   <div
                     ref={refToUse}
-                    className="h-full bg-[#F3E5AB]"
+                    className="h-full bg-[#89CFF0]"
                     style={{ width: "0%" }}
                   />
                 </div>
@@ -575,20 +575,20 @@ export function HowItWorksWalkthrough({
                   <div
                     className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border transition-colors ${
                       isActive
-                        ? "bg-[#F3E5AB] text-[#17120C] border-[#F3E5AB]"
-                        : "bg-[#2A2016] text-[#A1A1AA] border-[#F3E5AB]/20"
+                        ? "bg-[#89CFF0] text-[#000000] border-[#89CFF0]"
+                        : "bg-[#040C1E] text-zinc-400 border-[#89CFF0]/20"
                     }`}
                   >
                     <Icon className="w-3.5 h-3.5" />
                   </div>
                   <div className="space-y-0.5">
-                    <div className="text-xs font-semibold text-[#F4F4F6] flex items-center gap-1.5">
+                    <div className="text-xs font-semibold text-[#FFFFFF] flex items-center gap-1.5">
                       <span>{ch.title}</span>
                     </div>
-                    <p className="text-[11px] text-[#A1A1AA] line-clamp-2 font-sans">
+                    <p className="text-[11px] text-zinc-400 line-clamp-2 font-sans">
                       {ch.description}
                     </p>
-                    <span className="text-[10px] font-mono text-[#D99B52] block pt-0.5">
+                    <span className="text-[10px] font-mono text-[#89CFF0] block pt-0.5">
                       {ch.timecode}
                     </span>
                   </div>
@@ -606,49 +606,49 @@ export function HowItWorksWalkthrough({
           trigger={
             <button
               type="button"
-              className="px-5 py-2.5 rounded-xl bg-[#2A2016] hover:bg-[#382B1E] border border-[#F3E5AB]/25 text-[#F3E5AB] hover:text-white text-xs font-mono font-medium flex items-center gap-2 transition-all shadow-md active:scale-95"
+              className="px-5 py-2.5 rounded-xl bg-[#040C1E] hover:bg-[#0047AB]/30 border border-[#89CFF0]/25 text-[#89CFF0] hover:text-white text-xs font-mono font-medium flex items-center gap-2 transition-all shadow-md active:scale-95"
             >
-              <Sliders className="w-3.5 h-3.5 text-[#10B981]" />
+              <Sliders className="w-3.5 h-3.5 text-[#89CFF0]" />
               <span>Expand Pipeline Telemetry Specs</span>
             </button>
           }
         >
-          <div className="p-6 space-y-6 text-[#F4F4F6]">
+          <div className="p-6 space-y-6 text-[#FFFFFF] bg-[#000816] rounded-2xl border border-[#89CFF0]/25">
             <div>
-              <span className="text-xs font-mono uppercase tracking-wider text-[#10B981]">
+              <span className="text-xs font-mono uppercase tracking-wider text-[#89CFF0]">
                 FULL PIPELINE TELEMETRY
               </span>
-              <h3 className="text-2xl font-display font-bold mt-1">
+              <h3 className="text-2xl font-display font-bold mt-1 text-[#FFFFFF]">
                 Autonomous Studio Architecture
               </h3>
-              <p className="text-xs text-[#A1A1AA] mt-1">
+              <p className="text-xs text-zinc-400 mt-1">
                 Zero human-in-the-loop required from video ingestion to schedule dispatch.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
-              <div className="p-4 rounded-xl bg-[#17120C] border border-[#F3E5AB]/15 space-y-2">
-                <span className="text-[#10B981] font-semibold">1. INGEST & DIARIZE</span>
-                <p className="text-[11px] text-[#A1A1AA] font-sans">
+              <div className="p-4 rounded-xl bg-[#00040A] border border-[#89CFF0]/20 space-y-2">
+                <span className="text-[#89CFF0] font-semibold">1. INGEST & DIARIZE</span>
+                <p className="text-[11px] text-zinc-400 font-sans">
                   GPU-accelerated demuxing strips audio into Whisper-v3 timestamps, isolating speaker changes and silence boundaries.
                 </p>
               </div>
-              <div className="p-4 rounded-xl bg-[#17120C] border border-[#F3E5AB]/15 space-y-2">
-                <span className="text-[#D99B52] font-semibold">2. REFRAME & SUBTITLES</span>
-                <p className="text-[11px] text-[#A1A1AA] font-sans">
+              <div className="p-4 rounded-xl bg-[#00040A] border border-[#89CFF0]/20 space-y-2">
+                <span className="text-[#89CFF0] font-semibold">2. REFRAME & SUBTITLES</span>
+                <p className="text-[11px] text-zinc-400 font-sans">
                   Multi-head attention models identify active talker faces and generate dynamic 9:16 vertical split compositions.
                 </p>
               </div>
-              <div className="p-4 rounded-xl bg-[#17120C] border border-[#F3E5AB]/15 space-y-2">
-                <span className="text-[#F3E5AB] font-semibold">3. DISPATCH & BOUNTY</span>
-                <p className="text-[11px] text-[#A1A1AA] font-sans">
+              <div className="p-4 rounded-xl bg-[#00040A] border border-[#89CFF0]/20 space-y-2">
+                <span className="text-[#89CFF0] font-semibold">3. DISPATCH & BOUNTY</span>
+                <p className="text-[11px] text-zinc-400 font-sans">
                   Webhook triggers deliver mobile push notifications to Telegram, with 1-click approvals queuing direct API posts.
                 </p>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-[#F3E5AB]/10 flex flex-col sm:flex-row items-center justify-between gap-3">
-              <span className="text-xs font-mono text-[#A1A1AA]">
+            <div className="pt-4 border-t border-[#89CFF0]/15 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <span className="text-xs font-mono text-zinc-400">
                 Render SLA: Sub-60s on 1080p 60FPS Clips
               </span>
 
@@ -657,7 +657,7 @@ export function HowItWorksWalkthrough({
                 onClick={() => {
                   onLoadWorkflowSample();
                 }}
-                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#10B981] hover:bg-[#059669] text-black font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#10B981]/20 active:scale-95"
+                className="btn-sharko-primary w-full sm:w-auto px-6 py-2.5 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 transition-all active:scale-95"
               >
                 <Sliders className="w-4 h-4" />
                 <span>Execute This Pipeline in Studio</span>
