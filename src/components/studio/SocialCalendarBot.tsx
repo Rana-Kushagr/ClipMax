@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { MobileApprovalBot } from "../../types/studio";
 import { SCHEDULE_EVENTS, MOCK_APPROVAL_BOT } from "../../lib/constants";
+import { sharkoApi } from "../../services/sharkoApi";
 
 export function SocialCalendarBot() {
   const events = SCHEDULE_EVENTS;
@@ -23,6 +24,7 @@ export function SocialCalendarBot() {
   const [selectedTimezone, setSelectedTimezone] = useState("IST (UTC+5:30)");
   const [activePlatformFilter, setActivePlatformFilter] = useState<string>("all");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isSubmittingApproval, setIsSubmittingApproval] = useState(false);
 
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
@@ -34,10 +36,30 @@ export function SocialCalendarBot() {
     { id: "x", name: "X / Twitter", icon: Zap },
   ];
 
-  const handleApprovePost = () => {
+  const handleApprovePost = async () => {
+    if (isSubmittingApproval || approvalBot.status === "approved") return;
+    setIsSubmittingApproval(true);
+    const prevStatus = approvalBot.status;
     setApprovalBot((prev) => ({ ...prev, status: "approved" }));
-    setToastMessage("Approved. Queued for auto-publish across TikTok & YouTube Shorts with verified OAuth token.");
-    setTimeout(() => setToastMessage(null), 4000);
+    setToastMessage(
+      "Approved. Queued for auto-publish across TikTok & YouTube Shorts with verified OAuth token."
+    );
+
+    const res = await sharkoApi.approveBotSchedule({
+      clipId: approvalBot.id || "clip-1",
+      targetNetworks: ["tiktok", "youtube"],
+      scheduledAtIso: new Date().toISOString(),
+      timezone: selectedTimezone,
+    });
+
+    setIsSubmittingApproval(false);
+
+    if (!res.ok && !res.isOfflineFallback) {
+      setApprovalBot((prev) => ({ ...prev, status: prevStatus }));
+      setToastMessage(res.error || "Failed to sync schedule with OAuth bot.");
+    } else {
+      setTimeout(() => setToastMessage(null), 4000);
+    }
   };
 
   const handleRegenerateHook = () => {
@@ -201,15 +223,21 @@ export function SocialCalendarBot() {
                 <button
                   type="button"
                   onClick={handleApprovePost}
-                  disabled={approvalBot.status === "approved"}
+                  disabled={approvalBot.status === "approved" || isSubmittingApproval}
                   className={`py-2 px-3 rounded-md font-semibold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-95 ${
                     approvalBot.status === "approved"
                       ? "bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 cursor-default"
-                      : "bg-white hover:bg-[#F4F4F6] text-[#08090B]"
+                      : "bg-white hover:bg-[#F4F4F6] text-[#08090B] disabled:opacity-75"
                   }`}
                 >
                   <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                  <span>{approvalBot.status === "approved" ? "Queued" : "✓ Approve & Queue"}</span>
+                  <span>
+                    {isSubmittingApproval
+                      ? "Syncing..."
+                      : approvalBot.status === "approved"
+                      ? "Queued"
+                      : "✓ Approve & Queue"}
+                  </span>
                 </button>
 
                 <button

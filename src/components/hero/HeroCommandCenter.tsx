@@ -21,6 +21,7 @@ import { BorderGlow } from "../ui/BorderGlow";
 import { SmartOptionsDrawer, SmartOptionsState } from "./SmartOptionsDrawer";
 import { StudioQuickDock } from "./StudioQuickDock";
 import { StudioTabId } from "../studio/InteractiveStudioShowcase";
+import { sharkoApi } from "../../services/sharkoApi";
 
 interface HeroCommandCenterProps {
   studioMode: "lightning" | "studio";
@@ -52,6 +53,7 @@ export function HeroCommandCenter({
   const [progressPercent, setProgressPercent] = useState(0);
   const [dragActive, setDragActive] = useState(false);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [ingestError, setIngestError] = useState<string | null>(null);
 
   useEffect(() => {
     const url = videoUrl.toLowerCase();
@@ -85,14 +87,52 @@ export function HeroCommandCenter({
     { name: "Kick Creator Vod", url: "https://kick.com/video/40281" },
   ];
 
-  const handleStartGeneration = () => {
+  const handleStartGeneration = async () => {
+    if (isProcessing) return;
+    setIngestError(null);
+
+    const effectiveUrl =
+      videoUrl.trim() ||
+      (uploadedFileName
+        ? `local-file://${uploadedFileName}`
+        : "https://youtube.com/watch?v=SystemArchitecture_Discussion");
+
+    if (!uploadedFileName && videoUrl.trim()) {
+      const isValid =
+        /^https?:\/\/(www\.)?(youtube\.com|youtu\.be|twitch\.tv|kick\.com|rumble\.com|drive\.google\.com)\/.+/i.test(
+          videoUrl.trim()
+        ) || /\.(mp4|mov|webm)$/i.test(videoUrl.trim());
+
+      if (!isValid) {
+        setIngestError(
+          "Please enter a valid video link (YouTube, Twitch, Kick, Rumble, Google Drive) or upload a media file."
+        );
+        return;
+      }
+    }
+
     if (!videoUrl && !uploadedFileName) {
-      setVideoUrl("https://youtube.com/watch?v=SystemArchitecture_Discussion");
+      setVideoUrl(effectiveUrl);
     }
 
     setIsProcessing(true);
     setProgressPercent(0);
     setProcessStep(1);
+
+    const res = await sharkoApi.ingestVideoJob({
+      sourceUrl: effectiveUrl,
+      genres: options.selectedGenres,
+      customPrompt: options.promptQuery,
+      timeframeStartSec: options.startTime,
+      timeframeEndSec: options.endTime,
+      stylePreset: options.selectedPersona,
+    });
+
+    if (!res.ok && !res.isOfflineFallback) {
+      setIsProcessing(false);
+      setIngestError(res.error || "Video ingestion failed. Please try again.");
+      return;
+    }
 
     const interval = setInterval(() => {
       setProgressPercent((prev) => {
@@ -101,7 +141,8 @@ export function HeroCommandCenter({
           setTimeout(() => {
             setIsProcessing(false);
             onClipsGenerated();
-            const elem = document.getElementById("playgrounds");
+            const elem =
+              document.getElementById("playgrounds") || document.getElementById("studio");
             if (elem) elem.scrollIntoView({ behavior: "smooth" });
           }, 350);
           return 100;
@@ -168,6 +209,21 @@ export function HeroCommandCenter({
       <p className="text-text-secondary text-sm sm:text-base max-w-2xl mx-auto mb-8 leading-relaxed font-sans drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]">
         Autonomous face-tracking reframe, SMPTE-timed kinetic captions, and 1-click mobile schedule approval. Zero timeline editing required.
       </p>
+
+      {/* Input Ingest Validation / API Error Banner */}
+      {ingestError && (
+        <div className="mb-4 max-w-2xl mx-auto p-3 rounded-xl bg-red-950/80 border border-red-500/40 text-red-200 text-xs font-mono flex items-center justify-between shadow-lg">
+          <span>{ingestError}</span>
+          <button
+            type="button"
+            onClick={() => setIngestError(null)}
+            className="p-1 text-red-300 hover:text-white"
+            aria-label="Dismiss error"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Universal Command Recessed Well with BorderGlow & SpotlightCard */}
       <div

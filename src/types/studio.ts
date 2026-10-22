@@ -56,17 +56,24 @@ export interface EditingStylePreset {
 
 export interface BountyCampaign {
   id: string;
-  brand: string;
-  logo: string;
-  brandCategory: string;
   title: string;
-  hookGuide: string;
-  totalPool: number;
-  remainingPool: number;
+  brand: string;
+  brandName?: string;
+  logo?: string;
+  brandCategory: string;
+  niche?: "Developer Tools" | "Cloud Infrastructure" | "AI Systems" | "Productivity Tools" | string;
+  cpmRateUsd?: number;
   payoutPerK: number;
-  minDuration: string;
-  claimedPercent: number;
+  escrowRemainingUsd?: number;
+  remainingPool: number;
+  escrowTotalUsd?: number;
+  totalPool: number;
+  sourceVideoUrl?: string;
   footageUrl: string;
+  hookGuide?: string;
+  minDuration?: string;
+  claimedPercent?: number;
+  verifiedEscrowTx?: string;
 }
 
 export interface ScheduleEvent {
@@ -79,6 +86,7 @@ export interface ScheduleEvent {
 }
 
 export interface MobileApprovalBot {
+  id?: string;
   status: "pending" | "approved" | "regenerated";
   clipTitle: string;
   clipDuration: string;

@@ -183,7 +183,7 @@ export function App() {
 
       {/* =========================================================================
           COLOUR BLOCK 1: Pastel Sunlit Sand & Warm Parchment Umber (#221B12)
-          Contains: Section 01: How ClipMax Works Walkthrough
+          Contains: Section 01: How Sharko Works Walkthrough
           ========================================================================= */}
       <SandyBlock variant="sand" showBottomFeather>
         {/* Section 01: How It Works 60FPS Walkthrough */}
@@ -264,7 +264,10 @@ export function App() {
               </p>
             </div>
 
-            <BountyCampaignGrid onSelectCampaign={handleSelectCampaign} />
+            <BountyCampaignGrid
+              onSelectCampaign={handleSelectCampaign}
+              triggerToast={(msg) => setToastMessage(msg)}
+            />
           </div>
         </section>
 

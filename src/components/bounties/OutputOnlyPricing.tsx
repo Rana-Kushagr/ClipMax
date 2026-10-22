@@ -3,11 +3,38 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
 import { Magnet } from "../react-bits/Magnet";
 import { BorderGlow } from "../ui/BorderGlow";
+import { sharkoApi } from "../../services/sharkoApi";
 
 export const OutputOnlyPricing: React.FC = () => {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("annual");
+  const [submittingTierId, setSubmittingTierId] = useState<string | null>(null);
 
   const isAnnual = billingCycle === "annual";
+
+  const handleTierAction = async (tierId: string) => {
+    if (tierId === "starter") {
+      const hero = document.getElementById("hero") || document.getElementById("studio-command");
+      if (hero) hero.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+
+    if (submittingTierId) return;
+    setSubmittingTierId(tierId);
+
+    const res = await sharkoApi.createCheckoutSession({
+      planId: tierId as "starter" | "pro" | "agency",
+      billingCycle,
+    });
+
+    setSubmittingTierId(null);
+
+    if (res.ok && res.data?.checkoutUrl) {
+      window.location.href = res.data.checkoutUrl;
+    } else {
+      const hero = document.getElementById("hero") || document.getElementById("studio-command");
+      if (hero) hero.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   const tiers = [
     {
@@ -39,7 +66,7 @@ export const OutputOnlyPricing: React.FC = () => {
       features: [
         "100–120 exported HD clips / mo",
         "100% unused credit rollover",
-        "Telegram mobile approval bot (@ClipMaxStudioBot)",
+        "Telegram mobile approval bot (@SharkoStudioBot)",
         "Custom kinetic typography & animation styling",
         "Multi-platform auto-scheduler (TikTok, Reels, Shorts)",
         "Priority GPU render queue (sub-60s turnaround)",
@@ -148,17 +175,15 @@ export const OutputOnlyPricing: React.FC = () => {
         <Magnet strength={0.2}>
           <button
             type="button"
-            onClick={() => {
-              const hero = document.getElementById("hero");
-              if (hero) hero.scrollIntoView({ behavior: "smooth" });
-            }}
+            disabled={submittingTierId === tier.id}
+            onClick={() => handleTierAction(tier.id)}
             className={`w-full py-3 px-4 rounded-xl font-mono text-xs font-semibold flex items-center justify-center gap-2 transition-all duration-200 shadow-md ${
               tier.highlight
                 ? "bg-[#F3E5AB] hover:bg-white text-[#17120C] shadow-lg shadow-[#D99B52]/20"
                 : "bg-[#2A2016] hover:bg-[#382B1E] text-[#F3E5AB] border border-[#F3E5AB]/20"
-            }`}
+            } disabled:opacity-75 disabled:cursor-wait`}
           >
-            <span>{tier.cta}</span>
+            <span>{submittingTierId === tier.id ? "Connecting..." : tier.cta}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </Magnet>

@@ -15,6 +15,7 @@ import { INITIAL_CLIPS, CAPTION_STYLES } from "../../lib/constants";
 import { DecryptedText } from "../react-bits/DecryptedText";
 import { CardContainer, CardBody, CardItem } from "../ui/3d-card";
 import { BorderGlow } from "../ui/BorderGlow";
+import { sharkoApi } from "../../services/sharkoApi";
 
 function getScoreBadge(score: number) {
   if (score >= 90) {
@@ -92,16 +93,24 @@ Exported via Sharko Studio — Hunt the Moments.`;
     URL.revokeObjectURL(blobUrl);
   };
 
-  const handleDownload = (clip: VideoClip) => {
+  const handleDownload = async (clip: VideoClip) => {
     if (downloadingClipId === clip.id) return;
     setDownloadingClipId(clip.id);
 
-    setTimeout(() => {
-      setDownloadingClipId(null);
+    const res = await sharkoApi.exportClipJob(clip.id, {
+      clipId: clip.id,
+      framingMode: clip.speakerType,
+      aspectRatio: clip.aspectRatio,
+      captionPreset: activeCaptionPreset,
+    });
+
+    setDownloadingClipId(null);
+
+    if (res.ok || res.isOfflineFallback) {
       setDownloadedClipIds((prev) => new Set(prev).add(clip.id));
       triggerFileDownload(clip);
       onExportClip(clip);
-    }, 600);
+    }
   };
 
   const activeCaption =

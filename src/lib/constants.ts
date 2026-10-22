@@ -206,41 +206,7 @@ export const INITIAL_CLIPS: VideoClip[] = [
   ),
 ];
 
-const makeBounty = (
-  id: string,
-  brand: string,
-  logo: string,
-  brandCategory: string,
-  title: string,
-  hookGuide: string,
-  totalPool: number,
-  remainingPool: number,
-  payoutPerK: number,
-  minDuration: string,
-  claimedPercent: number,
-  footageUrl: string
-): BountyCampaign => ({
-  id,
-  brand,
-  logo,
-  brandCategory,
-  title,
-  hookGuide,
-  totalPool,
-  remainingPool,
-  payoutPerK,
-  minDuration,
-  claimedPercent,
-  footageUrl,
-});
-
-export const BOUNTY_CAMPAIGNS: BountyCampaign[] = [
-  makeBounty("bounty-1", "DevTools Community", "DEV", "Developer Tools", "Terminal Workflows & Developer Productivity Showcase", "Clip standout terminal setups, build-tool speed comparisons, or CLI tips.", 4500, 2850, 3.5, "30s", 36, "https://youtube.com/watch?v=DevTools_Terminal_Productivity_2026"),
-  makeBounty("bounty-2", "Cloud Architecture Pod", "CLOUD", "Cloud Infrastructure", "Serverless vs Kubernetes Scaling Debate Highlights", "Find moments discussing cost trade-offs, cold-start latency, and scaling spikes.", 6000, 4200, 4.0, "35s", 30, "https://youtube.com/watch?v=Cloud_Kubernetes_Serverless_Scale"),
-  makeBounty("bounty-3", "Workflow Automations", "AUTO", "Productivity Tools", "Autonomous Agent Orchestration & Workspace Integration", "Highlight multi-agent coordination, real-time tool calls, and API integrations.", 3200, 1950, 3.25, "25s", 39, "https://youtube.com/watch?v=Autonomous_Agent_Architecture_Demo"),
-  makeBounty("bounty-4", "Vector DB Foundry", "VEC", "AI Systems", "HNSW Indexing vs Flat L2 Vector Search Benchmarks", "Cut to the performance charts showing latency drop and recall precision tradeoffs.", 5000, 3100, 4.25, "28s", 38, "https://youtube.com/watch?v=Vector_Index_Benchmarking_Technical_Talk"),
-  makeBounty("bounty-5", "Kernel & Rust Hub", "RUST", "Developer Tools", "Zero-Copy Memory Allocations in High-Throughput Pipelines", "Isolate the profiler breakdown of CPU cache misses and SIMD vectorization.", 4200, 2600, 3.8, "30s", 38, "https://youtube.com/watch?v=Rust_Zero_Copy_High_Performance_Engine"),
-];
+export const BOUNTY_CAMPAIGNS: BountyCampaign[] = [];
 
 const makeEvent = (
   id: string,

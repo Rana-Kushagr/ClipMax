@@ -12,6 +12,7 @@ import { VideoClip, CaptionPresetId } from "../../types/studio";
 import { SmartReframeStudio } from "./SmartReframeStudio";
 import { KineticCaptionStudio } from "./KineticCaptionStudio";
 import { useBodyScrollLock } from "../../hooks/useBodyScrollLock";
+import { sharkoApi } from "../../services/sharkoApi";
 
 interface StudioEditorModalProps {
   clip: VideoClip | null;
@@ -32,6 +33,7 @@ export function StudioEditorModal({
   const [title, setTitle] = useState(
     clip?.title || "System Architecture DeepDive"
   );
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     if (clip) {
@@ -44,9 +46,24 @@ export function StudioEditorModal({
 
   if (!isOpen || typeof document === "undefined") return null;
 
-  const handleExportClick = () => {
-    onExport(title);
-    onClose();
+  const handleExportClick = async () => {
+    if (isExporting) return;
+    setIsExporting(true);
+    try {
+      const clipId = clip?.id || "clip-1";
+      const res = await sharkoApi.exportClipJob(clipId, {
+        clipId,
+        framingMode: "split",
+        aspectRatio: "9:16",
+        captionPreset: activeCaptionPreset,
+      });
+      if (res.ok || res.isOfflineFallback) {
+        onExport(title);
+        onClose();
+      }
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const modalContent = (
@@ -174,10 +191,11 @@ export function StudioEditorModal({
               <button
                 type="button"
                 onClick={handleExportClick}
-                className="flex-1 sm:flex-initial px-6 py-2 rounded-xl bg-[#F3E5AB] hover:bg-white text-[#17120C] font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95"
+                disabled={isExporting}
+                className="flex-1 sm:flex-initial px-6 py-2 rounded-xl bg-[#F3E5AB] hover:bg-white text-[#17120C] font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95 disabled:opacity-75 disabled:cursor-wait"
               >
                 <Download className="w-4 h-4" />
-                <span>Export 1080p HD Watermark-Free</span>
+                <span>{isExporting ? "Exporting HD..." : "Export 1080p HD Watermark-Free"}</span>
               </button>
             </div>
           </div>
