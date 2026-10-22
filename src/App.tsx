@@ -5,7 +5,7 @@ import { StudioEnvironmentBg } from "./components/background/StudioEnvironmentBg
 import { HeroViewfinderHud } from "./components/hero/HeroViewfinderHud";
 import { HeroCommandCenter } from "./components/hero/HeroCommandCenter";
 import { HowItWorksWalkthrough } from "./components/walkthrough/HowItWorksWalkthrough";
-import { InteractiveStudioShowcase } from "./components/studio/InteractiveStudioShowcase";
+import { InteractiveStudioShowcase, StudioTabId } from "./components/studio/InteractiveStudioShowcase";
 import { BountyCampaignGrid } from "./components/bounties/BountyCampaignGrid";
 import { ProfitSimulator } from "./components/bounties/ProfitSimulator";
 import { OutputOnlyPricing } from "./components/bounties/OutputOnlyPricing";
@@ -89,9 +89,7 @@ export function App() {
   const [selectedPersona, setSelectedPersona] = useState("auto");
   const [activeTool, setActiveTool] = useState("auto-detect");
   const [videoUrl, setVideoUrl] = useState("");
-  const [activeStudioTab, setActiveStudioTab] = useState<
-    "clips" | "reframe" | "captions" | "schedule"
-  >("clips");
+  const [activeStudioTab, setActiveStudioTab] = useState<StudioTabId>("strip");
 
   // Export success notification state
   const [toastMessage, setToastMessage] = useState<string | null>(null);

@@ -1,11 +1,5 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Scissors,
-  Subtitles,
-  Columns,
-  Calendar,
-} from "lucide-react";
 import { ViralClipStrip } from "./ViralClipStrip";
 import { SmartReframeStudio } from "./SmartReframeStudio";
 import { KineticCaptionStudio } from "./KineticCaptionStudio";
@@ -14,9 +8,17 @@ import { StudioEditorModal } from "./StudioEditorModal";
 import { VideoClip, CaptionPresetId } from "../../types/studio";
 import { INITIAL_CLIPS } from "../../lib/constants";
 
+export type StudioTabId = "strip" | "clips" | "reframe" | "captions" | "schedule";
+
+interface StudioTabItem {
+  id: StudioTabId;
+  label: string;
+  badge?: string;
+}
+
 interface InteractiveStudioShowcaseProps {
-  activeStudioTab: "clips" | "reframe" | "captions" | "schedule";
-  setActiveStudioTab: (tab: "clips" | "reframe" | "captions" | "schedule") => void;
+  activeStudioTab: StudioTabId;
+  setActiveStudioTab: (tab: StudioTabId) => void;
   onExportSuccess: (clipTitle: string) => void;
 }
 
@@ -49,12 +51,12 @@ export function InteractiveStudioShowcase({
     );
   };
 
-  const tabs = [
-    { id: "clips", label: "Viral 9:16 Strip", icon: Scissors },
-    { id: "reframe", label: "Smart Reframe", icon: Columns },
-    { id: "captions", label: "Kinetic Captions", icon: Subtitles },
-    { id: "schedule", label: "Schedule & Bot", icon: Calendar },
-  ] as const;
+  const STUDIO_TABS: readonly StudioTabItem[] = [
+    { id: "strip", label: "Viral 9:16 Strip", badge: "6" },
+    { id: "reframe", label: "Smart Reframe" },
+    { id: "captions", label: "Kinetic Captions" },
+    { id: "schedule", label: "Schedule & Bot" },
+  ];
 
   return (
     <section
@@ -73,30 +75,36 @@ export function InteractiveStudioShowcase({
           </h3>
         </div>
 
-        {/* Tab switcher buttons with Framer Motion layoutId pill */}
-        <div className="p-1 rounded-xl bg-[#1E1710] border border-[#F3E5AB]/15 flex items-center gap-1 overflow-x-auto max-w-full shadow-lg">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeStudioTab === tab.id;
-
+        {/* Autonomous Editing Stages Navbar */}
+        <div className="inline-flex flex-wrap items-center gap-1.5 rounded-2xl bg-[#16120D] p-1.5 border border-[#F3E5AB]/20 shadow-[0_10px_30px_rgba(0,0,0,0.45)]">
+          {STUDIO_TABS.map((tab) => {
+            const isActive =
+              activeStudioTab === tab.id ||
+              (activeStudioTab === "clips" && tab.id === "strip") ||
+              (activeStudioTab === "strip" && tab.id === "clips");
             return (
               <button
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveStudioTab(tab.id)}
-                className={`relative px-4 py-2 rounded-lg text-xs font-medium flex items-center gap-2 transition-colors shrink-0 ${
-                  isActive ? "text-[#17120C] font-semibold" : "text-[#A1A1AA] hover:text-white"
+                className={`relative z-10 inline-flex items-center gap-2 rounded-xl px-4 py-2.5 font-display text-[13.5px] font-bold transition-all duration-200 select-none ${
+                  isActive
+                    ? "bg-[#F3E5AB] text-[#14100B] shadow-[0_2px_16px_rgba(243,229,171,0.35)] scale-[1.01]"
+                    : "bg-transparent text-[#E5E0D8]/80 hover:bg-[#F3E5AB]/10 hover:text-[#F3E5AB]"
                 }`}
               >
-                {isActive && (
-                  <motion.div
-                    layoutId="studioWorkspacePill"
-                    className="absolute inset-0 bg-[#F3E5AB] rounded-lg shadow-sm -z-10"
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                  />
-                )}
-                <Icon className={`w-3.5 h-3.5 ${isActive ? "text-[#17120C]" : "text-[#10B981]"}`} />
                 <span>{tab.label}</span>
+                {Boolean(tab.badge) && (
+                  <span
+                    className={`rounded-md px-1.5 py-0.5 font-mono text-[10.5px] font-extrabold ${
+                      isActive
+                        ? "bg-[#14100B] text-[#F3E5AB]"
+                        : "bg-[#10B981]/20 text-[#34D399]"
+                    }`}
+                  >
+                    {tab.badge}
+                  </span>
+                )}
               </button>
             );
           })}
@@ -106,7 +114,7 @@ export function InteractiveStudioShowcase({
       {/* Render Active Studio Workspace with AnimatePresence mode="wait" */}
       <div className="rounded-2xl bg-[#1E1710] border border-[#F3E5AB]/15 p-4 sm:p-6 shadow-2xl min-h-[480px] overflow-visible">
         <AnimatePresence mode="wait">
-          {activeStudioTab === "clips" && (
+          {(activeStudioTab === "clips" || activeStudioTab === "strip") && (
             <motion.div
               key="tab-clips"
               initial={{ opacity: 0, y: 12 }}
