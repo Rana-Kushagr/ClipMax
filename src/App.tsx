@@ -1,4 +1,5 @@
 import React, { useState, useOptimistic, useTransition } from "react";
+import { motion } from "framer-motion";
 import { AppHeader } from "./components/navigation/AppHeader";
 import { StudioEnvironmentBg } from "./components/background/StudioEnvironmentBg";
 import { HeroViewfinderHud } from "./components/hero/HeroViewfinderHud";
@@ -10,7 +11,6 @@ import { ProfitSimulator } from "./components/bounties/ProfitSimulator";
 import { OutputOnlyPricing } from "./components/bounties/OutputOnlyPricing";
 import { StudioFooter } from "./components/footer/StudioFooter";
 import { NoiseOverlay } from "./components/react-bits/NoiseOverlay";
-import { BlurText } from "./components/react-bits/BlurText";
 import { Grainient } from "./components/backgrounds/Grainient";
 import { useClipMaxGsap } from "./hooks/useClipMaxGsap";
 import { CheckCircle2, X } from "lucide-react";
@@ -185,11 +185,16 @@ export function App() {
           />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
-              <BlurText
-                text="Cinema-grade AI studio, built for retention"
-                italicWords={["retention"]}
-                className="text-3xl sm:text-4xl font-display font-bold text-[#F4F4F6]"
-              />
+              <motion.h2
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.2 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="text-3xl sm:text-4xl font-display font-bold text-[#F4F4F6] tracking-tight"
+              >
+                Cinema-grade AI studio,{" "}
+                <span className="serif-italic text-[#F3E5AB]">built for retention.</span>
+              </motion.h2>
               <p className="text-sm text-[#A1A1AA] font-sans">
                 Inspect autonomous viral scoring, fine-tune multi-speaker crop boundaries, style
                 word-by-word kinetic captions, and sync with Telegram approval bots.
@@ -230,11 +235,16 @@ export function App() {
         <section id="bounties" className="py-24 relative overflow-hidden z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             <div className="text-center max-w-3xl mx-auto space-y-4">
-              <BlurText
-                text="Monetize your clipping skills with instant bounties"
-                italicWords={["instant", "bounties"]}
-                className="text-3xl sm:text-4xl font-display font-bold text-[#F4F4F6]"
-              />
+              <motion.h2
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.2 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="text-3xl sm:text-4xl font-display font-bold text-[#F4F4F6] tracking-tight"
+              >
+                Monetize your clipping skills with{" "}
+                <span className="serif-italic text-[#D99B52]">instant bounties.</span>
+              </motion.h2>
               <p className="text-sm text-[#A1A1AA] font-sans">
                 Browse verified brand campaigns, generate high-performing shorts in 1-click, and
                 claim direct payouts from locked escrow pools.
@@ -249,11 +259,16 @@ export function App() {
         <section id="simulator" className="py-24 relative overflow-hidden z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             <div className="text-center max-w-3xl mx-auto space-y-4">
-              <BlurText
-                text="Calculate your monthly short-form earnings"
-                italicWords={["monthly"]}
-                className="text-3xl sm:text-4xl font-display font-bold text-[#F4F4F6]"
-              />
+              <motion.h2
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.2 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="text-3xl sm:text-4xl font-display font-bold text-[#F4F4F6] tracking-tight"
+              >
+                Calculate your{" "}
+                <span className="serif-italic text-[#F3E5AB]">monthly</span> short-form earnings.
+              </motion.h2>
               <p className="text-sm text-[#A1A1AA] font-sans">
                 Real-time projection based on verified CPMs ($3.50 – $4.25 / 1K views) across YouTube
                 Shorts, TikTok, and Instagram Reels.
@@ -290,11 +305,16 @@ export function App() {
         <section id="pricing" className="py-24 relative overflow-hidden z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             <div className="text-center max-w-3xl mx-auto space-y-4">
-              <BlurText
-                text="Zero credits burned on previews. Pay only for finished exports."
-                italicWords={["finished", "exports"]}
-                className="text-3xl sm:text-4xl font-display font-bold text-[#F4F4F6]"
-              />
+              <motion.h2
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.2 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="text-3xl sm:text-4xl font-display font-bold text-[#F4F4F6] tracking-tight"
+              >
+                Zero credits burned on previews.{" "}
+                <span className="serif-italic text-[#10B981]">Pay only for finished exports.</span>
+              </motion.h2>
               <p className="text-sm text-[#A1A1AA] font-sans">
                 No subscriptions that expire unused. All plans include 100% credit rollover and zero
                 watermarks.

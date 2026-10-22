@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import {
   Link2,
   UploadCloud,
@@ -13,7 +14,6 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
-import { BlurText } from "../react-bits/BlurText";
 import { DecryptedText } from "../react-bits/DecryptedText";
 import { SpotlightCard } from "../react-bits/SpotlightCard";
 import { Magnet } from "../react-bits/Magnet";
@@ -167,14 +167,17 @@ export function HeroCommandCenter({
         <span className="text-[#10B981] font-mono font-medium hidden sm:inline">100% Rollover</span>
       </div>
 
-      {/* Hero Display Heading using <BlurText /> with High-Fashion Editorial Contrast */}
+      {/* Hero Display Heading with Crisp 0.25s GPU Reveal */}
       <div className="max-w-4xl mx-auto mb-5">
-        <BlurText
-          text="Paste one long video. Get viral shorts in one click."
-          italicWords={["viral", "shorts"]}
-          as="h1"
-          className="font-display font-bold text-[clamp(2.4rem,5.5vw,4.25rem)] tracking-[-0.035em] text-[#F4F4F6] leading-[1.04] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]"
-        />
+        <motion.h1
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+          className="font-display font-bold text-3xl sm:text-5xl md:text-6xl tracking-[-0.035em] text-[#F4F4F6] leading-[1.04] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]"
+        >
+          Paste one long video. Get{" "}
+          <span className="serif-italic text-[#F3E5AB]">viral shorts</span> in one click.
+        </motion.h1>
       </div>
 
       <p className="text-text-secondary text-sm sm:text-base max-w-2xl mx-auto mb-8 leading-relaxed font-sans drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]">

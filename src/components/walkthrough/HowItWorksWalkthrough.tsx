@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { motion } from "framer-motion";
 import {
   Play,
   Pause,
@@ -17,7 +18,6 @@ import {
   Sliders,
   Sparkle,
 } from "lucide-react";
-import { BlurText } from "../react-bits/BlurText";
 import { Magnet } from "../react-bits/Magnet";
 import { ExpandableScreen } from "../ui/expandable-screen";
 
@@ -278,12 +278,16 @@ export function HowItWorksWalkthrough({
     >
       {/* Section Header */}
       <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
-        <BlurText
-          text="How Sharko works in three simple steps."
-          italicWords={["three", "simple"]}
-          as="h2"
+        <motion.h2
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
           className="font-display font-bold text-2xl sm:text-4xl text-[#F4F4F6] tracking-tight"
-        />
+        >
+          How Sharko works in{" "}
+          <span className="serif-italic text-[#F3E5AB]">three simple steps.</span>
+        </motion.h2>
         <p className="text-[#A1A1AA] text-sm sm:text-base mt-2 font-sans">
           Engineered with studio clarity so anyone can create viral shorts and claim escrow bounties in seconds.
         </p>

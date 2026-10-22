@@ -44,6 +44,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Serif Italic Editorial Accents */
+.serif-italic {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
 /* Physical Smoked-Glass Studio Card Console */
 .studio-console-card {
   backdrop-filter: blur(16px);

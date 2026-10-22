@@ -13,7 +13,6 @@ import { SocialCalendarBot } from "./SocialCalendarBot";
 import { StudioEditorModal } from "./StudioEditorModal";
 import { VideoClip, CaptionPresetId } from "../../types/studio";
 import { INITIAL_CLIPS } from "../../lib/constants";
-import { BlurText } from "../react-bits/BlurText";
 
 interface InteractiveStudioShowcaseProps {
   activeStudioTab: "clips" | "reframe" | "captions" | "schedule";
@@ -65,16 +64,13 @@ export function InteractiveStudioShowcase({
     >
       {/* Studio Navigation Tabs with Editorial Heading */}
       <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
-        <div>
-          <span className="text-xs font-mono uppercase tracking-wider text-[#A1A1AA] font-medium">
-            Studio Workspaces
-          </span>
-          <BlurText
-            text="Cinema-grade AI studio, built for retention."
-            italicWords={["retention"]}
-            as="h2"
-            className="font-display font-bold text-2xl sm:text-3xl text-[#F4F4F6] tracking-tight mt-1"
-          />
+        <div className="space-y-0.5">
+          <div className="text-xs font-mono uppercase tracking-wider text-[#D99B52] font-semibold">
+            Interactive Workspaces
+          </div>
+          <h3 className="font-display font-bold text-xl sm:text-2xl text-[#F4F4F6] tracking-tight">
+            Autonomous Editing Stages
+          </h3>
         </div>
 
         {/* Tab switcher buttons with Framer Motion layoutId pill */}
