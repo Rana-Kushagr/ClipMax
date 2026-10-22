@@ -67,12 +67,12 @@ export function StudioQuickDock({
   ];
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-2 select-none" aria-label="Studio Quick Dock">
-      <div className="flex flex-col items-center gap-2">
+    <div className="w-full max-w-3xl mx-auto px-1 sm:px-2 select-none" aria-label="Studio Quick Dock">
+      <div className="flex flex-col items-center gap-2 w-full overflow-x-auto scrollbar-none py-1">
         <Dock
           magnification={58}
           distance={120}
-          className="bg-[#1E1710] border-[#F3E5AB]/15 shadow-2xl h-16 px-4"
+          className="bg-[#1E1710] border-[#F3E5AB]/15 shadow-2xl h-14 sm:h-16 px-2 sm:px-4"
         >
           {tools.map((tool) => {
             const Icon = tool.icon;

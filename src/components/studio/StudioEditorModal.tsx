@@ -56,7 +56,7 @@ export function StudioEditorModal({
   const [activeTab, setActiveTab] = useState<"reframe" | "captions">("reframe");
   const [aspectRatio, setAspectRatio] = useState<string>("9:16");
   const [framingMode, setFramingMode] = useState<"Split" | "Solo" | "Auto">("Split");
-  const [activeCaptionPreset, setActiveCaptionPreset] = useState<CaptionPresetId>("clipmax-emerald");
+  const [activeCaptionPreset, setActiveCaptionPreset] = useState<CaptionPresetId>("sharko-emerald");
   const [tokens, setTokens] = useState<TranscriptToken[]>(DEFAULT_TOKENS);
   const [stripFillerWords, setStripFillerWords] = useState<boolean>(true);
   const [aiBrollOverlay, setAiBrollOverlay] = useState<boolean>(true);
@@ -151,7 +151,7 @@ export function StudioEditorModal({
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
                 <span className="text-xs font-mono uppercase tracking-wider text-[#F3E5AB]">
-                  CLIPMAX CINEMA STUDIO EDITOR
+                  SHARKO STUDIO INSPECTOR — HUNT THE MOMENTS
                 </span>
                 <span className="px-2 py-0.5 rounded-full bg-[#10B981]/20 border border-[#10B981]/40 text-[#10B981] text-[11px] font-mono font-bold">
                   {clip?.viralityScore || 98} VIRAL SCORE

@@ -51,7 +51,7 @@ export function Dock({
     <motion.div
       onMouseMove={(e) => mouseX.set(e.pageX)}
       onMouseLeave={() => mouseX.set(Infinity)}
-      className={`mx-auto flex h-14 items-center gap-2 rounded-2xl border border-[#F3E5AB]/20 bg-[#1A140E]/80 px-3 py-2 backdrop-blur-xl shadow-xl shadow-black/40 ${className}`}
+      className={`mx-auto flex h-14 items-center gap-1.5 sm:gap-2 rounded-2xl border border-[#F3E5AB]/20 bg-[#1E1710] px-2.5 sm:px-3 py-2 shadow-xl shadow-black/40 max-w-full overflow-x-auto sm:overflow-visible shrink-0 scrollbar-none ${className}`}
     >
       {renderChildren()}
     </motion.div>

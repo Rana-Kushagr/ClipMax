@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Film,
   Menu,
   X,
   ArrowRight,
 } from "lucide-react";
 import { Magnet } from "../react-bits/Magnet";
 import { DecryptedText } from "../react-bits/DecryptedText";
+import { SharkoLogo } from "../brand/SharkoLogo";
 
 interface AppHeaderProps {
   freeExportsCount: number;
@@ -67,19 +67,10 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({ freeExportsCount
         <div className="flex items-center gap-3">
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="flex items-center gap-2.5 text-left group"
+            className="text-left group transition-transform active:scale-95"
+            aria-label="Sharko — Hunt the Moments"
           >
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform">
-              <Film className="w-4 h-4" />
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="font-display font-bold text-lg text-zinc-100 tracking-tight">
-                Clip<span className="text-emerald-400">Max</span>
-              </span>
-              <span className="hidden sm:inline-block font-mono text-[10px] text-zinc-400 px-1.5 py-0.5 rounded bg-white/[0.05] border border-white/[0.06]">
-                <DecryptedText text="v3.8-PROD" speed={40} />
-              </span>
-            </div>
+            <SharkoLogo />
           </button>
         </div>
 
@@ -122,7 +113,7 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({ freeExportsCount
           {/* Primary Action Button */}
           <Magnet strength={0.2}>
             <button
-              onClick={() => scrollToSection("hero-command-center")}
+              onClick={() => scrollToSection("hero")}
               className="py-2 px-4 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-zinc-950 text-xs font-mono font-semibold flex items-center gap-1.5 transition-colors shadow-sm shadow-emerald-500/20"
             >
               <span>Start Free</span>

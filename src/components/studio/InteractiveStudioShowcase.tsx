@@ -27,7 +27,7 @@ export function InteractiveStudioShowcase({
   onExportSuccess,
 }: Readonly<InteractiveStudioShowcaseProps>) {
   const [activeCaptionPreset, setActiveCaptionPreset] =
-    useState<CaptionPresetId>("clipmax-emerald");
+    useState<CaptionPresetId>("sharko-emerald");
   const [selectedClipForCrop, setSelectedClipForCrop] =
     useState<VideoClip | null>(null);
   const [isEditorModalOpen, setIsEditorModalOpen] = useState(false);

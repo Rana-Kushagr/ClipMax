@@ -1,5 +1,6 @@
 import React from "react";
-import { Film, ShieldCheck, Terminal, Cpu, ArrowUp, Github } from "lucide-react";
+import { ShieldCheck, Terminal, Cpu, ArrowUp, Github } from "lucide-react";
+import { SharkoLogo } from "../brand/SharkoLogo";
 
 export const StudioFooter: React.FC = () => {
   const scrollToTop = () => {
@@ -13,18 +14,11 @@ export const StudioFooter: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-[#F3E5AB]/10">
           {/* Col 1 & 2: Brand & Mission */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#F3E5AB]/10 border border-[#F3E5AB]/30 flex items-center justify-center text-[#F3E5AB]">
-                <Film className="w-4 h-4" />
-              </div>
-              <span className="font-display font-bold text-lg text-[#F4F4F6] tracking-tight">
-                Clip<span className="text-[#F3E5AB]">Max</span> Studio
-              </span>
-            </div>
+            <SharkoLogo />
 
             <p className="text-xs text-[#A1A1AA] max-w-sm leading-relaxed font-sans">
               Autonomous AI video extraction, multi-speaker reframing, and kinetic subtitle
-              engine designed for high-velocity content operations.
+              engine designed for high-velocity content operations. Hunt the moments that convert.
             </p>
 
             {/* Telemetry Status Bar */}
@@ -125,7 +119,7 @@ export const StudioFooter: React.FC = () => {
         {/* Bottom Hairline Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#A1A1AA]">
           <div>
-            &copy; {new Date().getFullYear()} ClipMax Cinema Systems Inc. Zero credits burned on previews.
+            &copy; {new Date().getFullYear()} Sharko Cinema Systems Inc. Hunt the Moments. Zero credits burned on previews.
           </div>
 
           <div className="flex items-center gap-4">

@@ -27,6 +27,7 @@ export interface VideoClip {
 }
 
 export type CaptionPresetId =
+  | "sharko-emerald"
   | "clipmax-emerald"
   | "bold-gold"
   | "high-contrast"

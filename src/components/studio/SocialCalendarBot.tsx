@@ -150,7 +150,7 @@ export function SocialCalendarBot() {
                 </div>
                 <div>
                   <div className="text-xs font-semibold text-white leading-tight">
-                    @ClipMaxStudioBot
+                    @SharkoStudioBot
                   </div>
                   <div className="text-[10px] font-mono text-[#10B981]">
                     ● Connected to @creator_clips
@@ -266,8 +266,9 @@ export function SocialCalendarBot() {
             </button>
           </div>
 
-          {/* 7-Day Calendar Grid */}
-          <div className="grid grid-cols-7 gap-1.5">
+          {/* 7-Day Calendar Grid: Horizontally Scrollable on Mobile */}
+          <div className="overflow-x-auto pb-2 -mx-1 px-1 scrollbar-none">
+            <div className="min-w-[560px] grid grid-cols-7 gap-1.5">
             {days.map((day) => {
               const dayEvents = events.filter((e) => e.day === day);
               const isToday = day === "Mon";
@@ -319,6 +320,10 @@ export function SocialCalendarBot() {
                 </div>
               );
             })}
+            </div>
+          </div>
+          <div className="flex sm:hidden items-center justify-center text-[10px] font-mono text-[#D99B52] pt-1">
+            <span>← Swipe 7-day schedule horizontally →</span>
           </div>
         </div>
       </div>

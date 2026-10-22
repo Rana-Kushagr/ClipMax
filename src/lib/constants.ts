@@ -40,8 +40,8 @@ export const GENRE_LIST = [
 
 export const CAPTION_STYLES: CaptionStylePreset[] = [
   {
-    id: "clipmax-emerald",
-    name: "Kinetic Mint",
+    id: "sharko-emerald",
+    name: "Sharko Mint",
     description: "High-velocity electric mint active word highlight with dark outline drop shadow.",
     tagline: "High Retention",
     textColor: "#FFFFFF",

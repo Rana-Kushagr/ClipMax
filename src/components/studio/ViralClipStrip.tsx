@@ -101,8 +101,8 @@ export function ViralClipStrip({
         </div>
       </div>
 
-      {/* 6-Card 9:16 Vertical Grid with Floating Animation, BorderGlow, and 3D Perspective Tilt */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 p-2 overflow-visible">
+      {/* 6-Card 9:16 Vertical Grid: Mobile Snap-Scroll Carousel & Desktop 6-Col Grid */}
+      <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 overflow-x-auto sm:overflow-visible snap-x snap-mandatory gap-4 p-2 -mx-2 sm:mx-0 scrollbar-none">
         {clips.map((clip, index) => {
           const isPlaying = playingClipId === clip.id;
           const scoreBadgeClass = getScoreBadge(clip.viralityScore);
@@ -110,7 +110,7 @@ export function ViralClipStrip({
           return (
             <div
               key={clip.id}
-              className="studio-clip-card studio-card-float h-full overflow-visible"
+              className="studio-clip-card min-w-[250px] max-w-[275px] sm:min-w-0 sm:max-w-none snap-center shrink-0 sm:shrink studio-card-float h-full overflow-visible"
               style={{ animationDelay: `${index * 0.35}s` }}
             >
               <BorderGlow
@@ -298,6 +298,11 @@ export function ViralClipStrip({
             </div>
           );
         })}
+      </div>
+
+      {/* Mobile Swipe Hint */}
+      <div className="flex sm:hidden items-center justify-center gap-1.5 text-[11px] font-mono text-[#D99B52] pt-1">
+        <span>← Swipe horizontally to inspect all 6 ranked shorts →</span>
       </div>
     </div>
   );

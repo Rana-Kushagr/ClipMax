@@ -185,9 +185,6 @@ export function App() {
           />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
-              <span className="text-xs font-mono uppercase tracking-wider text-[#F3E5AB] px-3.5 py-1 rounded-full bg-[#F3E5AB]/10 border border-[#F3E5AB]/20">
-                CINEMA PRODUCTION SUITE
-              </span>
               <BlurText
                 text="Cinema-grade AI studio, built for retention"
                 italicWords={["retention"]}
@@ -233,9 +230,6 @@ export function App() {
         <section id="bounties" className="py-24 relative overflow-hidden z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             <div className="text-center max-w-3xl mx-auto space-y-4">
-              <span className="text-xs font-mono uppercase tracking-wider text-[#10B981] px-3.5 py-1 rounded-full bg-[#10B981]/10 border border-[#10B981]/20">
-                CREATOR MONETIZATION MARKETPLACE
-              </span>
               <BlurText
                 text="Monetize your clipping skills with instant bounties"
                 italicWords={["instant", "bounties"]}
@@ -255,9 +249,6 @@ export function App() {
         <section id="simulator" className="py-24 relative overflow-hidden z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             <div className="text-center max-w-3xl mx-auto space-y-4">
-              <span className="text-xs font-mono uppercase tracking-wider text-[#D99B52] px-3.5 py-1 rounded-full bg-[#D99B52]/10 border border-[#D99B52]/20">
-                PREDICTIVE FINANCIAL MODEL
-              </span>
               <BlurText
                 text="Calculate your monthly short-form earnings"
                 italicWords={["monthly"]}
@@ -299,9 +290,6 @@ export function App() {
         <section id="pricing" className="py-24 relative overflow-hidden z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             <div className="text-center max-w-3xl mx-auto space-y-4">
-              <span className="text-xs font-mono uppercase tracking-wider text-[#F3E5AB] px-3.5 py-1 rounded-full bg-[#F3E5AB]/10 border border-[#F3E5AB]/20">
-                OUTPUT-ONLY PRICING ARCHITECTURE
-              </span>
               <BlurText
                 text="Zero credits burned on previews. Pay only for finished exports."
                 italicWords={["finished", "exports"]}

@@ -23,9 +23,17 @@ export const CardContainer = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMouseEntered, setIsMouseEntered] = useState(false);
   const rafPendingRef = useRef(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  useEffect(() => {
+    const isTouch =
+      typeof window !== "undefined" &&
+      (window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768);
+    setIsTouchDevice(isTouch);
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current || rafPendingRef.current) return;
+    if (isTouchDevice || !containerRef.current || rafPendingRef.current) return;
     rafPendingRef.current = true;
     const clientX = e.clientX;
     const clientY = e.clientY;
@@ -42,11 +50,12 @@ export const CardContainer = ({
   };
 
   const handleMouseEnter = () => {
+    if (isTouchDevice) return;
     setIsMouseEntered(true);
   };
 
   const handleMouseLeave = () => {
-    if (!containerRef.current) return;
+    if (isTouchDevice || !containerRef.current) return;
     setIsMouseEntered(false);
     containerRef.current.style.transform = `perspective(1000px) rotateY(0deg) rotateX(0deg) scale3d(1, 1, 1)`;
   };

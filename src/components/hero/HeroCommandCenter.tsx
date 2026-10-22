@@ -156,15 +156,15 @@ export function HeroCommandCenter({
   return (
     <section id="studio-command" className="relative z-10 pt-16 pb-12 px-4 sm:px-6 max-w-5xl mx-auto text-center">
       {/* Studio Tally Engine Pill with DecryptedText */}
-      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0E1014]/90 backdrop-blur-md border border-white/[0.08] mb-6 text-xs text-text-secondary shadow-lg">
+      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1E1710] border border-[#F3E5AB]/20 mb-6 text-xs text-text-secondary shadow-lg">
         <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
         <span className="font-mono text-[11px] tracking-wider text-white font-medium">
-          <DecryptedText text="ClipMax Engine v3.8" speed={35} />
+          <DecryptedText text="Sharko Engine v3.8" speed={35} />
         </span>
         <span className="text-white/20">•</span>
-        <span className="text-text-muted hidden sm:inline">Output-Only Architecture</span>
+        <span className="text-[#D99B52] font-mono text-[11px] font-semibold tracking-wider">Hunt the Moments</span>
         <span className="text-white/20 hidden sm:inline">•</span>
-        <span className="text-[#10B981] font-mono font-medium">100% Rollover</span>
+        <span className="text-[#10B981] font-mono font-medium hidden sm:inline">100% Rollover</span>
       </div>
 
       {/* Hero Display Heading using <BlurText /> with High-Fashion Editorial Contrast */}

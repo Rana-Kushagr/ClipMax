@@ -18,7 +18,7 @@ export function BlurText({
   italicWords,
   as: Component = "span",
   delay = 0,
-  stagger = 0.04,
+  stagger = 0.02,
 }: Readonly<BlurTextProps>) {
   const shouldReduceMotion = useReducedMotion();
   const words = text.split(" ");
@@ -42,26 +42,26 @@ export function BlurText({
           return (
             <motion.span
               key={`${word}-${index}`}
-              className={`inline-block mr-[0.28em] last:mr-0 ${
+              className={`inline-block mr-[0.32em] last:mr-0 ${
                 isItalic
                   ? "font-editorial italic font-normal text-[#F3E5AB] drop-shadow-[0_0_24px_rgba(217,155,82,0.4)]"
                   : ""
               }`}
               initial={{
                 opacity: shouldReduceMotion ? 1 : 0,
-                y: shouldReduceMotion ? 0 : 18,
-                filter: shouldReduceMotion ? "none" : "blur(8px)",
+                y: shouldReduceMotion ? 0 : 12,
+                filter: shouldReduceMotion ? "none" : "blur(6px)",
               }}
               whileInView={{
                 opacity: 1,
                 y: 0,
                 filter: "blur(0px)",
               }}
-              viewport={{ once: false, amount: 0.3 }}
+              viewport={{ once: true, amount: 0.15 }}
               transition={{
-                duration: 0.45,
+                duration: 0.25,
                 delay: delay + index * stagger,
-                ease: [0.22, 1, 0.36, 1],
+                ease: [0.16, 1, 0.3, 1],
               }}
             >
               {word}
@@ -72,3 +72,5 @@ export function BlurText({
     </Component>
   );
 }
+
+export default BlurText;
