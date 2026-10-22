@@ -94,13 +94,12 @@ export function ExpandableScreen({
             onWheel={(e) => e.stopPropagation()}
           >
             {/* Backdrop click to dismiss */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+            <button
+              type="button"
               onClick={() => setIsExpanded(false)}
-              className="fixed inset-0 -z-10"
-              aria-hidden="true"
+              className="fixed inset-0 -z-10 cursor-default bg-transparent border-none w-full h-full"
+              aria-label="Close modal backdrop"
+              tabIndex={-1}
             />
 
             {/* Modal Container */}
@@ -135,7 +134,15 @@ export function ExpandableScreen({
     <ExpandableContext.Provider value={{ isExpanded, setIsExpanded, layoutId }}>
       {/* Trigger */}
       <div
+        role="button"
+        tabIndex={0}
         onClick={() => setIsExpanded(true)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setIsExpanded(true);
+          }
+        }}
         className="cursor-pointer"
         style={{ borderRadius: triggerRadius }}
       >

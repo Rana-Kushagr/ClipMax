@@ -135,7 +135,13 @@ export function StudioEditorModal({
         onWheel={(e) => e.stopPropagation()}
       >
         {/* Backdrop click to dismiss */}
-        <div className="fixed inset-0 -z-10" onClick={onClose} aria-hidden="true" />
+        <button
+          type="button"
+          onClick={onClose}
+          className="fixed inset-0 -z-10 cursor-default bg-transparent border-none w-full h-full"
+          aria-label="Dismiss editor modal"
+          tabIndex={-1}
+        />
 
         {/* Modal Window Container */}
         <motion.div
