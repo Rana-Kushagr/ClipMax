@@ -1,109 +1,109 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { SharkoLogo } from '../brand/SharkoLogo';
+import {
+  X,
+  Mail,
+  Lock,
+  User,
+  Eye,
+  EyeOff,
+  CheckCircle2,
+  Sparkles,
+  Zap,
+  Flame,
+  DollarSign,
+  ArrowRight,
+  ShieldCheck,
+  Star,
+} from 'lucide-react';
+import { SharkoBrandLogo, MarkerUnderline } from '../brand/SharkoBrandLogo';
 
 export interface AuthPayload {
-  mode: 'login' | 'signup' | 'magic';
+  mode: 'login' | 'signup';
   email: string;
   password?: string;
   fullName?: string;
-  role?: string;
   dpdpConsent?: boolean;
-  rememberMe?: boolean;
 }
 
 interface SharkoAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialMode?: 'login' | 'signup';
-  /** Backend Developer Hook: Plug your POST /api/auth/login or Supabase/Clerk call here */
   onAuthSubmit?: (payload: AuthPayload) => Promise<void> | void;
-  /** Backend Developer Hook: Plug your OAuth redirect (Google / GitHub / Discord) here */
-  onOAuthClick?: (provider: 'google' | 'github' | 'discord') => void;
+  onOAuthClick?: (provider: 'google') => void;
 }
 
 export const SharkoAuthModal: React.FC<SharkoAuthModalProps> = ({
   isOpen,
   onClose,
-  initialMode = 'login',
+  initialMode = 'signup',
   onAuthSubmit,
   onOAuthClick,
 }) => {
-  const [mode, setMode] = useState<'login' | 'signup' | 'magic'>(initialMode);
+  const [mode, setMode] = useState<'login' | 'signup'>(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
-  const [role, setRole] = useState('Creator / Podcaster');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
-  const [dpdpConsent, setDpdpConsent] = useState(false);
-  const [honeypot, setHoneypot] = useState(''); // Anti-bot trap for backend
+  const [dpdpConsent, setDpdpConsent] = useState(true);
+  const [honeypot, setHoneypot] = useState('');
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Body scroll lock and ESC key dismiss
+  useEffect(() => {
+    setMode(initialMode);
+  }, [initialMode]);
+
   useEffect(() => {
     if (!isOpen) return;
-    const originalOverflow = document.body.style.overflow;
+    const origOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.body.style.overflow = originalOverflow;
+      document.body.style.overflow = origOverflow;
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
-  // Password strength calculation for Signup
-  const getPasswordStrength = (pass: string) => {
-    let score = 0;
-    if (pass.length >= 8) score++;
-    if (/[A-Z]/.test(pass)) score++;
-    if (/[0-9]/.test(pass)) score++;
-    if (/[^A-Za-z0-9]/.test(pass)) score++;
-    return score; // 0 to 4
-  };
-  const strength = getPasswordStrength(password);
-  const strengthLabels = ['Too Short', 'Weak', 'Fair', 'Good', 'Studio Grade'];
-  const strengthColors = ['bg-zinc-700', 'bg-red-500', 'bg-[#757500]', 'bg-[#0047AB]', 'bg-[#89CFF0]'];
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (honeypot) return; // Silent bot reject
+    if (honeypot) return;
     if (mode === 'signup' && !dpdpConsent) {
-      setStatusMessage('Please accept the India DPDP Act 2023 data privacy terms to create your account.');
+      setStatusMessage('Please accept the DPDP Act 2023 privacy terms to continue.');
       return;
     }
+
     setIsSubmitting(true);
     setStatusMessage(null);
 
     const payload: AuthPayload = {
       mode,
       email: email.trim(),
-      password: mode === 'magic' ? undefined : password,
+      password,
       fullName: mode === 'signup' ? fullName.trim() : undefined,
-      role: mode === 'signup' ? role : undefined,
       dpdpConsent,
-      rememberMe,
     };
 
     try {
       if (onAuthSubmit) {
         await onAuthSubmit(payload);
       } else {
-        // Default UI preview feedback until backend dev attaches API endpoint
         await new Promise((r) => setTimeout(r, 600));
         setStatusMessage(
-          mode === 'magic'
-            ? `Magic sign-in link dispatched to ${payload.email} (Ready for Backend Auth Hook).`
-            : `Authenticated as ${payload.email} — Studio Passport Active (+3 Free HD Exports).`
+          mode === 'signup'
+            ? 'Account created! Welcome to Sharko Studio (+3 Free HD Exports).'
+            : 'Welcome back! Signed in successfully.'
         );
-        setTimeout(() => onClose(), 1200);
+        setTimeout(() => onClose(), 1000);
       }
+    } catch {
+      setStatusMessage('Authentication failed. Please verify your credentials.');
     } finally {
       setIsSubmitting(false);
     }
@@ -113,384 +113,307 @@ export const SharkoAuthModal: React.FC<SharkoAuthModalProps> = ({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Sharko Studio Authentication"
+      aria-label="Sharko Authentication"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className="fixed inset-0 z-[99999] overflow-y-auto bg-black/85 backdrop-blur-md p-2 sm:p-4 md:p-6 flex justify-center items-start sm:items-center"
+      className="fixed inset-0 z-[99999] overflow-y-auto bg-black/60 backdrop-blur-sm p-3 sm:p-6 flex items-center justify-center min-h-screen"
     >
-      {/* Main Split-Screen Container */}
+      {/* Modal Card Container with max-height and internal scrolling */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative my-auto flex min-h-[100dvh] sm:min-h-0 sm:max-h-[min(94vh,860px)] w-full max-w-[1020px] flex-col lg:grid lg:grid-cols-12 sm:rounded-3xl border-0 sm:border border-[#89CFF0]/30 bg-[#000000] shadow-[0_0_70px_rgba(0,71,171,0.45)] overflow-hidden"
+        className="relative my-auto w-full max-w-[960px] max-h-[92vh] flex flex-col rounded-3xl bg-white shadow-2xl border border-slate-200 overflow-hidden"
       >
-        {/* Top-Right Close Button (High contrast, fixed at top-right inside modal container) */}
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close Login Modal"
-          className="absolute right-3.5 top-3.5 z-40 flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-[#89CFF0]/30 bg-[#000B1D]/90 text-white hover:border-[#89CFF0] hover:bg-[#0047AB] transition touch-manipulation shadow-lg"
-        >
-          <span className="text-base sm:text-lg leading-none">&#10005;</span>
-        </button>
+        {/* Top Header Bar inside Modal */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white shrink-0">
+          <SharkoBrandLogo size="sm" showSubtitle={false} />
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close modal"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"
+          >
+            <span>Back to Studio</span>
+            <X className="w-4 h-4" />
+          </button>
+        </div>
 
-        {/* LEFT COLUMN (7 Cols): INTERACTIVE AUTH FORM */}
-        <div className="lg:col-span-7 flex flex-col justify-between p-5 sm:p-7 lg:p-8 bg-[#000000] relative z-10 overflow-y-auto sm:max-h-[min(94vh,860px)] no-scrollbar">
-          <div>
-            {/* Brand Header + Mobile Trust Pill */}
-            <div className="flex flex-wrap items-center justify-between gap-2 pr-12">
-              <SharkoLogo />
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#757500]/60 bg-[#757500]/20 px-2.5 py-0.5 font-mono text-[10px] font-semibold text-[#E2E260]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#89CFF0]"></span>
-                DPDP 2023 Encrypted
+        {/* Scrollable Split-Screen Body */}
+        <div className="overflow-y-auto grid grid-cols-1 lg:grid-cols-12 flex-1">
+          {/* Left Column (5 Cols on LG): Value Proposition & Social Proof */}
+          <div className="lg:col-span-5 bg-gradient-to-b from-[#F4F8FF] to-white p-6 sm:p-8 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-100">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EBF3FF] border border-[#BFDBFE] text-[#0066FF] text-[11px] font-bold tracking-wider uppercase mb-4">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>START FREE • NO CARD REQUIRED</span>
+              </div>
+
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0B0F19] tracking-tight font-display mb-3">
+                Start your clipping{' '}
+                <MarkerUnderline color="pink" showSparks>
+                  side hustle
+                </MarkerUnderline>{' '}
+                today.
+              </h2>
+
+              <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-sans mb-6">
+                Turn long podcasts and streams into viral 9:16 clips in minutes. Build a scalable income stream with autonomous AI clipping.
+              </p>
+
+              {/* 3 Value Pillars */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-[#EBF3FF] text-[#0066FF] flex items-center justify-center shrink-0 mt-0.5">
+                    <Zap className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900">Autonomous 9:16 Reframe</h4>
+                    <p className="text-[11px] text-slate-500">
+                      Multi-speaker face tracking & split screen for TikTok, Reels & Shorts.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-[#FFEBF0] text-[#FF1464] flex items-center justify-center shrink-0 mt-0.5">
+                    <Flame className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900">Kinetic Subtitles Engine</h4>
+                    <p className="text-[11px] text-slate-500">
+                      MrBeast, Hormozi & Dev typography that doubles average viewer retention.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <DollarSign className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900">Output-Only Billing</h4>
+                    <p className="text-[11px] text-slate-500">
+                      0 credits burned on link preview or scoring. Pay only on finished HD export.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Trust Badge */}
+            <div className="pt-6 mt-6 border-t border-slate-200/80">
+              <div className="flex items-center gap-2 mb-1.5">
+                <div className="flex -space-x-1.5">
+                  <div className="w-6 h-6 rounded-full bg-blue-600 border border-white text-[9px] font-bold text-white flex items-center justify-center">
+                    ER
+                  </div>
+                  <div className="w-6 h-6 rounded-full bg-purple-600 border border-white text-[9px] font-bold text-white flex items-center justify-center">
+                    MB
+                  </div>
+                  <div className="w-6 h-6 rounded-full bg-emerald-600 border border-white text-[9px] font-bold text-white flex items-center justify-center">
+                    SK
+                  </div>
+                  <div className="w-6 h-6 rounded-full bg-amber-600 border border-white text-[9px] font-bold text-white flex items-center justify-center">
+                    AC
+                  </div>
+                </div>
+                <div className="flex text-amber-400">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
+                  ))}
+                </div>
+              </div>
+              <p className="text-[11px] text-slate-500 font-medium">
+                Trusted by 200,000+ creators and clippers worldwide
+              </p>
+            </div>
+          </div>
+
+          {/* Right Column (7 Cols on LG): Auth Form */}
+          <div className="lg:col-span-7 p-6 sm:p-8 bg-white flex flex-col justify-center">
+            {/* Mode Switcher Tabs */}
+            <div className="flex rounded-xl bg-slate-100 p-1 mb-6 border border-slate-200/80">
+              <button
+                type="button"
+                onClick={() => {
+                  setMode('signup');
+                  setStatusMessage(null);
+                }}
+                className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  mode === 'signup'
+                    ? 'bg-white text-slate-900 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-900'
+                }`}
+              >
+                Sign up free
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode('login');
+                  setStatusMessage(null);
+                }}
+                className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  mode === 'login'
+                    ? 'bg-white text-slate-900 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-900'
+                }`}
+              >
+                Log in
+              </button>
+            </div>
+
+            {/* Google OAuth Button */}
+            <button
+              type="button"
+              onClick={() =>
+                onOAuthClick
+                  ? onOAuthClick('google')
+                  : setStatusMessage('Google OAuth ready for backend integration.')
+              }
+              className="w-full py-3 px-4 rounded-xl border border-slate-300 hover:border-slate-400 bg-white hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2.5 transition-all shadow-sm cursor-pointer mb-5"
+            >
+              <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                <path
+                  fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                />
+              </svg>
+              <span>Continue with Google</span>
+            </button>
+
+            {/* Divider */}
+            <div className="relative flex items-center justify-center mb-5">
+              <div className="border-t border-slate-200 w-full" />
+              <span className="bg-white px-3 text-[10px] uppercase font-bold tracking-wider text-slate-400 absolute">
+                or continue with email
               </span>
             </div>
 
-            {/* Mobile / Tablet Compact Perk Highlight */}
-            <div className="lg:hidden mt-3 flex items-center justify-between p-2.5 rounded-xl bg-[#000B1D] border border-[#89CFF0]/20 font-mono text-[11px]">
-              <span className="text-zinc-300">Studio Passport:</span>
-              <span className="text-[#89CFF0] font-bold">3 Free 1080p HD Exports Included</span>
-            </div>
-
-            {/* Mode Switcher Segmented Control (Sign In | Sign Up Free | Magic OTP) */}
-            <div className="mt-4 sm:mt-5 grid grid-cols-3 gap-1 rounded-xl border border-[#89CFF0]/20 bg-[#040B18] p-1">
-              <button
-                type="button"
-                onClick={() => { setMode('login'); setStatusMessage(null); }}
-                className={`min-h-[38px] sm:min-h-[40px] rounded-lg font-display text-[12.5px] sm:text-[13px] font-bold transition touch-manipulation ${
-                  mode === 'login'
-                    ? 'bg-[#89CFF0] text-[#000000] shadow-[0_0_15px_rgba(137,207,240,0.4)]'
-                    : 'text-zinc-300 hover:text-white'
-                }`}
-              >
-                Sign In
-              </button>
-              <button
-                type="button"
-                onClick={() => { setMode('signup'); setStatusMessage(null); }}
-                className={`min-h-[38px] sm:min-h-[40px] rounded-lg font-display text-[12.5px] sm:text-[13px] font-bold transition touch-manipulation ${
-                  mode === 'signup'
-                    ? 'bg-[#89CFF0] text-[#000000] shadow-[0_0_15px_rgba(137,207,240,0.4)]'
-                    : 'text-zinc-300 hover:text-white'
-                }`}
-              >
-                Sign Up Free
-              </button>
-              <button
-                type="button"
-                onClick={() => { setMode('magic'); setStatusMessage(null); }}
-                className={`min-h-[38px] sm:min-h-[40px] rounded-lg font-display text-[12.5px] sm:text-[13px] font-bold transition touch-manipulation ${
-                  mode === 'magic'
-                    ? 'bg-[#0047AB] text-[#FFFFFF] border border-[#89CFF0]/50'
-                    : 'text-zinc-300 hover:text-white'
-                }`}
-              >
-                Magic OTP
-              </button>
-            </div>
-
-            {/* Dynamic Heading */}
-            <div className="mt-3.5 sm:mt-4">
-              <h2 className="font-display text-[20px] sm:text-[24px] font-extrabold tracking-tight text-white leading-tight">
-                {mode === 'login' && 'Welcome back to Sharko Studio'}
-                {mode === 'signup' && 'Create your Studio Passport'}
-                {mode === 'magic' && 'Passwordless Instant Sign-In'}
-              </h2>
-              <p className="mt-1 text-[12px] sm:text-[13px] text-zinc-400">
-                {mode === 'login' && 'Sign in to access your 9:16 viral clips, scheduled queues, and bounty wallet.'}
-                {mode === 'signup' && 'Start with 3 watermark-free 1080p exports. Zero credits burned on source uploads.'}
-                {mode === 'magic' && 'We will send a one-time cryptographic login code straight to your inbox.'}
-              </p>
-            </div>
-
-            {/* 1-Click OAuth Social Row (Google, GitHub, Discord) */}
-            <div className="mt-3.5 sm:mt-4 grid grid-cols-3 gap-2 sm:gap-2.5">
-              <button
-                type="button"
-                onClick={() => onOAuthClick ? onOAuthClick('google') : setStatusMessage('Google OAuth ready for backend client_id.')}
-                className="flex min-h-[40px] sm:min-h-[44px] items-center justify-center gap-1.5 sm:gap-2 rounded-xl border border-[#89CFF0]/20 bg-[#050D1E] px-2.5 py-2 text-[12px] sm:text-[13px] font-semibold text-white hover:border-[#89CFF0] hover:bg-[#0047AB]/30 transition touch-manipulation"
-              >
-                <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M21.35 11.1h-9.17v2.73h6.51c-.33 3.81-3.5 5.44-6.5 5.44C8.36 19.27 5 15.65 5 12c0-3.65 3.36-7.27 7.2-7.27 3.09 0 4.9 1.97 4.9 1.97L19 4.72S16.56 2 12.1 2C6.42 2 2.03 6.8 2.03 12c0 5.05 4.13 10 10.22 10 5.35 0 9.25-3.67 9.25-9.09 0-1.15-.15-1.81-.15-1.81Z" />
-                </svg>
-                <span>Google</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => onOAuthClick ? onOAuthClick('github') : setStatusMessage('GitHub OAuth ready for backend client_id.')}
-                className="flex min-h-[40px] sm:min-h-[44px] items-center justify-center gap-1.5 sm:gap-2 rounded-xl border border-[#89CFF0]/20 bg-[#050D1E] px-2.5 py-2 text-[12px] sm:text-[13px] font-semibold text-white hover:border-[#89CFF0] hover:bg-[#0047AB]/30 transition touch-manipulation"
-              >
-                <svg className="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-                </svg>
-                <span>GitHub</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => onOAuthClick ? onOAuthClick('discord') : setStatusMessage('Discord OAuth ready for backend client_id.')}
-                className="flex min-h-[40px] sm:min-h-[44px] items-center justify-center gap-1.5 sm:gap-2 rounded-xl border border-[#89CFF0]/20 bg-[#050D1E] px-2.5 py-2 text-[12px] sm:text-[13px] font-semibold text-white hover:border-[#89CFF0] hover:bg-[#0047AB]/30 transition touch-manipulation"
-              >
-                <span className="font-mono text-[#89CFF0] font-bold">DIS</span>
-                <span>Discord</span>
-              </button>
-            </div>
-
-            {/* Divider */}
-            <div className="my-3.5 sm:my-4 flex items-center gap-3">
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#89CFF0]/25 to-transparent"></div>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-400">OR CONTINUE WITH EMAIL</span>
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#89CFF0]/25 to-transparent"></div>
-            </div>
-
-            {/* Main Form */}
-            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-3.5">
-              {/* Hidden Anti-Bot Honeypot */}
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-3.5">
               <input
-                id="company_website_trap"
                 type="text"
-                name="company_website_trap"
+                name="user_trap"
                 value={honeypot}
                 onChange={(e) => setHoneypot(e.target.value)}
                 tabIndex={-1}
-                aria-hidden="true"
-                autoComplete="off"
                 className="hidden"
+                aria-hidden="true"
               />
 
               {mode === 'signup' && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
-                  <div className="group relative">
-                    <label htmlFor="auth-full-name-input" className="block font-mono text-[10.5px] uppercase tracking-wider text-[#89CFF0] mb-1">
-                      Full Name / Creator Handle
-                    </label>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
-                      id="auth-full-name-input"
                       type="text"
                       required
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      placeholder="Kushagr Rana"
-                      className="w-full min-h-[42px] sm:min-h-[44px] rounded-xl border border-[#89CFF0]/25 bg-[#030914] px-3.5 py-2 text-[16px] sm:text-[13.5px] text-white placeholder-zinc-500 focus:border-[#89CFF0] focus:outline-none focus:ring-1 focus:ring-[#89CFF0]"
+                      placeholder="e.g. Kushagr Rana"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#0066FF] focus:ring-2 focus:ring-[#0066FF]/20 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 transition-all outline-none"
                     />
-                  </div>
-
-                  <div>
-                    <label htmlFor="auth-role-select" className="block font-mono text-[10.5px] uppercase tracking-wider text-[#89CFF0] mb-1">
-                      Primary Workflow
-                    </label>
-                    <select
-                      id="auth-role-select"
-                      value={role}
-                      onChange={(e) => setRole(e.target.value)}
-                      className="w-full min-h-[42px] sm:min-h-[44px] rounded-xl border border-[#89CFF0]/25 bg-[#030914] px-3.5 py-2 text-[16px] sm:text-[13.5px] text-white focus:border-[#89CFF0] focus:outline-none"
-                    >
-                      <option value="Creator / Podcaster">Creator / Podcaster</option>
-                      <option value="Bounty Clipper">Bounty Clipper (Earn CPM)</option>
-                      <option value="Agency / Video Editor">Agency / Video Editor</option>
-                      <option value="Brand Sponsor">Brand Sponsor</option>
-                    </select>
                   </div>
                 </div>
               )}
 
-              {/* Email Input */}
-              <div className="group relative">
-                <label htmlFor="auth-email-input" className="block font-mono text-[10.5px] uppercase tracking-wider text-[#89CFF0] mb-1">
-                  Studio Email Address
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Email Address
                 </label>
-                <input
-                  id="auth-email-input"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@sharkostudio.com"
-                  className="w-full min-h-[42px] sm:min-h-[44px] rounded-xl border border-[#89CFF0]/25 bg-[#030914] px-3.5 py-2 text-[16px] sm:text-[13.5px] text-white placeholder-zinc-500 focus:border-[#89CFF0] focus:outline-none focus:shadow-[0_4px_20px_-2px_rgba(137,207,240,0.35)] transition"
-                />
+                <div className="relative">
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@domain.com"
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#0066FF] focus:ring-2 focus:ring-[#0066FF]/20 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 transition-all outline-none"
+                  />
+                </div>
               </div>
 
-              {/* Password Field */}
-              {mode !== 'magic' && (
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label htmlFor="auth-password-input" className="font-mono text-[10.5px] uppercase tracking-wider text-[#89CFF0]">
-                      Password
-                    </label>
-                    {mode === 'login' && (
-                      <button
-                        type="button"
-                        onClick={() => setMode('magic')}
-                        className="font-mono text-[10.5px] text-[#89CFF0] hover:underline"
-                      >
-                        Forgot password? Use Magic OTP &rarr;
-                      </button>
-                    )}
-                  </div>
-                  <div className="relative">
-                    <input
-                      id="auth-password-input"
-                      type={showPassword ? 'text' : 'password'}
-                      required
-                      minLength={8}
-                      autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••••••"
-                      className="w-full min-h-[42px] sm:min-h-[44px] rounded-xl border border-[#89CFF0]/25 bg-[#030914] px-3.5 py-2 pr-16 text-[16px] sm:text-[13.5px] text-white placeholder-zinc-500 focus:border-[#89CFF0] focus:outline-none focus:shadow-[0_4px_20px_-2px_rgba(137,207,240,0.35)] transition"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 font-mono text-[10.5px] text-[#89CFF0] hover:bg-[#0047AB]/30"
-                    >
-                      {showPassword ? 'HIDE' : 'SHOW'}
-                    </button>
-                  </div>
-
-                  {/* Password Strength Meter on Sign Up */}
-                  {mode === 'signup' && password.length > 0 && (
-                    <div className="mt-1.5">
-                      <div className="flex gap-1 h-1.5">
-                        {[1, 2, 3, 4].map((lvl) => (
-                          <div
-                            key={lvl}
-                            className={`flex-1 rounded-full transition-all ${
-                              strength >= lvl ? strengthColors[strength] : 'bg-zinc-800'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <div className="mt-1 flex justify-between font-mono text-[9.5px] text-zinc-400">
-                        <span>Security: {strengthLabels[strength]}</span>
-                        <span>Min 8 chars, 1 number &amp; symbol</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Remember Me / DPDP Affirmative Consent */}
-              {mode === 'login' && (
-                <label htmlFor="auth-remember-me-checkbox" className="flex items-center gap-2.5 text-[12.5px] text-zinc-300 cursor-pointer select-none">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Password</label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
-                    id="auth-remember-me-checkbox"
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 rounded accent-[#89CFF0]"
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-300 focus:border-[#0066FF] focus:ring-2 focus:ring-[#0066FF]/20 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 transition-all outline-none"
                   />
-                  <span>Keep my studio session signed in for 30 days</span>
-                </label>
-              )}
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
 
               {mode === 'signup' && (
-                <label htmlFor="auth-dpdp-consent-checkbox" className="flex items-start gap-2.5 rounded-xl border border-[#757500]/50 bg-[#757500]/10 p-2.5 text-[11.5px] text-zinc-200 cursor-pointer">
+                <div className="flex items-start gap-2 pt-1">
                   <input
-                    id="auth-dpdp-consent-checkbox"
                     type="checkbox"
+                    id="dpdp-consent"
                     checked={dpdpConsent}
                     onChange={(e) => setDpdpConsent(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 shrink-0 rounded accent-[#89CFF0]"
+                    className="mt-0.5 rounded border-slate-300 text-[#0066FF] focus:ring-[#0066FF]"
                   />
-                  <span>
-                    I consent to Sharko Studio processing my email and workspace telemetry strictly for video clipping &amp; payout verification in accordance with the <strong>India DPDP Act 2023</strong>.
-                  </span>
-                </label>
-              )}
-
-              {/* Status Banner */}
-              {statusMessage && (
-                <div className="rounded-xl border border-[#89CFF0]/40 bg-[#0047AB]/25 px-3 py-2 font-mono text-[11.5px] text-[#89CFF0]">
-                  {statusMessage}
+                  <label htmlFor="dpdp-consent" className="text-[11px] text-slate-500 leading-tight">
+                    I accept India DPDP Act 2023 privacy rights & 72h source video auto-purge policy.
+                  </label>
                 </div>
               )}
 
-              {/* Primary Submit CTA */}
+              {statusMessage && (
+                <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-xs text-[#0066FF] flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  <span>{statusMessage}</span>
+                </div>
+              )}
+
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn-sharko-primary w-full min-h-[46px] sm:min-h-[48px] rounded-xl py-2.5 sm:py-3 font-display text-[14px] sm:text-[15px] font-extrabold tracking-tight transition active:scale-[0.99] touch-manipulation"
+                className="w-full py-3.5 px-4 rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white font-bold text-xs sm:text-sm shadow-[0_8px_20px_rgba(0,102,255,0.25)] hover:shadow-[0_12px_28px_rgba(0,102,255,0.35)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75"
               >
-                {isSubmitting
-                  ? 'Verifying Studio Credentials...'
-                  : mode === 'login'
-                  ? 'Enter Sharko Studio \u2192'
-                  : mode === 'signup'
-                  ? 'Create Free Account & Claim 3 HD Exports \u2192'
-                  : 'Send Instant Magic Login Link \u2192'}
+                <span>
+                  {isSubmitting
+                    ? 'Processing...'
+                    : mode === 'signup'
+                    ? 'Create free account →'
+                    : 'Log in to account →'}
+                </span>
               </button>
             </form>
-          </div>
 
-          {/* Footer Support & Grievance Officer Hook */}
-          <div className="mt-4 border-t border-[#89CFF0]/15 pt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-zinc-400">
-            <span>Need help? <a href="mailto:kushagrrana7345@gmail.com" className="text-[#89CFF0] underline">kushagrrana7345@gmail.com</a></span>
-            <span className="font-mono text-[10px] text-zinc-500">Zero-Trust Auth Ready</span>
-          </div>
-        </div>
-
-        {/* RIGHT COLUMN (5 Cols): LIVE SHARKO TELEMETRY SHOWCASE */}
-        <div className="hidden lg:flex lg:col-span-5 flex-col justify-between border-l border-[#89CFF0]/20 bg-gradient-to-b from-[#00183D] via-[#000B1E] to-[#000000] p-6 lg:p-7 relative overflow-hidden overflow-y-auto sm:max-h-[min(94vh,860px)] no-scrollbar">
-          {/* Ambient Cobalt & Sky Glow */}
-          <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-[#0047AB]/35 blur-3xl"></div>
-          <div className="pointer-events-none absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-[#89CFF0]/15 blur-3xl"></div>
-
-          <div className="relative z-10">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#89CFF0]/35 bg-[#0047AB]/30 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-[#89CFF0]">
-              &#9733; SHARKO ENGINE v3.8 PASSPORT
-            </span>
-            <h3 className="mt-3.5 font-display text-[20px] font-bold leading-snug text-white">
-              Hunt the viral moments. <span className="serif-italic text-[#89CFF0] font-normal">Pay only for finished exports.</span>
-            </h3>
-
-            {/* Live Mini 9:16 Telemetry Card Preview */}
-            <div className="mt-4 rounded-2xl border border-[#89CFF0]/25 bg-[#000000]/80 p-3.5 shadow-2xl">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-display text-[13.5px] font-bold text-white">9:16 Active Speaker Lock</div>
-                  <div className="font-mono text-[10.5px] text-[#89CFF0]">Faster-Whisper + Gemini Flash</div>
-                </div>
-                <span className="rounded-full bg-[#89CFF0] px-2 py-0.5 font-mono text-[10.5px] font-extrabold text-[#000000]">
-                  99% VIRAL
-                </span>
-              </div>
-              <div className="mt-2.5 grid grid-cols-2 gap-2 text-center font-mono text-[10px]">
-                <div className="rounded-lg border border-[#0047AB]/60 bg-[#0047AB]/20 p-2 text-white">
-                  0 Credits on Upload
-                </div>
-                <div className="rounded-lg border border-[#757500]/60 bg-[#757500]/20 p-2 text-[#E2E260]">
-                  100% Credit Rollover
-                </div>
-              </div>
-            </div>
-
-            {/* Key Perks Checklist */}
-            <ul className="mt-4 space-y-2 text-[12.5px] text-zinc-200">
-              <li className="flex items-center gap-2">
-                <span className="text-[#89CFF0] font-bold">&#10003;</span>
-                <span>3 free 1080p 60fps watermark-free exports on sign-up</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-[#89CFF0] font-bold">&#10003;</span>
-                <span>1-click Telegram Bot (@Kushagr_Rana) mobile approval</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-[#89CFF0] font-bold">&#10003;</span>
-                <span>Direct sponsor campaign intake &amp; verified bounty wallet</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Direct Support & Founder Channels */}
-          <div className="relative z-10 mt-5 rounded-xl border border-[#89CFF0]/20 bg-[#000000]/70 p-3 font-mono text-[10.5px] text-zinc-300">
-            <div className="text-[#89CFF0] font-semibold mb-1">FOUNDER &amp; SUPPORT CHANNELS</div>
-            <div className="flex flex-wrap gap-x-3.5 gap-y-1">
-              <a href="https://www.instagram.com/_ranakushagr/" target="_blank" rel="noopener noreferrer" className="hover:text-[#89CFF0] underline">IG: @_ranakushagr</a>
-              <a href="https://t.me/Kushagr_Rana" target="_blank" rel="noopener noreferrer" className="hover:text-[#89CFF0] underline">TG: @Kushagr_Rana</a>
-              <a href="https://www.threads.net/@_ranakushagr" target="_blank" rel="noopener noreferrer" className="hover:text-[#89CFF0] underline">Threads</a>
+            <div className="mt-4 pt-3 border-t border-slate-100 text-center">
+              <span className="text-[11px] text-slate-400 flex items-center justify-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                No credit card required to start • 3 free HD exports included
+              </span>
             </div>
           </div>
         </div>
@@ -499,5 +422,3 @@ export const SharkoAuthModal: React.FC<SharkoAuthModalProps> = ({
     document.body
   );
 };
-
-export default SharkoAuthModal;

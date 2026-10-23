@@ -1,42 +1,24 @@
-import React, { useState, useOptimistic, useTransition } from "react";
-import { motion } from "framer-motion";
-import { AppHeader } from "./components/navigation/AppHeader";
-import { StudioEnvironmentBg } from "./components/background/StudioEnvironmentBg";
-import { HeroViewfinderHud } from "./components/hero/HeroViewfinderHud";
-import { HeroCommandCenter } from "./components/hero/HeroCommandCenter";
-import { HowItWorksWalkthrough } from "./components/walkthrough/HowItWorksWalkthrough";
-import { InteractiveStudioShowcase, StudioTabId } from "./components/studio/InteractiveStudioShowcase";
-import { BountyCampaignGrid } from "./components/bounties/BountyCampaignGrid";
-import { ProfitSimulator } from "./components/bounties/ProfitSimulator";
-import { OutputOnlyPricing } from "./components/bounties/OutputOnlyPricing";
-import { WhySharkoComparison } from "./components/comparison/WhySharkoComparison";
-import { StudioFaqSection } from "./components/faq/StudioFaqSection";
-import { DpdpConsentBanner } from "./components/compliance/DpdpConsentBanner";
-import { DpdpRightsModal } from "./components/compliance/DpdpRightsModal";
-import { SupportContactDrawer } from "./components/support/SupportContactDrawer";
-import { StudioFooter } from "./components/footer/StudioFooter";
-import { NoiseOverlay } from "./components/react-bits/NoiseOverlay";
-import { SharkoAuthModal } from "./components/auth/SharkoAuthModal";
-import { SmartOptionsState } from "./components/hero/SmartOptionsDrawer";
-import { useClipMaxGsap } from "./hooks/useClipMaxGsap";
-import { CheckCircle2, X } from "lucide-react";
-
-interface SharkoBlockProps {
-  variant: "block-a" | "block-b";
-  children: React.ReactNode;
-}
-
-function SharkoBlock({ variant, children }: Readonly<SharkoBlockProps>) {
-  const blockClass = variant === "block-a" ? "sharko-block-a" : "sharko-block-b";
-  return (
-    <div className={`relative ${blockClass}`}>
-      {children}
-    </div>
-  );
-}
+import React, { useState, useOptimistic, useTransition } from 'react';
+import { AppHeader } from './components/navigation/AppHeader';
+import { HeroCommandCenter } from './components/hero/HeroCommandCenter';
+import { HowItWorksWalkthrough } from './components/walkthrough/HowItWorksWalkthrough';
+import { InteractiveStudioShowcase, StudioTabId } from './components/studio/InteractiveStudioShowcase';
+import { BountyCampaignGrid } from './components/bounties/BountyCampaignGrid';
+import { ProfitSimulator } from './components/bounties/ProfitSimulator';
+import { OutputOnlyPricing } from './components/bounties/OutputOnlyPricing';
+import { WhySharkoComparison } from './components/comparison/WhySharkoComparison';
+import { StudioFaqSection } from './components/faq/StudioFaqSection';
+import { DpdpConsentBanner } from './components/compliance/DpdpConsentBanner';
+import { DpdpRightsModal } from './components/compliance/DpdpRightsModal';
+import { SupportContactDrawer } from './components/support/SupportContactDrawer';
+import { StudioFooter } from './components/footer/StudioFooter';
+import { SharkoAuthModal } from './components/auth/SharkoAuthModal';
+import { SmartOptionsState } from './components/hero/SmartOptionsDrawer';
+import { useClipMaxGsap } from './hooks/useClipMaxGsap';
+import { CheckCircle2, X } from 'lucide-react';
 
 export function App() {
-  const { progressBarRef, hudContainerRef } = useClipMaxGsap();
+  const { progressBarRef } = useClipMaxGsap();
 
   // React 19 useOptimistic for free export credits
   const [actualFreeExports, setActualFreeExports] = useState(3);
@@ -47,27 +29,27 @@ export function App() {
   );
 
   // Studio State
-  const [studioMode, setStudioMode] = useState<"lightning" | "studio">("lightning");
+  const [studioMode, setStudioMode] = useState<'lightning' | 'studio'>('lightning');
   const [selectedGenres, setSelectedGenres] = useState<string[]>([
-    "Podcast & Interview",
-    "Dev & Architecture",
+    'Podcast & Interview',
+    'Dev & Architecture',
   ]);
-  const [promptQuery, setPromptQuery] = useState("");
+  const [promptQuery, setPromptQuery] = useState('');
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(7200);
-  const [selectedPersona, setSelectedPersona] = useState("auto");
-  const [activeTool, setActiveTool] = useState("auto-detect");
-  const [videoUrl, setVideoUrl] = useState("");
-  const [activeStudioTab, setActiveStudioTab] = useState<StudioTabId>("strip");
+  const [selectedPersona, setSelectedPersona] = useState('auto');
+  const [activeTool, setActiveTool] = useState('auto-detect');
+  const [videoUrl, setVideoUrl] = useState('');
+  const [activeStudioTab, setActiveStudioTab] = useState<StudioTabId>('strip');
 
   // Export success notification state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Authentication Modal State
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [authInitialMode, setAuthInitialMode] = useState<"login" | "signup">("login");
+  const [authInitialMode, setAuthInitialMode] = useState<'login' | 'signup'>('signup');
 
-  const handleOpenAuth = (mode: "login" | "signup" = "login") => {
+  const handleOpenAuth = (mode: 'login' | 'signup' = 'signup') => {
     setAuthInitialMode(mode);
     setIsAuthOpen(true);
   };
@@ -77,25 +59,25 @@ export function App() {
   const [isDpdpRightsOpen, setIsDpdpRightsOpen] = useState(false);
 
   const handleClipsGenerated = () => {
-    const studioSection = document.getElementById("studio");
+    const studioSection = document.getElementById('studio');
     if (studioSection) {
-      studioSection.scrollIntoView({ behavior: "smooth" });
+      studioSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   const handleSelectCampaign = (url: string) => {
     setVideoUrl(url);
-    const heroCard = document.getElementById("hero");
-    if (heroCard) {
-      heroCard.scrollIntoView({ behavior: "smooth" });
+    const commandCenter = document.getElementById('command-center') || document.getElementById('hero');
+    if (commandCenter) {
+      commandCenter.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   const handleLoadWorkflowSample = () => {
-    setVideoUrl("https://youtube.com/watch?v=LexFridman_AI_Architecture_DeepDive");
-    const heroCard = document.getElementById("hero");
-    if (heroCard) {
-      heroCard.scrollIntoView({ behavior: "smooth" });
+    setVideoUrl('https://youtube.com/watch?v=LexFridman_AI_Architecture_DeepDive');
+    const commandCenter = document.getElementById('command-center') || document.getElementById('hero');
+    if (commandCenter) {
+      commandCenter.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -124,20 +106,14 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#000000] text-[#FFFFFF] selection:bg-[#89CFF0]/25 selection:text-[#89CFF0] relative overflow-x-hidden font-sans">
+    <div className="min-h-screen bg-white text-slate-900 selection:bg-[#0066FF]/20 selection:text-[#0066FF] relative overflow-x-hidden font-sans">
       {/* 1. Top Viewport GSAP Scroll Progress Ribbon */}
       <div
         ref={progressBarRef}
-        className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#0047AB] via-[#89CFF0] to-[#FFFFFF] origin-left z-50 pointer-events-none scale-x-0"
+        className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#0066FF] via-[#FF1464] to-[#0066FF] origin-left z-50 pointer-events-none scale-x-0"
       />
 
-      {/* 2. Normal Scrolling Cinema Desk Background - Moves Naturally with Page Content */}
-      <StudioEnvironmentBg heroImageUrl={`${import.meta.env.BASE_URL}cinema-desk-bg.jpg`} />
-
-      {/* 3. Kodak Vision3 35mm Micro SVG Noise Grain Texture */}
-      <NoiseOverlay opacity={0.024} />
-
-      {/* 4. Global App Header */}
+      {/* 2. Global Sticky Header with Top Promo Marquee */}
       <AppHeader
         freeExportsCount={optimisticFreeExports}
         onOpenSupport={() => setIsSupportOpen(true)}
@@ -145,188 +121,99 @@ export function App() {
         onOpenAuth={handleOpenAuth}
       />
 
-      {/* 5. Hero Section with Viewfinder HUD and Command Center (No bottom border!) */}
-      <section
-        id="hero"
-        className="relative min-h-[92vh] pt-28 lg:pt-36 pb-24 flex flex-col justify-center overflow-hidden scroll-mt-20 sm:scroll-mt-24"
-      >
-        {/* GSAP Dissolving Viewfinder HUD */}
-        <HeroViewfinderHud hudRef={hudContainerRef} isInputActive={videoUrl.length > 0} />
+      {/* 3. Hero Section (Image 1 Mirror) */}
+      <section id="hero" className="relative scroll-mt-20">
+        <HeroCommandCenter
+          studioMode={studioMode}
+          setStudioMode={setStudioMode}
+          onClipsGenerated={handleClipsGenerated}
+          options={smartOptions}
+          activeTool={activeTool}
+          setActiveTool={setActiveTool}
+          videoUrl={videoUrl}
+          setVideoUrl={setVideoUrl}
+          onSelectStudioTab={setActiveStudioTab}
+        />
+      </section>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
-          <HeroCommandCenter
-            studioMode={studioMode}
-            setStudioMode={setStudioMode}
-            onClipsGenerated={handleClipsGenerated}
-            options={smartOptions}
-            activeTool={activeTool}
-            setActiveTool={setActiveTool}
-            videoUrl={videoUrl}
-            setVideoUrl={setVideoUrl}
-            onSelectStudioTab={setActiveStudioTab}
+      {/* 4. Section 2: Payout Bento Grid & Real Sponsor Intake (Image 2 Mirror) */}
+      <section id="bounties" className="relative scroll-mt-20">
+        <BountyCampaignGrid
+          onSelectCampaign={handleSelectCampaign}
+          triggerToast={(msg) => setToastMessage(msg)}
+        />
+      </section>
+
+      {/* 5. Section 3: Interactive Studio Workspace (Viral Strip, Reframe, Captions, Bot) */}
+      <section id="studio" className="py-16 bg-[#F8FAFC] border-y border-slate-200/80 relative scroll-mt-20">
+        <span id="features" className="absolute -top-20" aria-hidden="true" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <InteractiveStudioShowcase
+            activeStudioTab={activeStudioTab}
+            setActiveStudioTab={setActiveStudioTab}
+            onExportSuccess={handleExportSuccess}
           />
         </div>
       </section>
 
-      {/* =========================================================================
-          COLOUR BLOCK A: Deep Obsidian Void (#000000) with Subtle Cobalt Accent Ambient
-          Contains: Section 01: How Sharko Works Walkthrough
-          ========================================================================= */}
-      <SharkoBlock variant="block-a">
-        {/* Section 01: How It Works 60FPS Walkthrough */}
-        <section id="walkthrough" className="py-24 relative overflow-hidden z-10 scroll-mt-20 sm:scroll-mt-24">
-          {/* Subtle Cobalt Refraction Glow */}
-          <div
-            className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[650px] h-[350px] pointer-events-none -z-10 blur-[130px]"
-            style={{ background: "rgba(0, 71, 171, 0.12)" }}
-            aria-hidden="true"
-          />
+      {/* 6. Section 4: How It Works Walkthrough */}
+      <section id="walkthrough" className="py-20 bg-white relative scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#0066FF] mb-2 block">
+              AUTONOMOUS PIPELINE
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-display">
+              How Sharko Turns Raw Footage into Viral Gold
+            </h2>
+            <p className="text-sm sm:text-base text-slate-500 mt-2">
+              From long YouTube podcast to 45 scheduled vertical shorts in less than 3 minutes.
+            </p>
+          </div>
           <HowItWorksWalkthrough onLoadWorkflowSample={handleLoadWorkflowSample} />
-        </section>
-      </SharkoBlock>
+        </div>
+      </section>
 
-      {/* =========================================================================
-          COLOUR BLOCK B: Deep Obsidian with Sky Blue Accent Ambient
-          Contains: Section 02: AI Studio Interactive Workspace
-          ========================================================================= */}
-      <SharkoBlock variant="block-b">
-        {/* Section 02: AI Studio Interactive Workspace (No top border!) */}
-        <section id="studio" className="py-24 relative overflow-hidden z-10 scroll-mt-20 sm:scroll-mt-24">
-          {/* Subtle Studio Sky Blue Floor Reflection */}
-          <div
-            className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[600px] h-[350px] pointer-events-none -z-10 blur-[130px]"
-            style={{ background: "rgba(137, 207, 240, 0.08)" }}
-            aria-hidden="true"
-          />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
-              <motion.h2
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false, amount: 0.2 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="text-3xl sm:text-4xl font-display font-bold text-[#FFFFFF] tracking-tight"
-              >
-                Cinema-grade AI studio,{" "}
-                <span className="serif-italic text-[#89CFF0]">built for retention.</span>
-              </motion.h2>
-              <p className="text-sm text-zinc-400 font-sans">
-                Inspect autonomous viral scoring, fine-tune multi-speaker crop boundaries, style
-                word-by-word kinetic captions, and sync with Telegram approval bots.
-              </p>
-            </div>
-
-            <InteractiveStudioShowcase
-              activeStudioTab={activeStudioTab}
-              setActiveStudioTab={setActiveStudioTab}
-              onExportSuccess={handleExportSuccess}
-            />
-          </div>
-        </section>
-      </SharkoBlock>
-
-      {/* =========================================================================
-          COLOUR BLOCK A: Deep Obsidian Void (#000000) with Subtle Olive & Cobalt
-          Contains: Section 02b: Why Sharko, Section 03: Bounty Marketplace & Profit Simulator
-          ========================================================================= */}
-      <SharkoBlock variant="block-a">
-        {/* Section 02b: Why Sharko — Architecture & Competitor Comparison (No top border!) */}
-        <WhySharkoComparison />
-
-        {/* Section 03: Bounty Marketplace (No top border!) */}
-        <section id="bounties" className="py-24 relative overflow-hidden z-10 scroll-mt-20 sm:scroll-mt-24">
-          <span id="section-bounties" className="absolute -top-20" aria-hidden="true" />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-            <div className="text-center max-w-3xl mx-auto space-y-4">
-              <motion.h2
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false, amount: 0.2 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="font-display text-3xl sm:text-5xl font-extrabold tracking-tight text-[#FFFFFF]"
-              >
-                Monetize your clipping skills with{" "}
-                <span className="serif-italic font-normal text-[#89CFF0]">instant bounties.</span>
-              </motion.h2>
-              <p className="text-sm text-zinc-400 font-sans">
-                Browse verified brand campaigns, generate high-performing shorts in 1-click, and
-                claim direct payouts from locked escrow pools.
-              </p>
-            </div>
-
-            <BountyCampaignGrid
-              onSelectCampaign={handleSelectCampaign}
-              triggerToast={(msg) => setToastMessage(msg)}
-            />
-          </div>
-        </section>
-
-        {/* Section 03b: Earnings Profit Simulator (No top border!) */}
-        <section id="simulator" className="py-24 relative overflow-hidden z-10 scroll-mt-20 sm:scroll-mt-24">
-          <span id="section-calculator" className="absolute -top-20" aria-hidden="true" />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-            <div className="text-center max-w-3xl mx-auto space-y-4">
-              <motion.h2
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false, amount: 0.2 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="text-3xl sm:text-4xl font-display font-bold text-[#FFFFFF] tracking-tight"
-              >
-                Calculate your{" "}
-                <span className="serif-italic text-[#89CFF0]">monthly</span> short-form earnings.
-              </motion.h2>
-              <p className="text-sm text-zinc-400 font-sans">
-                Real-time projection based on verified CPMs ($3.50 – $4.25 / 1K views) across YouTube
-                Shorts, TikTok, and Instagram Reels.
-              </p>
-            </div>
-
-            <ProfitSimulator />
-          </div>
-        </section>
-      </SharkoBlock>
-
-      {/* =========================================================================
-          COLOUR BLOCK B: Deep Obsidian with Sky Blue Accent Ambient
-          Contains: Section 04: Pricing & Studio Footer
-          ========================================================================= */}
-      <SharkoBlock variant="block-b">
-        {/* Section 04: Output-Only Pricing (No top border!) */}
-        <section id="pricing" className="py-24 relative overflow-hidden z-10 scroll-mt-20 sm:scroll-mt-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-            <div className="text-center max-w-3xl mx-auto space-y-4">
-              <motion.h2
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false, amount: 0.2 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="text-3xl sm:text-4xl font-display font-bold text-[#FFFFFF] tracking-tight"
-              >
-                Zero credits burned on previews.{" "}
-                <span className="serif-italic text-[#89CFF0]">Pay only for finished exports.</span>
-              </motion.h2>
-              <p className="text-sm text-zinc-400 font-sans">
-                No subscriptions that expire unused. All plans include 100% credit rollover and zero
-                watermarks.
-              </p>
-            </div>
-
-            <OutputOnlyPricing />
-          </div>
-        </section>
-
-        {/* Section 05: Frequently Asked Questions (No top border!) */}
-        <StudioFaqSection />
-
-        {/* Studio Footer with Direct Contact Hub & DPDP Links */}
-        <StudioFooter
-          onOpenSupport={() => setIsSupportOpen(true)}
-          onOpenDpdp={() => setIsDpdpRightsOpen(true)}
+      {/* 7. Section 5: Profit Simulator (Image 4 Mirror) */}
+      <section id="simulator" className="relative scroll-mt-20">
+        <ProfitSimulator
+          onStartClipping={() => {
+            const el = document.getElementById('command-center') || document.getElementById('hero');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }}
         />
-      </SharkoBlock>
+      </section>
 
-      {/* Split-Screen Sharko Auth Experience (Modal Portal) */}
+      {/* 8. Section 6: Clippers Who Stayed Reviews & Specification Matrix (Image 5 Mirror) */}
+      <section id="why-sharko" className="relative scroll-mt-20">
+        <WhySharkoComparison />
+      </section>
+
+      {/* 9. Section 7: Output-Only Pricing (Image 3 Mirror) */}
+      <section id="pricing" className="relative scroll-mt-20">
+        <OutputOnlyPricing
+          onSelectPlan={(planId) => {
+            handleOpenAuth('signup');
+          }}
+        />
+      </section>
+
+      {/* 10. Section 8: FAQ Accordion (Image 6 Mirror) */}
+      <section id="faq" className="relative scroll-mt-20">
+        <StudioFaqSection />
+      </section>
+
+      {/* 11. Pre-Footer Call to Action & Multi-Column Footer (Image 7 Mirror) */}
+      <StudioFooter
+        onOpenSupport={() => setIsSupportOpen(true)}
+        onOpenDpdp={() => setIsDpdpRightsOpen(true)}
+        onTryFree={() => {
+          const el = document.getElementById('command-center') || document.getElementById('hero');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }}
+      />
+
+      {/* Split-Screen Sharko Auth Experience (Image 8 Mirror - Never overflows screen) */}
       <SharkoAuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
@@ -353,12 +240,12 @@ export function App() {
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl bg-[#050B16] border border-[#89CFF0]/50 text-xs font-mono text-[#FFFFFF] shadow-2xl shadow-black/80 animate-bounce">
-          <CheckCircle2 className="w-4 h-4 text-[#89CFF0] shrink-0" />
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-xs font-sans text-white shadow-2xl animate-bounce">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
           <button
             onClick={() => setToastMessage(null)}
-            className="p-1 text-zinc-400 hover:text-white"
+            className="p-1 text-slate-400 hover:text-white cursor-pointer"
             aria-label="Dismiss notification"
           >
             <X className="w-3.5 h-3.5" />

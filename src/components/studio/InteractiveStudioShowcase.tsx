@@ -66,17 +66,17 @@ export function InteractiveStudioShowcase({
     >
       {/* Studio Navigation Tabs with Editorial Heading */}
       <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
-        <div className="space-y-0.5">
-          <div className="text-xs font-mono uppercase tracking-wider text-[#89CFF0] font-semibold">
-            Interactive Workspaces
+        <div className="space-y-1">
+          <div className="text-xs font-semibold uppercase tracking-wider text-[#0066FF]">
+            Interactive Studio Workspace
           </div>
-          <h3 className="font-display font-bold text-xl sm:text-2xl text-[#FFFFFF] tracking-tight">
+          <h3 className="font-display font-extrabold text-2xl sm:text-3xl text-slate-900 tracking-tight">
             Autonomous Editing Stages
           </h3>
         </div>
 
-        {/* Autonomous Editing Stages Navbar (Mobile-Responsive 2x2 Grid <-> Desktop Inline Flex) */}
-        <div className="grid grid-cols-2 sm:inline-flex w-full sm:w-auto gap-1.5 p-1.5 rounded-2xl bg-[#030914] border border-[#89CFF0]/25 shadow-[0_10px_30px_rgba(0,0,0,0.65)]">
+        {/* Autonomous Editing Stages Navbar */}
+        <div className="grid grid-cols-2 sm:inline-flex w-full sm:w-auto gap-1.5 p-1.5 rounded-2xl bg-slate-100 border border-slate-200 shadow-sm">
           {STUDIO_TABS.map((tab) => {
             const isActive =
               activeStudioTab === tab.id ||
@@ -87,19 +87,19 @@ export function InteractiveStudioShowcase({
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveStudioTab(tab.id)}
-                className={`relative z-10 inline-flex items-center justify-center sm:justify-start gap-2 rounded-xl px-3 sm:px-4 py-2.5 font-display text-[12.5px] sm:text-[13.5px] font-bold transition-all duration-200 select-none touch-manipulation ${
+                className={`relative z-10 inline-flex items-center justify-center sm:justify-start gap-2 rounded-xl px-3.5 sm:px-4 py-2.5 font-display text-xs sm:text-sm font-bold transition-all duration-200 select-none cursor-pointer ${
                   isActive
-                    ? "bg-[#89CFF0] text-[#000000] font-bold shadow-[0_0_16px_rgba(137,207,240,0.4)] scale-[1.01]"
-                    : "bg-transparent text-zinc-300 hover:bg-[#0047AB]/25 hover:text-white"
+                    ? "bg-[#0066FF] text-white shadow-md shadow-blue-500/20"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-white/80"
                 }`}
               >
                 <span>{tab.label}</span>
                 {Boolean(tab.badge) && (
                   <span
-                    className={`rounded-md px-1.5 py-0.5 font-mono text-[10.5px] font-extrabold ${
+                    className={`rounded-md px-1.5 py-0.5 text-[10px] font-extrabold ${
                       isActive
-                        ? "bg-[#000000] text-[#89CFF0]"
-                        : "bg-[#0047AB]/30 text-[#89CFF0] border border-[#89CFF0]/30"
+                        ? "bg-white/20 text-white"
+                        : "bg-slate-200 text-slate-700"
                     }`}
                   >
                     {tab.badge}
@@ -111,8 +111,8 @@ export function InteractiveStudioShowcase({
         </div>
       </div>
 
-      {/* Render Active Studio Workspace with AnimatePresence mode="wait" */}
-      <div className="rounded-2xl bg-[#030710] border border-[#89CFF0]/20 p-3 sm:p-6 shadow-2xl min-h-[480px] overflow-visible">
+      {/* Render Active Studio Workspace */}
+      <div className="rounded-3xl bg-slate-950 border border-slate-800 p-4 sm:p-7 shadow-2xl min-h-[480px] overflow-visible">
         <AnimatePresence mode="wait">
           {(activeStudioTab === "clips" || activeStudioTab === "strip") && (
             <motion.div

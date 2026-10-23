@@ -9,96 +9,38 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        void: "#000000",
-        cobalt: {
-          DEFAULT: "#0047AB",
-          deep: "#000B1D",
-          dark: "#002D6E",
-          subtle: "rgba(0, 71, 171, 0.25)",
-        },
-        sky: {
-          DEFAULT: "#89CFF0",
-          hover: "#A6DCF4",
-          subtle: "rgba(137, 207, 240, 0.14)",
-        },
-        olive: {
-          DEFAULT: "#757500",
-          text: "#E2E260",
-          subtle: "rgba(117, 117, 0, 0.22)",
-        },
-        canvas: {
-          deep: "#000000",
-          DEFAULT: "#00040A",
-        },
-        surface: {
-          DEFAULT: "#050B16",
-          subtle: "#091224",
-          elevated: "#0C1A33",
-          strong: "#102447",
-          glass: "rgba(5, 11, 22, 0.82)",
-        },
-        border: {
-          DEFAULT: "rgba(255, 255, 255, 0.07)",
-          strong: "rgba(255, 255, 255, 0.16)",
-        },
-        primary: {
-          DEFAULT: "#F4F4F6",
-          hover: "#FFFFFF",
-          obsidian: "#08090B",
-        },
-        mint: {
-          DEFAULT: "#10B981",
-          hover: "#059669",
-          subtle: "rgba(16, 185, 129, 0.14)",
-        },
-        emerald: {
-          DEFAULT: "#10B981",
-          hover: "#059669",
-          subtle: "rgba(16, 185, 129, 0.14)",
-        },
-        amber: {
-          DEFAULT: "#E06D3B",
-          hover: "#C85828",
-          subtle: "rgba(224, 109, 59, 0.14)",
-        },
-        gold: {
-          DEFAULT: "#E5C158",
-          hover: "#D4AE44",
-          subtle: "rgba(229, 193, 88, 0.14)",
-        },
-        accent: {
-          DEFAULT: "#3B82F6",
-          hover: "#2563EB",
-          subtle: "rgba(59, 130, 246, 0.14)",
-        },
-        text: {
-          primary: "#F4F4F6",
-          secondary: "#A1A1AA",
-          muted: "#71717A",
+        brand: {
+          blue: "#0066FF",
+          blueHover: "#0052CC",
+          blueLight: "#EBF3FF",
+          pink: "#FF1464",
+          pinkBright: "#FF0055",
+          pinkLight: "#FFF0F5",
+          dark: "#0B0F19",
+          slate: "#475569",
+          muted: "#64748B",
+          ice: "#F4F8FF",
+          cardDark: "#0B0F17",
         },
       },
       fontFamily: {
         display: ["'Plus Jakarta Sans'", "sans-serif"],
-        editorial: ["'Instrument Serif'", "serif"],
-        sans: ["'Inter'", "sans-serif"],
+        sans: ["'Inter'", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
         mono: ["'JetBrains Mono'", "monospace"],
       },
       borderRadius: {
-        sm: "4px",
-        md: "8px",
-        lg: "12px",
-        xl: "16px",
-        "2xl": "20px",
+        sm: "6px",
+        md: "10px",
+        lg: "14px",
+        xl: "18px",
+        "2xl": "22px",
+        "3xl": "28px",
         pill: "999px",
       },
-      animation: {
-        "pulse-subtle": "pulse-subtle 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-      },
-      keyframes: {
-        "pulse-subtle": {
-          "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.5" },
-        },
+      boxShadow: {
+        'electric': "0 10px 25px -5px rgba(0, 102, 255, 0.38)",
+        'electric-lg': "0 14px 32px -4px rgba(0, 102, 255, 0.48)",
+        'card-soft': "0 20px 50px -10px rgba(15, 23, 42, 0.08)",
       },
     },
   },

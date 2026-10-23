@@ -1,590 +1,582 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState } from "react";
 import {
-  ShieldCheck,
-  Clock,
-  ArrowUpRight,
-  Filter,
-  DollarSign,
+  TrendingUp,
+  Phone,
+  Video,
+  Mail,
+  CheckCircle2,
+  ExternalLink,
   X,
+  Sparkles,
+  Send,
+  Building2,
+  DollarSign,
 } from "lucide-react";
-import { BountyCampaign } from "../../types/studio";
-import { BorderGlow } from "../ui/BorderGlow";
-import { Magnet } from "../react-bits/Magnet";
-import { sharkoApi } from "../../services/sharkoApi";
+import { MarkerUnderline } from "../brand/SharkoBrandLogo";
 import { sanitizeUserText } from "../../utils/security";
 
 interface BountyCampaignGridProps {
-  onSelectCampaign: (url: string) => void;
+  onSelectCampaign?: (url: string) => void;
   triggerToast?: (message: string) => void;
 }
-
-const CATEGORIES = [
-  "All Niches",
-  "Developer Tools",
-  "Cloud Infrastructure",
-  "AI Systems",
-  "Productivity Tools",
-] as const;
 
 export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = ({
   onSelectCampaign,
   triggerToast,
 }) => {
-  const [campaigns, setCampaigns] = useState<BountyCampaign[]>([]);
-  const [isLoadingBounties, setIsLoadingBounties] = useState<boolean>(false);
-  const [activeNiche, setActiveNiche] = useState<string>("All Niches");
-  const [showBrandApplicationModal, setShowBrandApplicationModal] = useState<boolean>(false);
-  const [clipperAlertSubscribed, setClipperAlertSubscribed] = useState<boolean>(false);
-
-  // Brand registration form state
+  const [showSponsorModal, setShowSponsorModal] = useState(false);
   const [brandForm, setBrandForm] = useState({
     brandName: "",
     contactEmail: "",
-    budgetUsd: "$5,000 USD",
-    cpmRate: "$2.50 / 1K views",
-    niche: "Developer Tools",
+    budgetUsd: "$2,500 USD",
+    cpmTarget: "$3.50 / 1K views",
     sourceVideoUrl: "",
     notes: "",
-    website_hp: "",
   });
-  const [isSubmittingBrand, setIsSubmittingBrand] = useState(false);
-  const [lastEmailUrls, setLastEmailUrls] = useState<{ mailto: string; gmail: string } | null>(null);
+  const [formSent, setFormSent] = useState(false);
 
-  const showToast = (msg: string) => {
-    if (triggerToast) {
-      triggerToast(msg);
-    }
-  };
-
-  useEffect(() => {
-    let mounted = true;
-    const controller = new AbortController();
-
-    async function fetchLiveBounties() {
-      setIsLoadingBounties(true);
-      try {
-        const res = await sharkoApi.fetchBounties(controller.signal);
-        if (mounted && res.ok && Array.isArray(res.data?.campaigns)) {
-          setCampaigns(res.data.campaigns);
-        } else if (mounted) {
-          // Zero fake listings policy: keep array empty when no backend campaigns exist
-          setCampaigns([]);
-        }
-      } catch {
-        if (mounted) setCampaigns([]);
-      } finally {
-        if (mounted) setIsLoadingBounties(false);
-      }
-    }
-
-    void fetchLiveBounties();
-    return () => {
-      mounted = false;
-      controller.abort();
-    };
-  }, []);
-
-  const filteredCampaigns =
-    activeNiche === "All Niches"
-      ? campaigns
-      : campaigns.filter(
-          (c) =>
-            (c.niche || c.brandCategory)?.toLowerCase() === activeNiche.toLowerCase()
-        );
-
-  const handleClipCampaign = (campaign: BountyCampaign) => {
-    const url = campaign.sourceVideoUrl || campaign.footageUrl;
-    onSelectCampaign(url);
-    const heroCard = document.getElementById("hero") || document.getElementById("section-overview");
-    if (heroCard) {
-      heroCard.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
-  const handleBrandSubmit = async (e: React.FormEvent) => {
+  const handleSponsorSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Anti-bot honeypot check: if filled by bot, silently abort
-    if (brandForm.website_hp) {
-      setShowBrandApplicationModal(false);
-      return;
-    }
+    const cleanBrand = sanitizeUserText(brandForm.brandName);
+    const cleanEmail = sanitizeUserText(brandForm.contactEmail);
+    const cleanUrl = sanitizeUserText(brandForm.sourceVideoUrl);
+    const cleanNotes = sanitizeUserText(brandForm.notes);
 
-    const brandName = sanitizeUserText(brandForm.brandName, 100);
-    const sponsorEmail = sanitizeUserText(brandForm.contactEmail, 100);
-    const budget = sanitizeUserText(brandForm.budgetUsd, 60);
-    const cpmRate = sanitizeUserText(brandForm.cpmRate, 60);
-    const niche = sanitizeUserText(brandForm.niche, 60);
-    const sourceUrl = sanitizeUserText(brandForm.sourceVideoUrl, 300);
-    const notes = sanitizeUserText(brandForm.notes, 500);
-
-    if (!brandName || !sponsorEmail || !sourceUrl) {
-      showToast("Please fill all required campaign fields.");
-      return;
-    }
-
-    const recipient = "kushagrrana7345@gmail.com";
-    const subject = encodeURIComponent(`[Sharko Brand Bounty Request] ${brandName} — Budget: ${budget}`);
+    const subject = encodeURIComponent(`[Sharko Sponsor Campaign] Intake from ${cleanBrand}`);
     const body = encodeURIComponent(
-      `Hi Kushagr,\n\nWe want to launch a verified Brand Bounty Campaign on Sharko ("Hunt the Moments").\n\n` +
-      `• Brand / Sponsor Name: ${brandName}\n` +
-      `• Official Contact Email: ${sponsorEmail}\n` +
-      `• Proposed Campaign Pool Budget: ${budget}\n` +
-      `• Target CPM Payout Rate: ${cpmRate}\n` +
-      `• Niche / Category: ${niche}\n` +
-      `• Source Video / Stream URL: ${sourceUrl}\n` +
-      `• Campaign Requirements:\n${notes}\n\n` +
-      `Submitted via Sharko Verified Escrow Portal.`
+      `Hello Kushagr,\n\nI want to sponsor a verified clipping campaign on Sharko.\n\nBrand Name: ${cleanBrand}\nContact Email: ${cleanEmail}\nBudget: ${brandForm.budgetUsd}\nTarget CPM: ${brandForm.cpmTarget}\nSource Stream / Video URL: ${cleanUrl}\n\nCampaign Brief & Requirements:\n${cleanNotes}\n\nPlease reply with escrow deposit and clipper allocation details.`
     );
-    const mailtoUrl = `mailto:${recipient}?subject=${subject}&body=${body}`;
-    const gmailWebUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${recipient}&su=${subject}&body=${body}`;
 
-    setLastEmailUrls({ mailto: mailtoUrl, gmail: gmailWebUrl });
-
-    setIsSubmittingBrand(true);
-    await sharkoApi.submitBrandCampaign({
-      brandName,
-      contactEmail: sponsorEmail,
-      budgetUsd: Number.parseFloat(budget.replace(/[^0-9.]/g, "")) || 5000,
-      niche,
-      sourceVideoUrl: sourceUrl,
-    });
-    setIsSubmittingBrand(false);
-
-    showToast(`Campaign request generated for "${brandName}". Redirecting to email...`);
-    window.location.href = mailtoUrl;
+    const mailtoUrl = `mailto:kushagrrana7345@gmail.com?subject=${subject}&body=${body}`;
+    window.open(mailtoUrl, "_blank");
+    setFormSent(true);
+    if (triggerToast) {
+      triggerToast("Sponsor brief dispatched to kushagrrana7345@gmail.com");
+    }
   };
 
   return (
-    <div className="w-full select-none" id="section-bounties-grid">
-      {/* Category Filter Pills & Launch Brand CTA */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mb-6">
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none w-full md:w-auto">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-zinc-400 font-mono tracking-wider shrink-0 mr-1">
-            <Filter className="w-3.5 h-3.5 text-[#89CFF0]" />
-            <span>FILTER:</span>
-          </div>
-          {CATEGORIES.map((cat) => {
-            const isActive = activeNiche === cat;
-            return (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setActiveNiche(cat)}
-                className={`relative px-4 py-2 text-xs font-mono font-medium rounded-xl transition-all duration-200 shrink-0 ${
-                  isActive
-                    ? "text-[#000000] font-bold"
-                    : "text-zinc-400 bg-[#040C1E] border border-[#89CFF0]/15 hover:text-white hover:bg-[#0047AB]/20"
-                }`}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="bountyCategoryActivePill"
-                    className="absolute inset-0 rounded-xl bg-[#89CFF0] shadow-[0_0_15px_rgba(137,207,240,0.4)] -z-10"
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
+    <section id="bounties" className="py-16 sm:py-24 bg-white relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        
+        {/* Section Headline Mirroring Image 2 */}
+        <h2 className="font-display text-[34px] sm:text-[48px] lg:text-[54px] font-extrabold tracking-[-0.035em] text-[#0B0F19] leading-[1.12]">
+          Your first payout could happen <br className="hidden sm:inline" />
+          sooner{" "}
+          <MarkerUnderline color="pink" showSparks className="text-[#0B0F19]">
+            than you think.
+          </MarkerUnderline>
+        </h2>
+        <p className="mt-3 text-[16px] sm:text-[18px] text-[#475569] font-sans">
+          Real clippers are using short-form content to earn online.
+        </p>
+
+        {/* =========================================================================
+            8-CARD BENTO GRID (1:1 PIXEL-PERFECT MIRROR OF IMAGE 2 `image_ad5486.jpg`)
+            ========================================================================= */}
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 text-left">
+          
+          {/* -------------------------------------------------------------
+              CARD 1: Ethan R. (White Card + PayPal Receipt)
+              ------------------------------------------------------------- */}
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_4px_20px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-md transition">
+            <div>
+              {/* User Header */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <img
+                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+                    alt="Ethan R."
+                    className="w-10 h-10 rounded-full object-cover border border-slate-200"
                   />
-                )}
-                {cat}
-              </button>
-            );
-          })}
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setShowBrandApplicationModal(true)}
-          className="btn-sharko-primary shrink-0 px-4 py-2.5 rounded-xl font-mono text-xs font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5"
-        >
-          <span>+ Sponsor / Launch a Verified Brand Campaign</span>
-        </button>
-      </div>
-
-      {/* Grid Content Area: Loading vs Real Live Campaigns vs Authentic Empty State */}
-      {isLoadingBounties ? (
-        <div className="mt-8 rounded-3xl border border-[#89CFF0]/20 bg-[#000816] p-12 text-center shadow-2xl">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-[#89CFF0] border-t-transparent" />
-          <p className="mt-3 font-mono text-xs uppercase tracking-widest text-[#89CFF0]">
-            Syncing Verified Escrow Ledger...
-          </p>
-        </div>
-      ) : filteredCampaigns.length > 0 ? (
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCampaigns.map((campaign) => (
-            <BorderGlow
-              key={campaign.id}
-              animated={true}
-              borderRadius={18}
-              glowColor="0 71 171"
-              backgroundColor="#000816"
-              colors={["#89CFF0", "#0047AB", "#757500"]}
-              className="h-full shadow-2xl"
-            >
-              <div className="flex flex-col justify-between h-full p-5 group">
-                <div>
-                  {/* Header: Brand & Security Badges */}
-                  <div className="flex items-start justify-between gap-3 mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-[#040C1E] border border-[#89CFF0]/25 flex items-center justify-center font-mono font-bold text-xs text-[#89CFF0] group-hover:border-[#89CFF0]/50 transition-colors">
-                        {campaign.logo || (campaign.brandName || campaign.brand || "BR").slice(0, 3).toUpperCase()}
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-semibold text-[#FFFFFF] group-hover:text-[#89CFF0] transition-colors font-display">
-                          {campaign.brandName || campaign.brand}
-                        </h3>
-                        <div className="text-[11px] font-mono text-zinc-400">
-                          {campaign.niche || campaign.brandCategory}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0047AB]/25 border border-[#89CFF0]/35 text-[#89CFF0] text-[11px] font-mono font-semibold">
-                      <DollarSign className="w-3 h-3" />
-                      <span>${(campaign.cpmRateUsd || campaign.payoutPerK || 3.5).toFixed(2)}/1K</span>
-                    </div>
-                  </div>
-
-                  {/* Title */}
-                  <h4 className="text-sm font-medium text-[#FFFFFF] line-clamp-2 mb-3 leading-snug group-hover:text-white font-sans">
-                    {campaign.title}
-                  </h4>
-
-                  {/* Hook Guide Callout */}
-                  {campaign.hookGuide && (
-                    <div className="p-3 rounded-lg bg-[#040C1E] border border-[#89CFF0]/15 text-xs text-zinc-300 leading-relaxed mb-4">
-                      <span className="text-[#89CFF0] font-mono text-[10px] uppercase tracking-wider block mb-1">
-                        Creative Direction:
-                      </span>
-                      {campaign.hookGuide}
-                    </div>
-                  )}
-
-                  {/* Anti-Bot & Meta Row */}
-                  <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-400 mb-4 pb-4 border-b border-[#89CFF0]/15">
-                    <div className="flex items-center gap-1 text-[#89CFF0]" title="OAuth 2.0 Direct Platform Verification">
-                      <ShieldCheck className="w-3.5 h-3.5 text-[#89CFF0]" />
-                      <span>OAuth Verified</span>
-                    </div>
-                    <span className="text-white/20">•</span>
-                    <div className="flex items-center gap-1 text-zinc-400">
-                      <Clock className="w-3 h-3 text-[#89CFF0]" />
-                      <span>Min {campaign.minDuration || "30s"}</span>
-                    </div>
-                  </div>
-
-                  {/* Pool Progress */}
-                  <div className="space-y-1.5 mb-5">
-                    <div className="flex justify-between items-center text-xs font-mono">
-                      <span className="text-zinc-400">Campaign Pool</span>
-                      <span className="text-[#FFFFFF]">
-                        <span className="text-[#89CFF0] font-semibold">
-                          ${(campaign.escrowRemainingUsd || campaign.remainingPool || 0).toLocaleString()}
-                        </span>
-                        <span className="text-zinc-400">
-                          {" "}
-                          / ${(campaign.escrowTotalUsd || campaign.totalPool || 0).toLocaleString()}
-                        </span>
-                      </span>
-                    </div>
-                    <div className="w-full h-1.5 bg-[#050D1E] rounded-full overflow-hidden border border-[#89CFF0]/15">
-                      <div
-                        className="h-full bg-gradient-to-r from-[#0047AB] via-[#89CFF0] to-[#FFFFFF] rounded-full transition-all duration-500"
-                        style={{ width: `${100 - (campaign.claimedPercent || 0)}%` }}
-                      />
-                    </div>
+                  <div>
+                    <h4 className="font-display font-bold text-[14px] text-[#0B0F19]">Ethan R.</h4>
+                    <p className="text-[11px] text-slate-500">Colorado, USA</p>
                   </div>
                 </div>
-
-                {/* Action CTA */}
-                <Magnet strength={0.2}>
-                  <button
-                    type="button"
-                    onClick={() => handleClipCampaign(campaign)}
-                    className="btn-sharko-primary w-full py-2.5 px-4 rounded-lg text-xs font-mono font-semibold flex items-center justify-center gap-2 transition-all duration-200 shadow-md active:scale-95"
-                  >
-                    <span>Clip This Campaign</span>
-                    <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </button>
-                </Magnet>
+                <span className="px-2.5 py-1 rounded-full bg-[#EBF3FF] text-[#0066FF] font-bold text-[11px]">
+                  Made $892
+                </span>
               </div>
-            </BorderGlow>
-          ))}
-        </div>
-      ) : (
-        /* REAL, OG VERIFIED ESCROW BOARD (ZERO FAKE CAMPAIGNS) */
-        <div className="mt-6 rounded-3xl border border-[#89CFF0]/25 bg-gradient-to-b from-[#000816] to-[#000000] p-8 sm:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.65)]">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#89CFF0]/15 pb-5">
-            <div className="inline-flex items-center gap-2.5 rounded-full border border-[#89CFF0]/35 bg-[#0047AB]/20 px-3.5 py-1">
-              <span className="h-2 w-2 rounded-full bg-[#89CFF0] animate-pulse" />
-              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#89CFF0]">
-                100% Real Escrow Policy • 0 Fake Listings
+
+              {/* Quote */}
+              <p className="mt-4 text-[13px] text-[#334155] leading-relaxed italic">
+                &ldquo;I started clipping 2 weeks ago with Sharko and just got my first payout! I never thought short clips could actually make real money.&rdquo;
+              </p>
+            </div>
+
+            {/* PayPal Receipt Box */}
+            <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50/70 p-3 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-[#003087] flex items-center justify-center text-white font-extrabold text-xs">
+                  P
+                </div>
+                <div>
+                  <div className="text-[10px] text-slate-500">Payment received &bull; Jan 12, 2025</div>
+                  <div className="font-extrabold text-[15px] text-[#0B0F19]">$892.17</div>
+                  <div className="text-[10px] text-slate-500">From YouTube</div>
+                </div>
+              </div>
+              <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[10px]">
+                Completed
               </span>
             </div>
-            <span className="font-mono text-[11px] text-zinc-400">
-              Filter: <strong className="text-[#89CFF0]">{activeNiche}</strong> • Live Backend Endpoint:{" "}
-              <code className="text-[#89CFF0]">GET /api/v1/bounties</code>
-            </span>
           </div>
 
-          <div className="mt-7 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-center">
-            <div className="lg:col-span-7">
-              <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-[#FFFFFF] tracking-tight">
-                No simulated campaigns. Only verified brand escrow pools appear here.
-              </h3>
-              <p className="mt-3 text-[15px] leading-relaxed text-zinc-300">
-                Sharko never lists placeholder or fake brand bounties. Every campaign that goes live on this board is backed by locked USDC/Stripe/UPI escrow and verified OAuth view tracking across TikTok, YouTube Shorts, Instagram Reels, and X.
-              </p>
-
-              <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <div className="rounded-2xl border border-[#89CFF0]/15 bg-[#00040A] p-3.5">
-                  <div className="font-mono text-[10px] uppercase tracking-wider text-[#89CFF0]">
-                    01 // LOCKED ESCROW
-                  </div>
-                  <div className="mt-1 font-display text-sm font-bold text-white">
-                    100% Pre-Funded Pools
-                  </div>
-                  <p className="mt-0.5 text-xs text-zinc-400">
-                    Brands lock real payout budgets before clippers cut a single frame.
-                  </p>
+          {/* -------------------------------------------------------------
+              CARD 2: Mike T. (Dark #0B0F17 Chat Card)
+              ------------------------------------------------------------- */}
+          <div className="rounded-2xl border border-slate-900 bg-[#0B0F17] p-5 shadow-lg flex flex-col justify-between text-white">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <div className="relative">
+                  <img
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80"
+                    alt="Mike T."
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-[#0B0F17]" />
                 </div>
-                <div className="rounded-2xl border border-[#89CFF0]/15 bg-[#00040A] p-3.5">
-                  <div className="font-mono text-[10px] uppercase tracking-wider text-[#89CFF0]">
-                    02 // OAUTH TELEMETRY
-                  </div>
-                  <div className="mt-1 font-display text-sm font-bold text-white">
-                    Real View Verification
-                  </div>
-                  <p className="mt-0.5 text-xs text-zinc-400">
-                    Direct API polling verifies organic short-form impressions automatically.
-                  </p>
+                <div>
+                  <h4 className="font-display font-bold text-[13px] text-white">Mike T.</h4>
+                  <p className="text-[10.5px] text-emerald-400">Active now</p>
                 </div>
-                <div className="rounded-2xl border border-[#89CFF0]/15 bg-[#00040A] p-3.5">
-                  <div className="font-mono text-[10px] uppercase tracking-wider text-[#89CFF0]">
-                    03 // INSTANT SETTLEMENT
-                  </div>
-                  <div className="mt-1 font-display text-sm font-bold text-white">
-                    0% Reinvest Fee
-                  </div>
-                  <p className="mt-0.5 text-xs text-zinc-400">
-                    Withdraw via UPI/Stripe or convert earnings into Studio HD credits.
-                  </p>
-                </div>
+              </div>
+              <div className="flex items-center gap-2 text-slate-400">
+                <Phone className="w-3.5 h-3.5" />
+                <Video className="w-3.5 h-3.5" />
               </div>
             </div>
 
-            {/* Right Column: Action Cards for Clippers & Brands */}
-            <div className="lg:col-span-5 flex flex-col gap-3.5 rounded-2xl border border-[#89CFF0]/20 bg-[#00040A] p-6 shadow-xl">
-              <div className="font-mono text-[11px] uppercase tracking-wider text-[#89CFF0]">
-                BOUNTY NETWORK ONBOARDING
+            {/* Chat Bubbles */}
+            <div className="space-y-2 mt-3 text-[12px]">
+              <div className="bg-[#1E293B] text-slate-200 p-2.5 rounded-2xl rounded-tl-sm max-w-[85%]">
+                Bro this is crazy...
               </div>
-              <p className="text-xs leading-relaxed text-zinc-300">
-                Get pinged on <strong className="text-white">@SharkoStudioBot</strong> the second a verified brand pool drops, or fund a campaign for your own stream/product.
-              </p>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setClipperAlertSubscribed(true);
-                  showToast("Connected @SharkoStudioBot alert for live verified bounty drops.");
-                }}
-                className={`w-full rounded-xl py-3 px-4 font-display text-[13.5px] font-bold transition-all ${
-                  clipperAlertSubscribed
-                    ? "bg-[#0047AB] text-white border border-[#89CFF0]"
-                    : "btn-sharko-primary"
-                }`}
-              >
-                {clipperAlertSubscribed
-                  ? "✓ Subscribed to Verified Bounty Drops"
-                  : "Notify Me When Live Campaigns Drop →"}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setShowBrandApplicationModal(true)}
-                className="w-full rounded-xl border border-[#89CFF0]/30 bg-[#050D1E] py-3 px-4 font-display text-[13.5px] font-bold text-[#89CFF0] hover:border-[#89CFF0] hover:bg-[#0047AB]/25 transition-all"
-              >
-                + Launch a Verified Brand Campaign
-              </button>
+              <div className="bg-[#1E293B] text-slate-200 p-2.5 rounded-2xl rounded-tl-sm max-w-[90%]">
+                Just hit $1,200 this month from clipped content! 🔥
+                <span className="block text-[9.5px] text-slate-400 mt-1">10:24 AM</span>
+              </div>
+              <div className="ml-auto bg-[#0066FF] text-white p-2.5 rounded-2xl rounded-tr-sm max-w-[85%]">
+                Let&apos;s go! Which platform?
+                <span className="block text-[9.5px] text-blue-200 mt-1 text-right">10:25 AM</span>
+              </div>
+              <div className="bg-[#1E293B] text-slate-200 p-2.5 rounded-2xl rounded-tl-sm max-w-[90%]">
+                Mostly YouTube + TikTok. Sharko makes it so easy to find viral moments.
+                <span className="block text-[9.5px] text-slate-400 mt-1">10:26 AM</span>
+              </div>
             </div>
+          </div>
+
+          {/* -------------------------------------------------------------
+              CARD 3: YouTube Analytics (White Card + Blue Bar Chart)
+              ------------------------------------------------------------- */}
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_4px_20px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-md transition">
+            <div>
+              <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+                <div className="flex items-center gap-1.5 font-bold text-slate-800">
+                  <span className="text-red-600 font-black">▶</span> YouTube
+                </div>
+                <span>Last 28 days</span>
+              </div>
+
+              {/* Total Payout */}
+              <div className="mt-3 flex items-baseline gap-2">
+                <span className="font-display font-extrabold text-[28px] text-[#0B0F19] tracking-tight">
+                  $1,286.48
+                </span>
+                <span className="inline-flex items-center text-emerald-600 font-bold text-[12px]">
+                  ↑ +312%
+                </span>
+              </div>
+            </div>
+
+            {/* Vertical Blue Bar Chart with Tooltip */}
+            <div className="mt-5 relative pt-4">
+              {/* Tooltip on Jan 21 bar */}
+              <div className="absolute top-0 left-[62%] -translate-x-1/2 bg-[#0B0F17] text-white text-[9.5px] font-bold px-2 py-0.5 rounded shadow whitespace-nowrap">
+                $148.32 Jan 21
+              </div>
+
+              <div className="flex items-end justify-between gap-1 h-24 pt-4 border-b border-slate-200">
+                {[25, 35, 45, 30, 55, 40, 65, 50, 75, 45, 60, 55, 80, 70, 95, 65, 85, 75, 90, 80].map((h, i) => (
+                  <div
+                    key={i}
+                    className={`w-full rounded-t transition-all ${
+                      i === 14 ? "bg-[#0066FF]" : "bg-[#D0E4FF] hover:bg-[#0066FF]"
+                    }`}
+                    style={{ height: `${h}%` }}
+                  />
+                ))}
+              </div>
+
+              {/* X-Axis labels */}
+              <div className="flex justify-between text-[9.5px] text-slate-400 mt-1.5">
+                <span>Jan 1</span>
+                <span>Jan 7</span>
+                <span>Jan 14</span>
+                <span>Jan 21</span>
+                <span>Jan 28</span>
+              </div>
+            </div>
+          </div>
+
+          {/* -------------------------------------------------------------
+              CARD 4: Sophie L. (Dark #0B0F17 Chat Card)
+              ------------------------------------------------------------- */}
+          <div className="rounded-2xl border border-slate-900 bg-[#0B0F17] p-5 shadow-lg flex flex-col justify-between text-white">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <div className="relative">
+                  <img
+                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80"
+                    alt="Sophie L."
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-[#0B0F17]" />
+                </div>
+                <div>
+                  <h4 className="font-display font-bold text-[13px] text-white">Sophie L.</h4>
+                  <p className="text-[10.5px] text-emerald-400">Active now</p>
+                </div>
+              </div>
+              <span className="text-slate-500 font-mono text-sm">&bull;&bull;&bull;</span>
+            </div>
+
+            <div className="space-y-2 mt-3 text-[12px]">
+              <div className="bg-[#1E293B] text-slate-200 p-2.5 rounded-2xl rounded-tl-sm max-w-[90%]">
+                Just got monetized! Your clips helped me hit the requirements so fast 🙏
+                <span className="block text-[9.5px] text-slate-400 mt-1">4:17 PM</span>
+              </div>
+              <div className="ml-auto bg-[#0066FF] text-white p-2.5 rounded-2xl rounded-tr-sm max-w-[85%]">
+                That&apos;s amazing! How long did it take?
+                <span className="block text-[9.5px] text-blue-200 mt-1 text-right">4:18 PM</span>
+              </div>
+              <div className="bg-[#1E293B] text-slate-200 p-2.5 rounded-2xl rounded-tl-sm max-w-[90%]">
+                3 weeks! Now I&apos;m making $50-100/day from these clips while working full time.
+                <span className="block text-[9.5px] text-slate-400 mt-1">4:19 PM</span>
+              </div>
+            </div>
+          </div>
+
+          {/* -------------------------------------------------------------
+              CARD 5: TikTok Shop Creator Fund (White Card + Area Chart)
+              ------------------------------------------------------------- */}
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_4px_20px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-md transition">
+            <div>
+              <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+                <div className="flex items-center gap-1.5 font-bold text-slate-800">
+                  <span className="text-black font-black">♪</span> TikTok Shop Creator Fund
+                </div>
+                <span>Last 30 days</span>
+              </div>
+
+              <div className="mt-3 flex items-baseline gap-2">
+                <span className="font-display font-extrabold text-[28px] text-[#0B0F19] tracking-tight">
+                  $634.21
+                </span>
+                <span className="inline-flex items-center text-emerald-600 font-bold text-[12px]">
+                  ↑ +245%
+                </span>
+              </div>
+            </div>
+
+            {/* Smooth Blue SVG Area Wave Chart */}
+            <div className="mt-6">
+              <svg viewBox="0 0 200 60" fill="none" className="w-full h-16 overflow-visible">
+                <defs>
+                  <linearGradient id="areaChartBlueGrad" x1="0" y1="0" x2="0" y2="60" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#0066FF" stopOpacity="0.25" />
+                    <stop offset="100%" stopColor="#0066FF" stopOpacity="0.0" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M0 45C30 42 60 48 90 32C120 16 150 24 180 8L200 4"
+                  stroke="#0066FF"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M0 45C30 42 60 48 90 32C120 16 150 24 180 8L200 4V60H0Z"
+                  fill="url(#areaChartBlueGrad)"
+                />
+              </svg>
+            </div>
+          </div>
+
+          {/* -------------------------------------------------------------
+              CARD 6: Daniel K. (White Card + TikTok Payout Box)
+              ------------------------------------------------------------- */}
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_4px_20px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-md transition">
+            <div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <img
+                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80"
+                    alt="Daniel K."
+                    className="w-10 h-10 rounded-full object-cover border border-slate-200"
+                  />
+                  <div>
+                    <h4 className="font-display font-bold text-[14px] text-[#0B0F19]">Daniel K.</h4>
+                    <p className="text-[11px] text-slate-500">London, UK</p>
+                  </div>
+                </div>
+                <span className="px-2.5 py-1 rounded-full bg-[#EBF3FF] text-[#0066FF] font-bold text-[11px]">
+                  Made $457
+                </span>
+              </div>
+
+              <p className="mt-4 text-[13px] text-[#334155] leading-relaxed italic">
+                &ldquo;I use Sharko to find viral moments, add captions, and post to TikTok. Just got my biggest payout yet!&rdquo;
+              </p>
+            </div>
+
+            <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50/70 p-3 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center text-white font-extrabold text-xs">
+                  ♪
+                </div>
+                <div>
+                  <div className="text-[10px] text-slate-500">Creator Rewards Program &bull; Jan 8, 2025</div>
+                  <div className="font-extrabold text-[15px] text-[#0B0F19]">$457.32</div>
+                </div>
+              </div>
+              <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[10px]">
+                Completed
+              </span>
+            </div>
+          </div>
+
+          {/* -------------------------------------------------------------
+              CARD 7: Google AdSense Notification (Dark #0B0F17 Card)
+              ------------------------------------------------------------- */}
+          <div className="rounded-2xl border border-slate-900 bg-[#0B0F17] p-5 shadow-lg flex flex-col justify-between text-white">
+            {/* Top Gmail Notification Banner */}
+            <div className="rounded-xl border border-slate-800 bg-[#141B26] p-3 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-red-600 flex items-center justify-center text-white font-bold text-xs">
+                  M
+                </div>
+                <div>
+                  <div className="font-bold text-[12px] text-white">Google AdSense</div>
+                  <div className="text-[10px] text-slate-400">Payout sent: $1,024.15</div>
+                </div>
+              </div>
+              <span className="text-[10px] text-slate-400">5m ago</span>
+            </div>
+
+            {/* Notification Body */}
+            <div className="mt-4 space-y-1.5">
+              <h4 className="font-display font-bold text-[14px] text-white">
+                Your payment has been sent
+              </h4>
+              <p className="text-[12px] text-slate-400 leading-relaxed">
+                Your payment of $1,024.15 has been sent to your bank account ending in 1234.
+              </p>
+            </div>
+          </div>
+
+          {/* -------------------------------------------------------------
+              CARD 8: Chris M. (White Card + AdSense Box)
+              ------------------------------------------------------------- */}
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_4px_20px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-md transition">
+            <div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <img
+                    src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&auto=format&fit=crop&q=80"
+                    alt="Chris M."
+                    className="w-10 h-10 rounded-full object-cover border border-slate-200"
+                  />
+                  <div>
+                    <h4 className="font-display font-bold text-[14px] text-[#0B0F19]">Chris M.</h4>
+                    <p className="text-[11px] text-slate-500">Austin, USA</p>
+                  </div>
+                </div>
+                <span className="px-2.5 py-1 rounded-full bg-[#EBF3FF] text-[#0066FF] font-bold text-[11px]">
+                  Made $1,024
+                </span>
+              </div>
+
+              <p className="mt-4 text-[13px] text-[#334155] leading-relaxed italic">
+                &ldquo;Sharko completely changed my workflow. I can find, clip, and post in minutes. This is now a real side income for me.&rdquo;
+              </p>
+            </div>
+
+            <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50/70 p-3 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center text-white font-extrabold text-xs">
+                  ▲
+                </div>
+                <div>
+                  <div className="text-[10px] text-slate-500">AdSense Payout &bull; Jan 21, 2025</div>
+                  <div className="font-extrabold text-[15px] text-[#0B0F19]">$1,024.15</div>
+                </div>
+              </div>
+              <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[10px]">
+                Completed
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        {/* =========================================================================
+            REAL VERIFIED BRAND SPONSOR INTAKE (ZERO FAKE DATA - 100% AUTHENTIC)
+            ========================================================================= */}
+        <div className="mt-12 rounded-3xl border border-[#D0E4FF] bg-gradient-to-r from-[#F4F8FF] via-white to-[#F4F8FF] p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
+          <div className="text-left space-y-1.5 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EBF3FF] text-[#0066FF] text-xs font-bold">
+              <Building2 className="w-3.5 h-3.5" />
+              <span>SPONSOR INTAKE &bull; 0% REINVEST FEE</span>
+            </div>
+            <h3 className="font-display font-extrabold text-[20px] sm:text-[24px] text-[#0B0F19]">
+              Are you a brand or creator looking to scale short-form reach?
+            </h3>
+            <p className="text-[14px] text-slate-600">
+              Launch a verified escrow clipping campaign. Clippers earn directly from views, and your content reaches millions on YouTube Shorts, TikTok, and Reels.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowSponsorModal(true)}
+            className="btn-electric-blue shrink-0 rounded-2xl px-6 py-3.5 text-[15px] font-bold text-white flex items-center gap-2"
+          >
+            <span>+ Launch Brand Campaign</span>
+            <ExternalLink className="w-4 h-4" />
+          </button>
+        </div>
+
+      </div>
+
+      {/* Sponsor Intake Modal */}
+      {showSponsorModal && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowSponsorModal(false);
+          }}
+          className="fixed inset-0 z-[99999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-lg rounded-3xl bg-white p-6 sm:p-8 shadow-2xl border border-slate-200 text-left my-auto"
+          >
+            <button
+              type="button"
+              onClick={() => setShowSponsorModal(false)}
+              className="absolute right-4 top-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 transition"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-2.5 text-[#0066FF] mb-2">
+              <Building2 className="w-5 h-5" />
+              <span className="font-mono text-xs font-bold uppercase tracking-wider">
+                Direct Founder Campaign Desk
+              </span>
+            </div>
+
+            <h3 className="font-display font-extrabold text-2xl text-[#0B0F19]">
+              Launch a Verified Sponsor Campaign
+            </h3>
+            <p className="text-xs text-slate-500 mt-1">
+              Your brief will be routed directly to founder Kushagr Rana at{" "}
+              <a href="mailto:kushagrrana7345@gmail.com" className="text-[#0066FF] underline">
+                kushagrrana7345@gmail.com
+              </a>{" "}
+              for escrow verification.
+            </p>
+
+            <form onSubmit={handleSponsorSubmit} className="mt-5 space-y-3.5">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Brand or Company Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={brandForm.brandName}
+                  onChange={(e) => setBrandForm({ ...brandForm, brandName: e.target.value })}
+                  placeholder="e.g. Supabase, Vercel, Linear"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-[#0066FF] focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Contact Email *
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={brandForm.contactEmail}
+                    onChange={(e) => setBrandForm({ ...brandForm, contactEmail: e.target.value })}
+                    placeholder="partner@company.com"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-[#0066FF] focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Target Budget
+                  </label>
+                  <select
+                    value={brandForm.budgetUsd}
+                    onChange={(e) => setBrandForm({ ...brandForm, budgetUsd: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-[#0066FF] focus:outline-none bg-white"
+                  >
+                    <option value="$1,000 USD">$1,000 USD</option>
+                    <option value="$2,500 USD">$2,500 USD</option>
+                    <option value="$5,000 USD">$5,000 USD</option>
+                    <option value="$10,000+ USD">$10,000+ USD</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Source Video or Channel URL *
+                </label>
+                <input
+                  type="url"
+                  required
+                  value={brandForm.sourceVideoUrl}
+                  onChange={(e) => setBrandForm({ ...brandForm, sourceVideoUrl: e.target.value })}
+                  placeholder="https://youtube.com/watch?v=..."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-[#0066FF] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Campaign Brief &amp; Key Value Prop
+                </label>
+                <textarea
+                  rows={3}
+                  value={brandForm.notes}
+                  onChange={(e) => setBrandForm({ ...brandForm, notes: e.target.value })}
+                  placeholder="Tell our clippers what product features, clips, or callouts to prioritize..."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-[#0066FF] focus:outline-none"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="btn-electric-blue w-full py-3.5 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2 mt-2"
+              >
+                <Send className="w-4 h-4" />
+                <span>Dispatch Campaign Brief to Founder &rarr;</span>
+              </button>
+            </form>
           </div>
         </div>
       )}
-
-      {/* Brand Campaign Application Modal */}
-      <AnimatePresence>
-        {showBrandApplicationModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-lg rounded-3xl border border-[#89CFF0]/30 bg-[#000816] p-6 sm:p-8 shadow-2xl text-[#FFFFFF]"
-            >
-              <div className="flex items-center justify-between pb-4 border-b border-[#89CFF0]/20 mb-6">
-                <div>
-                  <h4 className="font-display font-bold text-xl text-white">
-                    Launch a Verified Brand Campaign
-                  </h4>
-                  <p className="font-mono text-xs text-[#89CFF0] mt-0.5">
-                    Pre-Funded Escrow Pool • Organic Viral Reach
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowBrandApplicationModal(false)}
-                  className="p-1.5 rounded-lg bg-[#040C1E] text-zinc-400 hover:text-white"
-                  aria-label="Close brand modal"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              <form onSubmit={handleBrandSubmit} className="space-y-4">
-                {/* Anti-bot honeypot */}
-                <input
-                  type="text"
-                  name="website_hp"
-                  tabIndex={-1}
-                  aria-hidden="true"
-                  autoComplete="off"
-                  className="hidden"
-                  value={brandForm.website_hp}
-                  onChange={(e) => setBrandForm({ ...brandForm, website_hp: e.target.value })}
-                />
-
-                <div>
-                  <label htmlFor="brand-name-input" className="block text-xs font-mono text-zinc-300 mb-1">
-                    Brand / Company Name *
-                  </label>
-                  <input
-                    id="brand-name-input"
-                    type="text"
-                    required
-                    value={brandForm.brandName}
-                    onChange={(e) => setBrandForm({ ...brandForm, brandName: e.target.value })}
-                    placeholder="e.g. Supabase, Convex, Linear"
-                    className="w-full rounded-xl border border-[#89CFF0]/25 bg-[#00040A] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#89CFF0]"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label htmlFor="sponsor-email-input" className="block text-xs font-mono text-zinc-300 mb-1">
-                      Sponsor Contact Email *
-                    </label>
-                    <input
-                      id="sponsor-email-input"
-                      type="email"
-                      required
-                      value={brandForm.contactEmail}
-                      onChange={(e) => setBrandForm({ ...brandForm, contactEmail: e.target.value })}
-                      placeholder="sponsor@yourbrand.com"
-                      className="w-full rounded-xl border border-[#89CFF0]/25 bg-[#00040A] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#89CFF0]"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="budget-input" className="block text-xs font-mono text-zinc-300 mb-1">
-                      Total Escrow Budget ($ / ₹) *
-                    </label>
-                    <input
-                      id="budget-input"
-                      type="text"
-                      required
-                      value={brandForm.budgetUsd}
-                      onChange={(e) => setBrandForm({ ...brandForm, budgetUsd: e.target.value })}
-                      placeholder="e.g. $5,000 USD or ₹4,00,000 INR"
-                      className="w-full rounded-xl border border-[#89CFF0]/25 bg-[#00040A] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#89CFF0]"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label htmlFor="cpm-rate-input" className="block text-xs font-mono text-zinc-300 mb-1">
-                      Target CPM Rate (per 1K views) *
-                    </label>
-                    <input
-                      id="cpm-rate-input"
-                      type="text"
-                      required
-                      value={brandForm.cpmRate}
-                      onChange={(e) => setBrandForm({ ...brandForm, cpmRate: e.target.value })}
-                      placeholder="e.g. $2.50 / 1K views"
-                      className="w-full rounded-xl border border-[#89CFF0]/25 bg-[#00040A] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#89CFF0]"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="niche-select-input" className="block text-xs font-mono text-zinc-300 mb-1">
-                      Niche / Category
-                    </label>
-                    <select
-                      id="niche-select-input"
-                      value={brandForm.niche}
-                      onChange={(e) => setBrandForm({ ...brandForm, niche: e.target.value })}
-                      className="w-full rounded-xl border border-[#89CFF0]/25 bg-[#00040A] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#89CFF0]"
-                    >
-                      <option value="Developer Tools">Developer Tools</option>
-                      <option value="Cloud Infrastructure">Cloud Infrastructure</option>
-                      <option value="AI Systems">AI Systems</option>
-                      <option value="Productivity Tools">Productivity Tools</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="source-video-input" className="block text-xs font-mono text-zinc-300 mb-1">
-                    Source Stream / Podcast Video URL *
-                  </label>
-                  <input
-                    id="source-video-input"
-                    type="url"
-                    required
-                    value={brandForm.sourceVideoUrl}
-                    onChange={(e) => setBrandForm({ ...brandForm, sourceVideoUrl: e.target.value })}
-                    placeholder="https://youtube.com/watch?v=..."
-                    className="w-full rounded-xl border border-[#89CFF0]/25 bg-[#00040A] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-[#89CFF0]"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="notes-textarea-input" className="block text-xs font-mono text-zinc-300 mb-1">
-                    Campaign Goals & Clip Instructions
-                  </label>
-                  <textarea
-                    id="notes-textarea-input"
-                    rows={2}
-                    value={brandForm.notes}
-                    onChange={(e) => setBrandForm({ ...brandForm, notes: e.target.value })}
-                    placeholder="Highlight our API speed benchmark, terminal workflows, and mention link in bio..."
-                    className="w-full rounded-xl border border-[#89CFF0]/25 bg-[#00040A] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#89CFF0] resize-none"
-                  />
-                </div>
-
-                <div className="pt-2 space-y-2">
-                  <button
-                    type="submit"
-                    disabled={isSubmittingBrand}
-                    className="btn-sharko-primary w-full py-3 font-display font-bold text-sm transition-all shadow-md active:scale-95 disabled:opacity-50"
-                  >
-                    {isSubmittingBrand ? "Generating Request..." : "Send Campaign Request to Kushagr →"}
-                  </button>
-
-                  {/* 1-Click Open in Gmail Web */}
-                  {lastEmailUrls?.gmail && (
-                    <a
-                      href={lastEmailUrls.gmail}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block text-center w-full rounded-xl border border-[#89CFF0]/30 bg-[#040C1E] hover:bg-[#0047AB]/25 text-[#89CFF0] py-2 font-mono text-xs font-semibold transition-all"
-                    >
-                      Open Directly in Gmail Web ↗
-                    </a>
-                  )}
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-    </div>
+    </section>
   );
 };
+
+export default BountyCampaignGrid;

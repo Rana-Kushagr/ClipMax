@@ -1,461 +1,614 @@
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
 import {
-  Link2,
-  UploadCloud,
-  Youtube,
-  Tv,
-  HardDrive,
+  ArrowRight,
+  Play,
+  Check,
+  Link as LinkIcon,
+  Download,
+  Scissors,
+  CheckCircle2,
+  Sparkles,
   Zap,
-  ShieldCheck,
+  MessageSquare,
+  Share2,
+  Heart,
+  MessageCircle,
+  ExternalLink,
   Loader2,
-  FileVideo,
-  X,
-  ChevronDown,
-  ChevronUp,
 } from "lucide-react";
-import { DecryptedText } from "../react-bits/DecryptedText";
-import { SpotlightCard } from "../react-bits/SpotlightCard";
-import { Magnet } from "../react-bits/Magnet";
-import { BorderGlow } from "../ui/BorderGlow";
-import { SmartOptionsDrawer, SmartOptionsState } from "./SmartOptionsDrawer";
-import { StudioQuickDock } from "./StudioQuickDock";
-import { StudioTabId } from "../studio/InteractiveStudioShowcase";
-import { sharkoApi } from "../../services/sharkoApi";
-import {
-  validateSafeVideoUrl,
-  validateVideoUploadFile,
-  checkRateLimit,
-  sanitizeUserText,
-} from "../../utils/security";
+import { MarkerUnderline, SharkoBrandLogo } from "../brand/SharkoBrandLogo";
+import { StudioEditorModal } from "../studio/StudioEditorModal";
+import { VideoClip } from "../../types/studio";
+import { validateSafeVideoUrl, checkRateLimit } from "../../utils/security";
 
 interface HeroCommandCenterProps {
-  studioMode: "lightning" | "studio";
-  setStudioMode: (mode: "lightning" | "studio") => void;
-  onClipsGenerated: () => void;
-  options: SmartOptionsState;
-  activeTool: string;
-  setActiveTool: (t: string) => void;
-  videoUrl: string;
-  setVideoUrl: (u: string) => void;
-  onSelectStudioTab?: (tab: StudioTabId) => void;
+  onClipsGenerated?: () => void;
+  videoUrl?: string;
+  setVideoUrl?: (u: string) => void;
+  onOpenAuth?: (mode?: "login" | "signup") => void;
+  studioMode?: "lightning" | "studio";
+  setStudioMode?: (mode: "lightning" | "studio") => void;
+  options?: any;
+  activeTool?: string;
+  setActiveTool?: (t: string) => void;
+  onSelectStudioTab?: (tab: any) => void;
 }
 
 export function HeroCommandCenter({
-  studioMode,
-  setStudioMode,
   onClipsGenerated,
-  options,
-  activeTool,
-  setActiveTool,
-  videoUrl,
+  videoUrl = "",
   setVideoUrl,
-  onSelectStudioTab,
+  onOpenAuth,
 }: Readonly<HeroCommandCenterProps>) {
-  const [protocolBadge, setProtocolBadge] = useState<string>("https://");
-  const [platform, setPlatform] = useState<"youtube" | "twitch" | "kick" | "rumble" | "drive" | "file" | "unknown">("unknown");
+  const [inputUrl, setInputUrl] = useState(
+    videoUrl || "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+  );
   const [isProcessing, setIsProcessing] = useState(false);
-  const [processStep, setProcessStep] = useState(0);
-  const [progressPercent, setProgressPercent] = useState(0);
-  const [dragActive, setDragActive] = useState(false);
-  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
-  const [ingestError, setIngestError] = useState<string | null>(null);
+  const [progressPercent, setProgressPercent] = useState(78);
+  const [activeTab, setActiveTab] = useState<"home" | "videos" | "clips" | "templates" | "brand" | "settings">("home");
+  const [selectedClip, setSelectedClip] = useState<VideoClip | null>(null);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [urlError, setUrlError] = useState<string | null>(null);
+  const [selectAll, setSelectAll] = useState(false);
 
-  useEffect(() => {
-    const url = videoUrl.toLowerCase();
-    if (url.includes("youtube.com") || url.includes("youtu.be")) {
-      setPlatform("youtube");
-      setProtocolBadge("youtube://");
-    } else if (url.includes("twitch.tv")) {
-      setPlatform("twitch");
-      setProtocolBadge("twitch://");
-    } else if (url.includes("kick.com")) {
-      setPlatform("kick");
-      setProtocolBadge("kick://");
-    } else if (url.includes("rumble.com")) {
-      setPlatform("rumble");
-      setProtocolBadge("rumble://");
-    } else if (url.includes("drive.google.com")) {
-      setPlatform("drive");
-      setProtocolBadge("drive://");
-    } else if (uploadedFileName) {
-      setPlatform("file");
-      setProtocolBadge("mp4://");
-    } else {
-      setPlatform("unknown");
-      setProtocolBadge("https://");
-    }
-  }, [videoUrl, uploadedFileName]);
-
-  const sampleUrls = [
-    { name: "YouTube Interview", url: "https://youtube.com/watch?v=SystemArchitecture_Discussion" },
-    { name: "Twitch Stream", url: "https://twitch.tv/videos/189204812" },
-    { name: "Kick Creator Vod", url: "https://kick.com/video/40281" },
+  const creatorAvatars = [
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80",
   ];
 
-  const handleStartGeneration = async () => {
-    if (isProcessing) return;
-    setIngestError(null);
+  const initialClips = [
+    {
+      id: "clip-1",
+      duration: "0:28",
+      headline: "THIS CHANGED EVERYTHING",
+      subtitle: "This changed everything...",
+      views: "1.2M views",
+      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
+      isPrimary: false,
+    },
+    {
+      id: "clip-2",
+      duration: "0:32",
+      headline: "STOP OVERTHINKING",
+      subtitle: "Stop overthinking and just start.",
+      views: "892K views",
+      image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
+      isPrimary: true,
+    },
+    {
+      id: "clip-3",
+      duration: "0:26",
+      headline: "IT'S SIMPLER THAN YOU THINK",
+      subtitle: "It's simpler than you think.",
+      views: "654K views",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80",
+      isPrimary: false,
+    },
+    {
+      id: "clip-4",
+      duration: "0:31",
+      headline: "CONSISTENCY WINS",
+      subtitle: "Consistency wins.",
+      views: "421K views",
+      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=80",
+      isPrimary: false,
+    },
+  ];
 
-    if (!checkRateLimit("hero-ingest", 5, 60000)) {
-      setIngestError("Rate limit exceeded (5 requests/min). Please wait 60 seconds before retrying.");
+  const handleProcessUrl = (demoUrl?: string) => {
+    const urlToTest = demoUrl || inputUrl;
+    setUrlError(null);
+
+    const validation = validateSafeVideoUrl(urlToTest);
+    if (!validation.valid) {
+      setUrlError(validation.reason || "Please enter a valid https:// video link.");
       return;
     }
 
-    const effectiveUrl =
-      videoUrl.trim() ||
-      (uploadedFileName
-        ? `local-file://${uploadedFileName}`
-        : "https://youtube.com/watch?v=SystemArchitecture_Discussion");
-
-    if (!uploadedFileName && videoUrl.trim()) {
-      const urlCheck = validateSafeVideoUrl(videoUrl.trim());
-      if (!urlCheck.valid) {
-        setIngestError(urlCheck.reason || "Invalid video link.");
-        return;
-      }
+    if (!checkRateLimit("hero-clip", 8, 60000)) {
+      setUrlError("Rate limit reached. Please wait a moment before analyzing more streams.");
+      return;
     }
 
-    if (!videoUrl && !uploadedFileName) {
-      setVideoUrl(effectiveUrl);
-    }
+    if (setVideoUrl) setVideoUrl(urlToTest);
+    if (demoUrl) setInputUrl(demoUrl);
 
     setIsProcessing(true);
-    setProgressPercent(0);
-    setProcessStep(1);
-
-    const res = await sharkoApi.ingestVideoJob({
-      sourceUrl: effectiveUrl,
-      genres: options.selectedGenres,
-      customPrompt: sanitizeUserText(options.promptQuery || "", 500),
-      timeframeStartSec: options.startTime,
-      timeframeEndSec: options.endTime,
-      stylePreset: options.selectedPersona,
-    });
-
-    if (!res.ok && !res.isOfflineFallback) {
-      setIsProcessing(false);
-      setIngestError(res.error || "Video ingestion failed. Please try again.");
-      return;
-    }
+    setProgressPercent(10);
 
     const interval = setInterval(() => {
       setProgressPercent((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
-          setTimeout(() => {
-            setIsProcessing(false);
-            onClipsGenerated();
-            const elem =
-              document.getElementById("playgrounds") || document.getElementById("studio");
-            if (elem) elem.scrollIntoView({ behavior: "smooth" });
-          }, 350);
+          setIsProcessing(false);
+          if (onClipsGenerated) onClipsGenerated();
           return 100;
         }
-
-        const next = prev + 5;
-        if (next >= 75) setProcessStep(4);
-        else if (next >= 50) setProcessStep(3);
-        else if (next >= 25) setProcessStep(2);
-
-        return next;
+        return prev + 18;
       });
-    }, 75);
+    }, 280);
   };
 
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    if (e.dataTransfer.files?.[0]) {
-      const file = e.dataTransfer.files[0];
-      const check = validateVideoUploadFile(file);
-      if (!check.valid) {
-        setIngestError(check.reason || "Invalid video file.");
-        return;
-      }
-      setUploadedFileName(file.name);
-      setVideoUrl(`local-file://${file.name}`);
-      setIngestError(null);
-    }
+  const openEditorForClip = (clipItem: typeof initialClips[0]) => {
+    const convertedClip: VideoClip = {
+      id: clipItem.id,
+      title: clipItem.headline,
+      viralityScore: 98,
+      tier: "Viral",
+      duration: 28,
+      durationFormatted: clipItem.duration,
+      hook: clipItem.headline,
+      hookQuote: clipItem.subtitle,
+      estimatedViews: clipItem.views,
+      speakerType: "split",
+      tags: ["Viral Hook", "High Retention"],
+      thumbnail: clipItem.image,
+      videoUrl: inputUrl,
+      aspectRatio: "9:16",
+      letterGrades: {
+        hook: "A+",
+        flow: "A",
+        value: "A",
+        trend: "A+",
+      },
+    };
+    setSelectedClip(convertedClip);
+    setIsEditorOpen(true);
   };
 
   return (
-    <section id="studio-command" className="relative z-10 pt-16 pb-12 px-4 sm:px-6 max-w-5xl mx-auto text-center">
-      {/* Studio Tally Engine Pill with DecryptedText */}
-      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1E1710] border border-[#F3E5AB]/20 mb-6 text-xs text-text-secondary shadow-lg">
-        <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
-        <span className="font-mono text-[11px] tracking-wider text-white font-medium">
-          <DecryptedText text="Sharko Engine v3.8" speed={35} />
-        </span>
-        <span className="text-white/20">•</span>
-        <span className="text-[#89CFF0] font-mono text-[11px] font-semibold tracking-wider">Sharko Engine v3.8</span>
-        <span className="text-white/20">•</span>
-        <span className="text-[#89CFF0] font-mono text-[11px] font-semibold tracking-wider">Hunt the Moments</span>
-        <span className="text-white/20 hidden sm:inline">•</span>
-        <span className="text-[#FFFFFF] font-mono font-medium hidden sm:inline">100% Rollover</span>
-      </div>
-
-      {/* Hero Display Heading with Crisp 0.25s GPU Reveal */}
-      <div className="max-w-4xl mx-auto mb-5">
-        <motion.h1
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
-          className="font-display font-bold text-3xl sm:text-5xl md:text-6xl tracking-[-0.035em] text-[#F4F4F6] leading-[1.04] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]"
-        >
-          Paste one long video. Get{" "}
-          <span className="serif-italic text-[#89CFF0]">viral shorts</span> in one click.
-        </motion.h1>
-      </div>
-
-      <p className="text-text-secondary text-sm sm:text-base max-w-2xl mx-auto mb-8 leading-relaxed font-sans drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]">
-        Autonomous face-tracking reframe, SMPTE-timed kinetic captions, and 1-click mobile schedule approval. Zero timeline editing required.
-      </p>
-
-      {/* Input Ingest Validation / API Error Banner */}
-      {ingestError && (
-        <div className="mb-4 max-w-2xl mx-auto p-3 rounded-xl bg-red-950/80 border border-red-500/40 text-red-200 text-xs font-mono flex items-center justify-between shadow-lg">
-          <span>{ingestError}</span>
-          <button
-            type="button"
-            onClick={() => setIngestError(null)}
-            className="p-1 text-red-300 hover:text-white"
-            aria-label="Dismiss error"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      )}
-
-      {/* Universal Command Recessed Well with BorderGlow & SpotlightCard */}
-      <div
-        onDragEnter={handleDrag}
-        onDragLeave={handleDrag}
-        onDragOver={handleDrag}
-        onDrop={handleDrop}
-        className="max-w-3xl mx-auto relative"
-      >
-        {/* Subtle Anamorphic Horizontal Lens Streak Behind Command Bar */}
-        <div
-          className="absolute -top-[1px] left-1/2 -translate-x-1/2 w-full max-w-[760px] pointer-events-none z-0"
-          style={{
-            height: "1px",
-            background:
-              "linear-gradient(90deg, transparent 5%, rgba(0,71,171,0.45) 35%, rgba(137,207,240,0.65) 50%, rgba(0,71,171,0.45) 65%, transparent 95%)",
-            boxShadow: "0 0 32px 2px rgba(0,71,171,0.25)",
-          }}
-          aria-hidden="true"
-        />
-        <BorderGlow
-          animated={true}
-          borderRadius={24}
-          glowColor="#89CFF0"
-          backgroundColor="#000000"
-          colors={['#89CFF0', '#0047AB', '#FFFFFF']}
-          className="w-full"
-        >
-          <SpotlightCard
-            spotlightColor="rgba(137, 207, 240, 0.18)"
-            className={`p-2 sm:p-2.5 transition-all shadow-[0_20px_60px_rgba(0,0,0,0.9)] backdrop-blur-2xl bg-transparent border-none ${
-              dragActive
-                ? "ring-2 ring-[#89CFF0]/60 bg-[#00102B]/90"
-                : ""
-            }`}
-          >
-          <div className="flex flex-col sm:flex-row items-center gap-2.5 rounded-2xl sm:rounded-full p-2.5 sm:p-1.5 bg-[#000000]/90">
-            {/* Live Protocol Badge Detection */}
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-2 rounded-lg bg-[#050D1E] border border-[#89CFF0]/20 text-xs font-mono shrink-0 select-none">
-              {platform === "youtube" && <Youtube className="w-3.5 h-3.5 text-red-500" />}
-              {platform === "twitch" && <Tv className="w-3.5 h-3.5 text-purple-400" />}
-              {platform === "kick" && <Tv className="w-3.5 h-3.5 text-[#10B981]" />}
-              {platform === "rumble" && <Tv className="w-3.5 h-3.5 text-[#10B981]" />}
-              {platform === "drive" && <HardDrive className="w-3.5 h-3.5 text-blue-400" />}
-              {platform === "file" && <FileVideo className="w-3.5 h-3.5 text-[#89CFF0]" />}
-              {platform === "unknown" && <Link2 className="w-3.5 h-3.5 text-text-muted" />}
-              <span className="text-[#89CFF0] font-semibold">{protocolBadge}</span>
+    <div className="relative pt-6 sm:pt-10 pb-16 sm:pb-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+          
+          {/* =========================================================
+              LEFT COLUMN (5 Cols): Headline, Callouts, CTAs & Social Proof
+              ========================================================= */}
+          <div className="lg:col-span-5 space-y-6 text-left">
+            {/* Top Pill Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF3FF] border border-[#D0E4FF] text-[#0066FF] text-[13px] font-semibold">
+              <Sparkles className="w-4 h-4 fill-current text-[#0066FF]" />
+              <span>Turn long videos into viral clips with AI</span>
             </div>
 
-            {/* Widen input flex track (min-w-0 flex-1) to eliminate truncation! */}
-            <div className="relative min-w-0 flex-1 w-full">
-              <input
-                id="heroVideoUrlInput"
-                name="heroVideoUrlInput"
-                type="text"
-                value={videoUrl}
-                onChange={(e) => {
-                  setVideoUrl(e.target.value);
-                  setUploadedFileName(null);
-                }}
-                placeholder="Paste YouTube, Twitch, Kick, Rumble, or Drive URL — or drop MP4..."
-                className="w-full bg-transparent px-3 py-2.5 text-[16px] sm:text-[13.5px] text-[#FFFFFF] placeholder:text-zinc-500 focus:outline-none font-sans"
-                aria-label="Video URL or upload link"
-                disabled={isProcessing}
-              />
+            {/* Main Hero Headline with Pink Marker Underline */}
+            <h1 className="font-display text-[38px] sm:text-[50px] lg:text-[52px] font-extrabold tracking-[-0.035em] text-[#0B0F19] leading-[1.08]">
+              The fastest way to build a{" "}
+              <MarkerUnderline color="pink" className="text-[#0B0F19]">
+                money-making
+              </MarkerUnderline>{" "}
+              clipping side hustle.
+            </h1>
 
-              {uploadedFileName && (
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5 text-xs text-[#89CFF0] bg-[#0047AB]/25 px-2 py-0.5 rounded-md border border-[#89CFF0]/30">
-                  <span className="font-mono text-[11px] truncate max-w-[140px]">{uploadedFileName}</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setUploadedFileName(null);
-                      setVideoUrl("");
-                    }}
-                    aria-label="Remove uploaded file"
-                    className="hover:text-white"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              )}
-            </div>
+            {/* Subtitle */}
+            <p className="text-[16px] sm:text-[17px] text-[#475569] leading-relaxed max-w-xl">
+              Paste a video link and Sharko finds the best moments, adds captions, and creates short clips ready to post.
+            </p>
 
-            {/* File Upload Trigger */}
-            <label
-              htmlFor="file-upload"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs text-text-secondary hover:text-white hover:bg-surface-elevated cursor-pointer transition-colors shrink-0"
-              title="Drop or browse raw MP4, MOV up to 10GB"
-            >
-              <UploadCloud className="w-4 h-4 text-text-muted" />
-              <span>Upload</span>
-              <input
-                id="file-upload"
-                type="file"
-                accept="video/mp4,video/quicktime,video/webm,video/x-matroska"
-                className="sr-only"
-                onChange={(e) => {
-                  if (e.target.files?.[0]) {
-                    const file = e.target.files[0];
-                    const check = validateVideoUploadFile(file);
-                    if (!check.valid) {
-                      setIngestError(check.reason || "Invalid video file.");
-                      return;
-                    }
-                    setUploadedFileName(file.name);
-                    setVideoUrl(`local-file://${file.name}`);
-                    setIngestError(null);
-                  }
-                }}
-              />
-            </label>
-
-            {/* Solid High-Contrast Primary Button wrapped in Magnet */}
-            <Magnet strength={0.2} radius={45}>
+            {/* CTA Button Row */}
+            <div className="flex flex-wrap items-center gap-3.5 pt-2">
               <button
                 type="button"
-                onClick={handleStartGeneration}
-                disabled={isProcessing}
-                className="btn-sharko-primary w-full sm:w-auto min-h-[48px] px-6 py-2.5 rounded-xl sm:rounded-full font-bold text-sm transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-75 disabled:cursor-wait shrink-0 shadow-lg touch-manipulation"
+                onClick={() => (onOpenAuth ? onOpenAuth("signup") : handleProcessUrl())}
+                className="btn-electric-blue rounded-2xl px-7 py-4 text-[16px] font-bold text-white flex items-center gap-2"
               >
-                {isProcessing ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin text-[#000000]" />
-                    <span>Processing {progressPercent}%</span>
-                  </>
-                ) : (
-                  <>
-                    <Zap className="w-4 h-4 fill-[#000000] text-[#000000]" />
-                    <span>Get Clips in 1 Click &rarr;</span>
-                  </>
-                )}
+                <span>Try Sharko Free</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
-            </Magnet>
+
+              <button
+                type="button"
+                onClick={() => handleProcessUrl("https://www.youtube.com/watch?v=dQw4w9WgXcQ")}
+                className="btn-white-pill rounded-2xl px-6 py-4 text-[16px] font-bold text-[#0B0F19] flex items-center gap-2.5"
+              >
+                <div className="w-5 h-5 rounded-full bg-[#0066FF]/10 flex items-center justify-center text-[#0066FF]">
+                  <Play className="w-3 h-3 fill-current ml-0.5" />
+                </div>
+                <span>See a Demo</span>
+              </button>
+            </div>
+
+            {/* Social Proof Strip */}
+            <div className="pt-2 flex items-center gap-3 text-sm">
+              <div className="flex -space-x-2 overflow-hidden">
+                {creatorAvatars.map((src, idx) => (
+                  <img
+                    key={idx}
+                    src={src}
+                    alt="Creator using Sharko"
+                    className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover"
+                  />
+                ))}
+              </div>
+              <div>
+                <p className="text-[13px] text-[#334155] font-medium leading-none">
+                  <span className="font-extrabold text-[#0B0F19]">200,000+ creators</span> are already using Sharko
+                </p>
+                <div className="flex items-center gap-1 mt-1 text-[#FBBF24]">
+                  {"★★★★★"}
+                </div>
+              </div>
+            </div>
+
+            {/* 3 Bottom Micro-Perks */}
+            <div className="pt-2 grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[12.5px] font-medium text-[#475569]">
+              <div className="flex items-center gap-2">
+                <span className="text-[#0066FF] font-bold">⚡</span>
+                <span>Finds viral moments with AI</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[#0066FF] font-bold">💬</span>
+                <span>Adds captions automatically</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[#0066FF] font-bold">📤</span>
+                <span>Ready to post on all platforms</span>
+              </div>
+            </div>
           </div>
 
-          {/* Processing Simulation Bar */}
-          {isProcessing && (
-            <div className="mt-3 pt-3 border-t border-[#89CFF0]/20 text-left px-2">
-              <div className="flex justify-between items-center text-xs font-mono text-text-secondary mb-1.5">
-                <span className="flex items-center gap-2 text-white">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#89CFF0] animate-pulse" />
-                  {processStep === 1 && "Phase 1/4: Ingesting 4K audio/video stream..."}
-                  {processStep === 2 && "Phase 2/4: Diarizing dual-speaker audio & timestamps..."}
-                  {processStep === 3 && "Phase 3/4: Scoring retention virality algorithms..."}
-                  {processStep === 4 && "Phase 4/4: Framing 9:16 layout & kinetic subtitle tracks..."}
-                </span>
-                <span className="text-white font-semibold tabular-nums">{progressPercent}%</span>
+          {/* =========================================================
+              RIGHT COLUMN (7 Cols): Interactive Sharko Studio Window
+              Mirroring Image 1 with Pink Handwritten Note & Floating Cards
+              ========================================================= */}
+          <div className="lg:col-span-7 relative">
+            
+            {/* Top-Right Handwritten Pink Note with Curved SVG Arrow */}
+            <div className="hidden sm:flex items-center justify-end gap-2 absolute -top-8 right-4 z-20 pointer-events-none">
+              <span className="font-display font-semibold text-[#FF1464] text-[13.5px] tracking-tight">
+                Long video into viral clips in minutes.
+              </span>
+              <svg width="42" height="32" viewBox="0 0 52 38" fill="none" className="text-[#FF1464] -mt-1">
+                <path
+                  d="M4 6C18 3 42 10 46 28M46 28L39 24M46 28L48 20"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+
+            {/* Main Interactive App Card Container */}
+            <div className="relative rounded-2xl border border-slate-200/90 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.12)] overflow-hidden flex flex-col sm:flex-row min-h-[440px]">
+              
+              {/* Left Sidebar (Image 1 Mirror) */}
+              <div className="hidden sm:flex flex-col w-[160px] border-r border-slate-100 bg-[#FAFCFF] p-3.5 space-y-4 shrink-0">
+                <SharkoBrandLogo size="sm" showSubtitle={false} />
+
+                <div className="space-y-1 text-[13px] font-medium pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("home")}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition ${
+                      activeTab === "home"
+                        ? "bg-[#EBF3FF] text-[#0066FF] font-semibold"
+                        : "text-slate-600 hover:bg-slate-100"
+                    }`}
+                  >
+                    <span>🏠</span>
+                    <span>Home</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("videos")}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition ${
+                      activeTab === "videos"
+                        ? "bg-[#EBF3FF] text-[#0066FF] font-semibold"
+                        : "text-slate-600 hover:bg-slate-100"
+                    }`}
+                  >
+                    <span>▶️</span>
+                    <span>My Videos</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("clips")}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition ${
+                      activeTab === "clips"
+                        ? "bg-[#EBF3FF] text-[#0066FF] font-semibold"
+                        : "text-slate-600 hover:bg-slate-100"
+                    }`}
+                  >
+                    <span>🎬</span>
+                    <span>Clips</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("templates")}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition ${
+                      activeTab === "templates"
+                        ? "bg-[#EBF3FF] text-[#0066FF] font-semibold"
+                        : "text-slate-600 hover:bg-slate-100"
+                    }`}
+                  >
+                    <span>⊞</span>
+                    <span>Templates</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("brand")}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition ${
+                      activeTab === "brand"
+                        ? "bg-[#EBF3FF] text-[#0066FF] font-semibold"
+                        : "text-slate-600 hover:bg-slate-100"
+                    }`}
+                  >
+                    <span>🎨</span>
+                    <span>Brand Kit</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("settings")}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition ${
+                      activeTab === "settings"
+                        ? "bg-[#EBF3FF] text-[#0066FF] font-semibold"
+                        : "text-slate-600 hover:bg-slate-100"
+                    }`}
+                  >
+                    <span>⚙️</span>
+                    <span>Settings</span>
+                  </button>
+                </div>
               </div>
-              <div className="w-full h-1 bg-[#000B1D] rounded-full overflow-hidden">
+
+              {/* Right Studio Workspace */}
+              <div className="flex-1 p-4 sm:p-5 flex flex-col justify-between overflow-hidden">
+                <div>
+                  {/* Top Header Row with Credits & Avatar */}
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <div>
+                      <h3 className="font-display font-bold text-[16px] sm:text-[18px] text-[#0B0F19]">
+                        Turn any video into viral clips
+                      </h3>
+                      <p className="text-[12px] text-slate-500">
+                        Paste a YouTube, TikTok, or any video link and let AI find the best moments.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2.5">
+                      <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-[11.5px] font-semibold text-slate-700">
+                        <span>🪙</span>
+                        <span>250 credits</span>
+                      </span>
+                      <img
+                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80"
+                        alt="User profile"
+                        className="w-8 h-8 rounded-full border border-slate-200 object-cover"
+                      />
+                    </div>
+                  </div>
+
+                  {/* URL Input Row with Find Clips → Button */}
+                  <div className="mt-3.5 space-y-1">
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handleProcessUrl();
+                      }}
+                      className="flex items-center gap-2 p-1.5 rounded-xl border border-slate-200 bg-slate-50/70 focus-within:border-[#0066FF] focus-within:bg-white transition"
+                    >
+                      <div className="flex items-center gap-2 flex-1 pl-2">
+                        <LinkIcon className="w-4 h-4 text-slate-400 shrink-0" />
+                        <input
+                          id="heroVideoUrlInput"
+                          name="heroVideoUrlInput"
+                          type="url"
+                          value={inputUrl}
+                          onChange={(e) => setInputUrl(e.target.value)}
+                          placeholder="Paste YouTube, TikTok or video URL..."
+                          className="w-full bg-transparent text-xs sm:text-sm text-[#0B0F19] placeholder-slate-400 focus:outline-none"
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={isProcessing}
+                        className="btn-electric-blue shrink-0 rounded-lg px-4 py-2 text-xs font-bold flex items-center gap-1"
+                      >
+                        {isProcessing ? (
+                          <>
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            <span>Finding...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>Find Clips</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </>
+                        )}
+                      </button>
+                    </form>
+                    {urlError && (
+                      <p className="text-[11.5px] text-red-500 font-medium pl-1">{urlError}</p>
+                    )}
+                  </div>
+
+                  {/* Generated Clips Header */}
+                  <div className="mt-4 flex items-center justify-between text-xs">
+                    <span className="font-display font-bold text-[#0B0F19] text-[13.5px]">
+                      Generated Clips (6)
+                    </span>
+                    <label className="flex items-center gap-1.5 cursor-pointer text-slate-500 hover:text-slate-700">
+                      <input
+                        type="checkbox"
+                        checked={selectAll}
+                        onChange={(e) => setSelectAll(e.target.checked)}
+                        className="rounded accent-[#0066FF]"
+                      />
+                      <span>Select all</span>
+                    </label>
+                  </div>
+
+                  {/* 4 Signature 9:16 Vertical Video Cards (Image 1 Mirror) */}
+                  <div className="mt-2.5 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    {initialClips.map((clip) => (
+                      <div
+                        key={clip.id}
+                        className="group relative rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm flex flex-col justify-between hover:shadow-md transition"
+                      >
+                        {/* Video Thumbnail Viewport */}
+                        <div className="relative aspect-[9/13] bg-slate-900 overflow-hidden cursor-pointer" onClick={() => openEditorForClip(clip)}>
+                          <img
+                            src={clip.image}
+                            alt={clip.headline}
+                            className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                          />
+                          {/* Duration Badge */}
+                          <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/75 text-white font-mono text-[9.5px] font-bold">
+                            {clip.duration}
+                          </div>
+                          {/* Video Overlay Caption */}
+                          <div className="absolute inset-x-1.5 bottom-2 text-center">
+                            <span className="inline-block px-1.5 py-0.5 rounded bg-black/85 text-white font-display font-extrabold text-[10px] sm:text-[11px] leading-tight uppercase tracking-tight shadow">
+                              {clip.headline}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Card Info & Download / Edit Actions */}
+                        <div className="p-2 space-y-1.5 text-left">
+                          <p className="text-[11px] font-semibold text-[#0B0F19] truncate leading-tight">
+                            {clip.subtitle}
+                          </p>
+                          <p className="text-[10px] text-slate-500 font-medium">
+                            {clip.views}
+                          </p>
+                          <div className="flex items-center gap-1 pt-0.5">
+                            <button
+                              type="button"
+                              onClick={() => openEditorForClip(clip)}
+                              className={`flex-1 py-1 px-1.5 rounded-lg text-[10.5px] font-bold flex items-center justify-center gap-1 transition ${
+                                clip.isPrimary
+                                  ? "bg-[#EBF3FF] text-[#0066FF] hover:bg-blue-100"
+                                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                              }`}
+                            >
+                              <Download className="w-3 h-3" />
+                              <span>Download</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => openEditorForClip(clip)}
+                              title="Edit in Studio Inspector"
+                              className="p-1 rounded-lg border border-slate-200 hover:bg-slate-100 text-slate-600 transition"
+                            >
+                              <Scissors className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* =========================================================
+                FLOATING CARD 1: Bottom-Left Processing Progress Card
+                Mirroring Image 1 ("Finding the best moments... 78%")
+                ========================================================= */}
+            <div className="hidden sm:block absolute -bottom-7 -left-6 z-30 w-[240px] rounded-2xl border border-slate-200/90 bg-white p-3.5 shadow-[0_16px_40px_rgba(15,23,42,0.14)] text-left">
+              <div className="flex items-center justify-between text-xs font-bold text-[#0B0F19]">
+                <span>Finding the best moments...</span>
+                <span className="text-[#0066FF]">{progressPercent}%</span>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="mt-2 h-2 w-full rounded-full bg-slate-100 overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-[#0047AB] via-[#89CFF0] to-[#FFFFFF] transition-all duration-100 ease-out rounded-full"
+                  className="h-full rounded-full bg-gradient-to-r from-[#1E88FF] to-[#0066FF] transition-all duration-300"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
+
+              {/* Checklist */}
+              <div className="mt-2.5 space-y-1 text-[11px] text-slate-600">
+                <div className="flex items-center gap-1.5 text-emerald-600 font-semibold">
+                  <Check className="w-3.5 h-3.5" />
+                  <span>Analyzing video</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-emerald-600 font-semibold">
+                  <Check className="w-3.5 h-3.5" />
+                  <span>Finding viral moments</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-emerald-600 font-semibold">
+                  <Check className="w-3.5 h-3.5" />
+                  <span>Adding captions</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-slate-400">
+                  <span className="w-3.5 h-3.5 rounded-full border border-slate-300 inline-block" />
+                  <span>Creating clips...</span>
+                </div>
+              </div>
             </div>
-          )}
-        </SpotlightCard>
-        </BorderGlow>
-      </div>
 
-      {/* Sample Links Quick Selector */}
-      <div className="flex flex-wrap items-center justify-center gap-2 mt-3.5 text-xs text-text-muted">
-        <span>Try a sample video:</span>
-        {sampleUrls.map((s) => (
-          <button
-            key={`sample-${s.name}`}
-            type="button"
-            onClick={() => setVideoUrl(s.url)}
-            className="text-zinc-400 hover:text-[#89CFF0] transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-[#89CFF0] font-mono text-[11px]"
-          >
-            {s.name}
-          </button>
-        ))}
-      </div>
+            {/* =========================================================
+                FLOATING CARD 2: Bottom-Right Tilted 9:16 Phone Mockup
+                Mirroring Image 1 ("THE RIGHT MINDSET CHANGES EVERYTHING 🔥")
+                ========================================================= */}
+            <div className="hidden md:block absolute -bottom-9 -right-5 z-30 w-[170px] aspect-[9/16] rounded-[24px] border-4 border-[#0F172A] bg-black shadow-[0_20px_50px_rgba(15,23,42,0.22)] rotate-[3.5deg] overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=500&auto=format&fit=crop&q=80"
+                alt="Viral clip in vertical phone"
+                className="w-full h-full object-cover"
+              />
 
-      {/* Output-Only Trust Metering Guarantee */}
-      <div className="mt-5 flex items-center justify-center gap-2 text-xs text-text-muted max-w-xl mx-auto bg-[#000B1D]/80 backdrop-blur-md border border-[#89CFF0]/20 rounded-xl py-2.5 px-4 shadow-md">
-        <ShieldCheck className="w-4 h-4 text-[#89CFF0] shrink-0" />
-        <span className="text-left sm:text-center text-[11.5px] leading-tight text-zinc-300">
-          <strong className="text-white">0 credits burned on upload</strong> — only pay when you export a clip (3 free 1080p watermark-free clips/mo with 100% credit rollover).
-        </span>
-      </div>
+              {/* Top notch */}
+              <div className="absolute top-1.5 inset-x-0 mx-auto w-10 h-2.5 bg-black rounded-full" />
 
-      {/* Smart Drawer Toggle Button */}
-      <div className="mt-6 flex justify-center">
-        <button
-          type="button"
-          onClick={() => setStudioMode(studioMode === "studio" ? "lightning" : "studio")}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0E1014]/90 hover:bg-[#161920] border border-white/[0.08] text-xs text-text-secondary hover:text-white transition-colors font-medium shadow-sm"
-        >
-          <span>
-            {studioMode === "studio"
-              ? "Collapse parameters"
-              : "Refine clipping parameters (genre, custom prompt, timeframe)"}
-          </span>
-          {studioMode === "studio" ? (
-            <ChevronUp className="w-3.5 h-3.5" />
-          ) : (
-            <ChevronDown className="w-3.5 h-3.5" />
-          )}
-        </button>
-      </div>
+              {/* Right Side Social Action Pills */}
+              <div className="absolute right-2 bottom-12 space-y-2 text-white text-[9.5px] font-bold text-center">
+                <div className="flex flex-col items-center">
+                  <div className="w-7 h-7 rounded-full bg-black/60 flex items-center justify-center">
+                    <Heart className="w-3.5 h-3.5 fill-red-500 text-red-500" />
+                  </div>
+                  <span className="mt-0.5">125K</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <div className="w-7 h-7 rounded-full bg-black/60 flex items-center justify-center">
+                    <MessageCircle className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="mt-0.5">1.4K</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <div className="w-7 h-7 rounded-full bg-black/60 flex items-center justify-center">
+                    <Share2 className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="mt-0.5">12K</span>
+                </div>
+              </div>
 
-      {/* Expandable Opus-Style Smart Drawer */}
-      {studioMode === "studio" && (
-        <div className="mt-4">
-          <SmartOptionsDrawer {...options} />
+              {/* Bold Viral Kinetic Subtitle */}
+              <div className="absolute inset-x-2 bottom-3 text-center">
+                <span className="inline-block px-2 py-1 rounded bg-black/85 text-[#FBBF24] font-display font-black text-[10px] leading-tight shadow-md">
+                  THE RIGHT MINDSET CHANGES EVERYTHING 🔥
+                </span>
+              </div>
+            </div>
+
+          </div>
         </div>
-      )}
-
-      {/* 7-Icon Quick Tool Studio Dock */}
-      <div className="mt-8">
-        <StudioQuickDock
-          activeTool={activeTool}
-          setActiveTool={setActiveTool}
-          onSelectStudioTab={onSelectStudioTab}
-        />
       </div>
-    </section>
+
+      {/* Studio Clip Editor Modal (Smart Reframe & Word-by-Word Caption Editor) */}
+      <StudioEditorModal
+        clip={selectedClip}
+        isOpen={isEditorOpen}
+        onClose={() => setIsEditorOpen(false)}
+        onExport={(title) => {
+          setIsEditorOpen(false);
+          if (onClipsGenerated) onClipsGenerated();
+        }}
+      />
+    </div>
   );
 }
+
+export default HeroCommandCenter;

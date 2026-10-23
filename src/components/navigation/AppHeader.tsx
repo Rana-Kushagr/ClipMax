@@ -6,26 +6,24 @@ import {
   ArrowRight,
   Headphones,
   LogIn,
-  Sparkles,
+  Zap,
 } from "lucide-react";
-import { Magnet } from "../react-bits/Magnet";
-import { DecryptedText } from "../react-bits/DecryptedText";
-import { SharkoLogo } from "../brand/SharkoLogo";
+import { SharkoBrandLogo } from "../brand/SharkoBrandLogo";
 
 interface AppHeaderProps {
-  freeExportsCount: number;
+  freeExportsCount?: number;
   onOpenSupport?: () => void;
   onOpenDpdp?: () => void;
-  onOpenAuth?: (mode?: 'login' | 'signup') => void;
+  onOpenAuth?: (mode?: "login" | "signup") => void;
 }
 
 const SECTION_ALIASES: Record<string, string[]> = {
-  hero: ["hero", "overview", "section-overview"],
+  hero: ["hero", "overview"],
+  features: ["studio", "features", "section-studio"],
   walkthrough: ["walkthrough", "how-it-works"],
-  studio: ["studio", "section-studio", "playgrounds"],
+  studio: ["studio", "section-studio"],
   "why-sharko": ["why-sharko", "comparison"],
-  bounties: ["bounties", "section-bounties", "bounty-board"],
-  simulator: ["simulator", "section-calculator", "calculator"],
+  bounties: ["bounties", "section-bounties"],
   pricing: ["pricing", "section-pricing"],
   faq: ["section-faq", "faq"],
 };
@@ -40,220 +38,180 @@ const getTargetElement = (id: string): HTMLElement | null => {
 };
 
 export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
-  freeExportsCount,
+  freeExportsCount = 3,
   onOpenSupport,
+  onOpenDpdp,
   onOpenAuth,
 }) => {
+  const [showPromo, setShowPromo] = useState(true);
   const [activeSection, setActiveSection] = useState<string>("hero");
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
 
-  const navItems = [
-    { id: "hero", label: "Overview", fullLabel: "Overview & Command" },
-    { id: "walkthrough", label: "How It Works", fullLabel: "How It Works" },
-    { id: "studio", label: "Studio", fullLabel: "Cinema AI Studio" },
-    { id: "why-sharko", label: "Why Sharko", fullLabel: "Why Sharko" },
-    { id: "bounties", label: "Bounties", fullLabel: "Bounties & Escrow" },
-    { id: "simulator", label: "Calculator", fullLabel: "Profit Calculator" },
-    { id: "pricing", label: "Pricing", fullLabel: "Output Pricing" },
-    { id: "faq", label: "FAQs", fullLabel: "FAQs" },
+  const navLinks = [
+    { id: "features", label: "Features", target: "studio" },
+    { id: "walkthrough", label: "How it works", target: "walkthrough" },
+    { id: "why-sharko", label: "Why Sharko", target: "why-sharko" },
+    { id: "pricing", label: "Pricing", target: "pricing" },
+    { id: "faq", label: "FAQ", target: "faq" },
   ];
 
-  const scrollToSection = (id: string) => {
+  const scrollToSection = (targetId: string) => {
     setMobileMenuOpen(false);
-    setActiveSection(id);
+    setActiveSection(targetId);
 
-    if (id === "hero" || id === "overview") {
+    if (targetId === "hero" || targetId === "overview") {
       window.scrollTo({ top: 0, behavior: "smooth" });
       window.history.replaceState(null, "", window.location.pathname + window.location.search);
       return;
     }
 
-    const el = getTargetElement(id);
+    const el = getTargetElement(targetId);
     if (el) {
-      const navHeight = window.innerWidth < 768 ? 64 : 76;
+      const navHeight = 76;
       const targetTop = Math.max(0, el.getBoundingClientRect().top + window.scrollY - navHeight);
       window.scrollTo({ top: targetTop, behavior: "smooth" });
-      window.history.replaceState(null, "", `#${id}`);
+      window.history.replaceState(null, "", `#${targetId}`);
     }
   };
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
+      setIsScrolled(window.scrollY > 20);
 
-      // Near top of document -> hero
-      if (window.scrollY < 180) {
+      if (window.scrollY < 200) {
         setActiveSection("hero");
         return;
       }
 
-      // Near bottom of document -> faq
       const atBottom =
-        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 60;
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 80;
       if (atBottom) {
         setActiveSection("faq");
         return;
       }
 
-      // Target focal line: 140px down from viewport top (clear below the fixed header)
-      const targetLine = 140;
-      let foundSection = "";
-      let closestTop = -Infinity;
-      let fallbackSection = "hero";
-
-      for (const item of navItems) {
-        const el = getTargetElement(item.id);
+      const targetLine = 150;
+      for (const item of navLinks) {
+        const el = getTargetElement(item.target);
         if (el) {
           const rect = el.getBoundingClientRect();
           if (rect.top <= targetLine && rect.bottom > targetLine) {
-            foundSection = item.id;
+            setActiveSection(item.id);
             break;
-          }
-          if (rect.top <= targetLine && rect.top > closestTop) {
-            closestTop = rect.top;
-            fallbackSection = item.id;
           }
         }
       }
-
-      setActiveSection(foundSection || fallbackSection);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Initial deep hash jump on mount
-  useEffect(() => {
-    const initialHash = window.location.hash.replace("#", "");
-    if (initialHash) {
-      const timer = setTimeout(() => {
-        scrollToSection(initialHash);
-      }, 150);
-      return () => clearTimeout(timer);
-    }
-  }, []);
-
-  // Handle browser back/forward and hash changes
-  useEffect(() => {
-    const onHashChange = () => {
-      const hash = window.location.hash.replace("#", "");
-      if (hash) {
-        scrollToSection(hash);
-      }
-    };
-    window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
-  }, []);
-
   return (
-    <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-          isScrolled
-            ? "bg-[#000000]/95 backdrop-blur-md border-b border-[#89CFF0]/20 py-3 shadow-[0_4px_30px_rgba(0,0,0,0.85)]"
-            : "bg-transparent border-b border-transparent py-4"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Brand Logo & Tagline */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
-            <button
-              onClick={() => scrollToSection("hero")}
-              className="text-left group transition-transform active:scale-95 touch-manipulation"
-              aria-label="Sharko — Hunt the Moments"
-            >
-              <SharkoLogo />
-            </button>
-
-            {/* Mobile Active Section Badge (Shows live which section is currently viewed) */}
-            <div className="md:hidden flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#050D1E] border border-[#89CFF0]/25 text-[11px] font-mono text-[#89CFF0] max-w-[140px]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#89CFF0] shrink-0 animate-pulse" />
-              <span className="truncate">
-                {navItems.find((n) => n.id === activeSection)?.label || "Overview"}
-              </span>
+    <div className="sticky top-0 left-0 right-0 z-50">
+      {/* 1. Top Hot-Pink Promo Marquee Banner (Images 1, 2, 3, 6, 7, 8) */}
+      {showPromo && (
+        <div className="relative h-[38px] bg-gradient-to-r from-[#FF0055] via-[#FF1464] to-[#FF0055] text-white flex items-center justify-between px-3 sm:px-6 overflow-hidden select-none text-[12px] sm:text-[13px] font-bold shadow-sm">
+          {/* Marquee Track */}
+          <div className="flex-1 overflow-hidden flex items-center">
+            <div className="animate-marquee-slow flex items-center gap-6 text-white tracking-wide uppercase">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-4 shrink-0">
+                  <span className="bg-black text-white font-extrabold text-[11px] px-2.5 py-0.5 rounded shadow-sm">
+                    30% OFF
+                  </span>
+                  <span className="flex items-center gap-1.5 font-extrabold tracking-wider">
+                    <Zap className="w-3.5 h-3.5 fill-current" /> ENDS SOON
+                  </span>
+                  <span className="bg-black text-white font-extrabold text-[11px] px-2.5 py-0.5 rounded shadow-sm">
+                    30% OFF
+                  </span>
+                  <span className="font-extrabold tracking-wider">
+                    FULL 30% OFF ON ALL PLANS
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Center Desktop Navigation Pill Bar */}
-          <nav className="hidden md:flex items-center gap-1 p-1 rounded-full bg-[#050D1E]/80 border border-[#89CFF0]/20 backdrop-blur-md">
-            {navItems.slice(1).map((item) => {
-              const isActive = activeSection === item.id;
+          {/* Dismiss Button */}
+          <button
+            type="button"
+            onClick={() => setShowPromo(false)}
+            className="ml-3 p-1 text-white/80 hover:text-white hover:bg-black/20 rounded transition"
+            aria-label="Dismiss banner"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {/* 2. Sticky Crisp White Navbar (Image 1, 2, 3, 6, 7, 8 Mirror) */}
+      <header
+        className={`w-full transition-all duration-200 ${
+          isScrolled
+            ? "bg-white/95 backdrop-blur-md shadow-[0_4px_20px_rgba(15,23,42,0.06)] border-b border-slate-100"
+            : "bg-white border-b border-slate-100/80"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto h-[70px] sm:h-[72px] px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+          {/* Left: Shark-Fin Play Logo & Wordmark */}
+          <button
+            type="button"
+            onClick={() => scrollToSection("hero")}
+            className="text-left group transition-transform active:scale-95 touch-manipulation focus:outline-none"
+            aria-label="Sharko — Hunt the Moment"
+          >
+            <SharkoBrandLogo />
+          </button>
+
+          {/* Center Navigation Links (Desktop) */}
+          <nav className="hidden md:flex items-center gap-7 lg:gap-8 text-[15px] font-medium text-[#334155]">
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.id || activeSection === link.target;
               return (
                 <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className={`relative px-3.5 py-1.5 text-xs font-mono transition-colors duration-200 rounded-full select-none ${
-                    isActive ? "text-[#89CFF0] font-bold" : "text-zinc-400 hover:text-white"
+                  key={link.id}
+                  type="button"
+                  onClick={() => scrollToSection(link.target)}
+                  className={`transition-colors hover:text-[#0066FF] ${
+                    isActive ? "text-[#0066FF] font-semibold" : "text-[#334155]"
                   }`}
                 >
-                  {isActive && (
-                    <motion.div
-                      layoutId="headerNavPill"
-                      className="absolute inset-0 rounded-full bg-[#0047AB]/30 border border-[#89CFF0]/50 -z-10 shadow-[0_0_12px_rgba(137,207,240,0.25)]"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                  {item.label}
+                  {link.label}
                 </button>
               );
             })}
           </nav>
 
-          {/* Right Controls: Log In, Support, Credit Counter & Primary CTA */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Desktop Log In / Sign Up Trigger */}
-            {onOpenAuth && (
-              <button
-                type="button"
-                onClick={() => onOpenAuth('login')}
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#89CFF0]/30 bg-[#050D1E] hover:border-[#89CFF0] text-[#89CFF0] font-mono text-xs font-semibold transition touch-manipulation"
-              >
-                <LogIn className="w-3.5 h-3.5" />
-                <span>Log In</span>
-              </button>
-            )}
+          {/* Right Action Buttons */}
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Log in Button */}
+            <button
+              type="button"
+              onClick={() => onOpenAuth ? onOpenAuth("login") : scrollToSection("hero")}
+              className="hidden sm:inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 lg:px-5 py-2.5 text-[14px] font-semibold text-[#0B0F19] shadow-sm hover:bg-slate-50 active:scale-95 transition"
+            >
+              Log in
+            </button>
 
-            {/* Support Desk Button */}
-            {onOpenSupport && (
-              <button
-                type="button"
-                onClick={onOpenSupport}
-                className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#89CFF0]/25 bg-[#030914] hover:bg-[#0047AB]/25 text-[#89CFF0] font-mono text-xs transition"
-              >
-                <Headphones className="w-3.5 h-3.5 text-[#89CFF0]" />
-                <span>Support</span>
-              </button>
-            )}
+            {/* Try Sharko Free → (Electric Blue CTA) */}
+            <button
+              type="button"
+              onClick={() => onOpenAuth ? onOpenAuth("signup") : scrollToSection("hero")}
+              className="btn-electric-blue rounded-xl px-4 sm:px-5 py-2.5 text-[14px] font-bold text-white flex items-center gap-1.5 active:scale-95 transition"
+            >
+              <span>Try Sharko Free</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
 
-            {/* Credit Counter */}
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#050D1E] border border-[#89CFF0]/20 font-mono text-xs">
-              <span className="w-2 h-2 rounded-full bg-[#89CFF0] animate-pulse" />
-              <span className="text-zinc-400">Credits:</span>
-              <span className="text-white font-bold tabular-nums">
-                <DecryptedText text={`${freeExportsCount}/3 Free HD`} speed={30} />
-              </span>
-            </div>
-
-            {/* Primary Action Button */}
-            <Magnet strength={0.2}>
-              <button
-                onClick={() => onOpenAuth ? onOpenAuth('signup') : scrollToSection("hero")}
-                className="btn-sharko-primary py-2 px-4 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition active:scale-95 touch-manipulation shadow-md"
-              >
-                <span>Start Free</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </Magnet>
-
-            {/* 44x44px Mobile Hamburger Button (Touch Target Optimized) */}
+            {/* Mobile Hamburger Button (44x44px touch target) */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="md:hidden flex h-11 w-11 items-center justify-center rounded-xl bg-[#050D1E] border border-[#89CFF0]/30 text-[#89CFF0] hover:border-[#89CFF0] active:scale-95 transition touch-manipulation"
-              aria-label="Open mobile navigation menu"
+              className="md:hidden flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#0B0F19] hover:bg-slate-50 active:scale-95 transition"
+              aria-label="Open mobile menu"
             >
               <Menu className="w-5 h-5" />
             </button>
@@ -261,136 +219,107 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
         </div>
       </header>
 
-      {/* Full-Screen Mobile Navigation Drawer (320px–767px) */}
+      {/* 3. Mobile Slide-Over Navigation Drawer */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, x: "100%" }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="fixed inset-0 z-[9998] bg-[#000000]/98 backdrop-blur-2xl p-5 sm:p-6 flex flex-col justify-between md:hidden overflow-y-auto"
+            transition={{ type: "spring", damping: 30, stiffness: 320 }}
+            className="fixed inset-0 z-[99998] bg-white p-5 sm:p-6 flex flex-col justify-between md:hidden overflow-y-auto"
           >
-            {/* Top Bar inside Drawer */}
             <div>
-              <div className="flex items-center justify-between pb-4 border-b border-[#89CFF0]/20">
-                <SharkoLogo />
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+                <SharkoBrandLogo />
                 <button
                   type="button"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-[#89CFF0]/30 bg-[#050D1E] text-white hover:border-[#89CFF0] active:scale-95 transition touch-manipulation"
-                  aria-label="Close mobile navigation menu"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 active:scale-95 transition"
+                  aria-label="Close menu"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              {/* Free Export Status Pill */}
-              <div className="mt-4 flex items-center justify-between p-3 rounded-xl bg-[#000B1D] border border-[#89CFF0]/25 font-mono text-xs">
+              {/* Free HD Credit Balance */}
+              <div className="mt-4 flex items-center justify-between p-3.5 rounded-2xl bg-[#EBF3FF] border border-[#D0E4FF] font-sans text-xs">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#89CFF0] animate-pulse" />
-                  <span className="text-zinc-300">Free Studio Balance:</span>
+                  <span className="w-2 h-2 rounded-full bg-[#0066FF] animate-pulse" />
+                  <span className="text-[#334155] font-medium">Free Exports Left:</span>
                 </div>
-                <span className="text-[#89CFF0] font-bold">{freeExportsCount} / 3 HD Exports</span>
+                <span className="text-[#0066FF] font-bold">{freeExportsCount} / 3 HD Exports</span>
               </div>
 
-              {/* 48px-Tall Nav Items for One-Thumb Ergonomics */}
-              <nav className="mt-4 space-y-1.5" aria-label="Mobile Navigation Links">
-                {navItems.map((item) => {
-                  const isActive = activeSection === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => scrollToSection(item.id)}
-                      className={`w-full min-h-[48px] px-4 rounded-xl text-left font-display text-[15px] font-semibold flex items-center justify-between transition-colors touch-manipulation ${
-                        isActive
-                          ? "bg-[#0047AB]/30 border border-[#89CFF0]/50 text-[#89CFF0]"
-                          : "text-zinc-300 hover:text-white hover:bg-[#050D1E] border border-transparent"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        {isActive && <span className="w-2 h-2 rounded-full bg-[#89CFF0] animate-pulse" />}
-                        <span>{item.fullLabel || item.label}</span>
-                      </div>
-                      <ArrowRight className={`w-4 h-4 ${isActive ? "text-[#89CFF0]" : "text-zinc-600"}`} />
-                    </button>
-                  );
-                })}
+              {/* Nav Items */}
+              <nav className="mt-5 space-y-2">
+                {navLinks.map((link) => (
+                  <button
+                    key={link.id}
+                    type="button"
+                    onClick={() => scrollToSection(link.target)}
+                    className="w-full min-h-[48px] px-4 rounded-xl text-left font-display text-[16px] font-bold text-[#0B0F19] hover:bg-slate-50 flex items-center justify-between transition"
+                  >
+                    <span>{link.label}</span>
+                    <ArrowRight className="w-4 h-4 text-slate-400" />
+                  </button>
+                ))}
               </nav>
 
-              {/* Auth CTA in Mobile Drawer */}
-              {onOpenAuth && (
-                <div className="mt-4 pt-3 border-t border-[#89CFF0]/15 space-y-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      onOpenAuth('signup');
-                    }}
-                    className="btn-sharko-primary w-full min-h-[48px] rounded-xl font-display text-[14px] font-extrabold flex items-center justify-center gap-2 touch-manipulation"
-                  >
-                    <Sparkles className="w-4 h-4" />
-                    <span>Create Studio Account & Claim 3 HD</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      onOpenAuth('login');
-                    }}
-                    className="w-full min-h-[44px] rounded-xl border border-[#89CFF0]/30 bg-[#050D1E] text-[#89CFF0] font-mono text-xs font-semibold flex items-center justify-center gap-2 touch-manipulation"
-                  >
-                    <LogIn className="w-4 h-4" />
-                    <span>Log In to Existing Studio</span>
-                  </button>
-                </div>
-              )}
+              {/* Mobile Auth CTAs */}
+              <div className="mt-6 pt-5 border-t border-slate-100 space-y-2.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (onOpenAuth) onOpenAuth("signup");
+                  }}
+                  className="btn-electric-blue w-full min-h-[50px] rounded-xl font-display text-[15px] font-bold flex items-center justify-center gap-2"
+                >
+                  <span>Try Sharko Free →</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (onOpenAuth) onOpenAuth("login");
+                  }}
+                  className="w-full min-h-[46px] rounded-xl border border-slate-200 bg-white text-[#0B0F19] font-sans text-[14px] font-semibold flex items-center justify-center gap-2 shadow-sm hover:bg-slate-50"
+                >
+                  <LogIn className="w-4 h-4 text-[#0066FF]" />
+                  <span>Log in</span>
+                </button>
+              </div>
             </div>
 
-            {/* Bottom Founder & Support Links */}
-            <div className="pt-4 border-t border-[#89CFF0]/20 font-mono text-[11.5px] text-zinc-400 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[#89CFF0] font-semibold">DIRECT FOUNDER DESK</span>
-                <span className="text-[10px] text-zinc-500">Kushagr Rana</span>
+            {/* Drawer Bottom Support Channels */}
+            <div className="pt-4 border-t border-slate-100 font-sans text-[12px] text-slate-500 space-y-2">
+              <div className="flex items-center justify-between text-[11px] font-semibold text-[#0066FF]">
+                <span>DIRECT FOUNDER DESK</span>
+                <span>Kushagr Rana</span>
               </div>
               <div className="grid grid-cols-2 gap-2 text-[11px]">
                 <a
                   href="mailto:kushagrrana7345@gmail.com"
-                  className="p-2 rounded-lg bg-[#050D1E] border border-[#89CFF0]/20 text-[#89CFF0] text-center truncate hover:underline"
+                  className="p-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 text-center truncate hover:border-[#0066FF]"
                 >
-                  kushagrrana7345@gmail.com
+                  Gmail Desk
                 </a>
                 <a
                   href="https://t.me/Kushagr_Rana"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-lg bg-[#050D1E] border border-[#89CFF0]/20 text-[#89CFF0] text-center hover:underline"
+                  className="p-2 rounded-lg bg-slate-50 border border-slate-200 text-[#0066FF] font-semibold text-center hover:bg-blue-50"
                 >
                   Telegram: @Kushagr_Rana
-                </a>
-                <a
-                  href="https://www.instagram.com/_ranakushagr/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg bg-[#050D1E] border border-[#89CFF0]/20 text-[#89CFF0] text-center hover:underline"
-                >
-                  IG: @_ranakushagr
-                </a>
-                <a
-                  href="https://www.threads.net/@_ranakushagr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg bg-[#050D1E] border border-[#89CFF0]/20 text-[#89CFF0] text-center hover:underline"
-                >
-                  Threads: @_ranakushagr
                 </a>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 };
 

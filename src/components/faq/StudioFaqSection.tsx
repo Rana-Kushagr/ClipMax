@@ -1,53 +1,36 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, HelpCircle, Sparkles } from "lucide-react";
+import React, { useState } from 'react';
+import { ChevronDown, HelpCircle, Sparkles, Mail } from 'lucide-react';
+import { MarkerUnderline } from '../brand/SharkoBrandLogo';
 
 interface FaqItem {
   q: string;
   a: string;
-  tag?: string;
 }
 
 const FAQ_ITEMS: FaqItem[] = [
   {
-    q: "How does Sharko's \"Output-Only\" credit pricing work compared to OpusClip and Vizard?",
-    a: "OpusClip and Vizard charge you by input duration—uploading a 2-hour podcast immediately burns 120 minutes of your quota even if you don't like a single clip. Sharko charges zero credits for uploading, transcribing, virality scoring, and previewing inside the Studio. A credit is only deducted when you click Download HD or Export 1080p/4K MP4.",
-    tag: "Pricing & Metering",
+    q: 'How do clippers actually make money with Sharko?',
+    a: 'Clippers monetize in three ways: (1) Creator bounties and brand sponsorships where you get paid per 1,000 views, (2) Charging podcast hosts and YouTubers monthly retainers ($1,000–$3,000/mo) to repurpose their long videos into viral shorts, and (3) Building faceless YouTube Shorts and TikTok affiliate channels.',
   },
   {
-    q: "How is my data and API usage protected from hackers, and does Sharko comply with India's DPDP Act 2023?",
-    a: "Yes. Sharko enforces a strict zero-client-secret architecture (all AI/LLM and payment keys stay isolated on hardened backend servers behind sliding-window rate limits and SSRF/XSS firewalls). We fully comply with India's Digital Personal Data Protection Act, 2023 (DPDP Act): raw source caches auto-purge within 72 hours, we never sell personal data, and you can exercise your Right to Access, Correction, Consent Withdrawal, or 1-Click Erasure anytime or contact our Grievance Officer (Kushagr Rana at kushagrrana7345@gmail.com).",
-    tag: "Security & DPDP",
+    q: 'How do I find clients if I am just starting out?',
+    a: 'We teach you the exact DM and email outreach frameworks. You can create 3 free watermark-free sample clips of a creator’s podcast on Sharko, send it to them via Instagram DM or Twitter, and show them the exact value before they pay a dime. 80% of creators reply when you show them finished work upfront.',
   },
   {
-    q: "Can I switch camera angles and aspect ratios before exporting a clip?",
-    a: "Yes. Inside both the Smart Reframe tab and Edit Mode (Studio Inspector Modal), you can switch in real time between 2-Speaker Split, Solo Face-Track (85mm single-speaker close-up), and Auto Scene Switch, and resize your canvas across 9:16, 1:1, 16:9, 4:3, and 9:8 with live resolution telemetry.",
-    tag: "Studio Engine",
+    q: 'Do I need prior video editing experience?',
+    a: 'Zero. Sharko’s AI automatically finds the most engaging hooks, reframes horizontal footage to vertical 9:16 with multi-speaker detection, adds animated kinetic captions, and exports in 1080p 60fps with one click.',
   },
   {
-    q: "How do brands or sponsors launch a paid clipping campaign on Sharko?",
-    a: "We maintain a 100% real, zero-fake-listing policy on our Bounty Board. Sponsors click \"+ Launch a Verified Brand Campaign\" in the Bounty Marketplace, fill in their campaign budget, target CPM, and source stream link, and their brief is routed directly to our Campaign Desk at kushagrrana7345@gmail.com (or via Telegram @Kushagr_Rana) for escrow verification and onboarding.",
-    tag: "Bounties & Escrow",
+    q: 'Can I use Sharko for my own content instead of client work?',
+    a: 'Absolutely! Thousands of streamers, podcasters, educators, and YouTubers use Sharko to turn their own 2-hour streams and webinars into 30+ shorts every single week without hiring an expensive editing agency.',
   },
   {
-    q: "What is the 1-Click Telegram Safety Gate (@SharkoStudioBot)?",
-    a: "Blind auto-posting tools often publish awkward cuts to your main social channels while you sleep. Sharko sends a 10-second preview to your Telegram first—tap Approve & Queue to publish to TikTok, Reels, YouTube Shorts, and X, or tap Regenerate to request a fresh hook cut.",
-    tag: "Mobile Bot",
+    q: 'Are captions generated automatically, and can I customize them?',
+    a: 'Yes! Sharko transcribes audio with 99% accuracy in over 40 languages and generates animated word-by-word kinetic captions in MrBeast, Hormozi, Dev, and Clean styles with full font, color, and positioning controls.',
   },
   {
-    q: "Are free exports really watermark-free, and do unused Pro credits roll over?",
-    a: "Every user gets 3 free 1080p 60fps exports per month with zero watermarks and full access to the Studio Inspector. On paid plans (Creator Pro at $9/mo annual and Agency Hub at $29/mo annual), 100% of your unused export credits roll over into the next billing cycle.",
-    tag: "Commercial License",
-  },
-  {
-    q: "Which video platforms and file formats can Sharko ingest?",
-    a: "You can paste any https:// link from YouTube, Twitch, Kick, Rumble, Vimeo, or Google Drive, or upload raw .mp4, .mov, .webm, and .mkv files up to 2GB. All links pass through our anti-SSRF security validator before ingestion.",
-    tag: "Ingest Platforms",
-  },
-  {
-    q: "How can I reach Sharko Support or connect directly with the founder?",
-    a: "You can reach Kushagr Rana directly anytime via Email at kushagrrana7345@gmail.com, on Telegram at @Kushagr_Rana, on Instagram at @_ranakushagr, or on Threads at @_ranakushagr.",
-    tag: "Founder Support",
+    q: 'Can I cancel my subscription or request data erasure at any time?',
+    a: 'Yes. You can cancel with 1 click in your dashboard at any time with no questions asked. Sharko also complies fully with India’s DPDP Act 2023—you can export or permanently purge all your video caches with one click or email founder Kushagr Rana directly at kushagrrana7345@gmail.com.',
   },
 ];
 
@@ -59,100 +42,90 @@ export const StudioFaqSection: React.FC = () => {
   };
 
   return (
-    <section id="section-faq" className="py-24 relative overflow-hidden z-10 select-none scroll-mt-20 sm:scroll-mt-24">
-      <span id="faq" className="absolute -top-20" aria-hidden="true" />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#000B1D] border border-[#89CFF0]/25 text-xs font-mono text-[#89CFF0]">
-            <HelpCircle className="w-3.5 h-3.5 text-[#89CFF0]" />
-            <span>Frequently Asked Questions</span>
+    <section id="faq" className="py-24 bg-white relative overflow-hidden select-none scroll-mt-20">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header: Image 6 Mirror */}
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#EBF3FF] border border-[#BFDBFE] text-[#0066FF] text-xs font-semibold tracking-wider uppercase mb-4">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Answers to common questions</span>
           </div>
-          <motion.h2
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-            className="text-3xl sm:text-5xl font-display font-extrabold text-[#FFFFFF] tracking-tight"
-          >
-            Everything you need to know about{" "}
-            <span className="serif-italic text-[#89CFF0]">Sharko.</span>
-          </motion.h2>
-          <p className="text-sm text-zinc-400 font-sans">
-            Clear answers about output-only billing, anti-hallucination Telegram controls, and DPDP
-            Act 2023 compliance.
+
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0B0F19] tracking-tight font-display mb-3">
+            Got Questions? We{' '}
+            <MarkerUnderline color="pink" showSparks>
+              Got Answers.
+            </MarkerUnderline>
+          </h2>
+          <p className="text-base sm:text-lg text-slate-500 font-sans">
+            Everything you need to know about Sharko and how it can help you start (and scale) your clipping side hustle.
           </p>
         </div>
 
-        {/* Accordion List */}
-        <div className="space-y-3.5">
+        {/* 6 White Accordion Cards: Image 6 Mirror */}
+        <div className="space-y-4">
           {FAQ_ITEMS.map((item, idx) => {
             const isOpen = openIndex === idx;
             return (
               <div
-                key={item.q}
-                className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                key={idx}
+                className={`rounded-2xl border transition-all duration-200 bg-white ${
                   isOpen
-                    ? "border-[#89CFF0]/40 bg-[#000816] shadow-xl shadow-black/40"
-                    : "border-[#89CFF0]/15 bg-[#00040A] hover:border-[#89CFF0]/30"
-                }`}
+                    ? 'border-[#0066FF]/40 shadow-[0_10px_30px_rgba(0,102,255,0.06)] ring-1 ring-[#0066FF]/20'
+                    : 'border-slate-200/90 shadow-[0_4px_16px_rgba(0,0,0,0.02)] hover:border-slate-300'
+                } overflow-hidden`}
               >
                 <button
                   type="button"
                   onClick={() => toggle(idx)}
-                  className="w-full py-4 px-5 sm:px-6 flex items-center justify-between gap-4 text-left focus:outline-none"
+                  className="w-full py-5 px-5 sm:px-7 flex items-center justify-between gap-4 text-left focus:outline-none cursor-pointer"
                   aria-expanded={isOpen}
                 >
-                  <div className="space-y-1 flex-1 pr-2">
-                    {item.tag && (
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-[#89CFF0] block">
-                        {item.tag}
-                      </span>
-                    )}
-                    <span className="font-display font-bold text-sm sm:text-base text-white">
+                  <div className="flex items-center gap-4 pr-2">
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 transition-colors ${
+                        isOpen
+                          ? 'bg-[#0066FF] text-white'
+                          : 'bg-[#EBF3FF] text-[#0066FF]'
+                      }`}
+                    >
+                      ?
+                    </div>
+                    <span className="font-bold text-slate-900 text-base sm:text-lg leading-snug">
                       {item.q}
                     </span>
                   </div>
                   <div
-                    className={`p-1.5 rounded-lg bg-[#040C1E] text-[#89CFF0] transition-transform duration-200 shrink-0 ${
-                      isOpen ? "rotate-180 bg-[#89CFF0] text-[#000000]" : ""
+                    className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-transform duration-200 ${
+                      isOpen ? 'rotate-180 text-[#0066FF] bg-[#EBF3FF]' : 'text-slate-400 bg-slate-100'
                     }`}
                   >
                     <ChevronDown className="w-4 h-4" />
                   </div>
                 </button>
 
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="px-5 sm:px-6 pb-5 pt-1 border-t border-[#89CFF0]/15 text-xs sm:text-[13.5px] leading-relaxed text-zinc-300 font-sans">
-                        {item.a}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {isOpen && (
+                  <div className="px-5 sm:px-7 pb-6 pt-1 text-sm sm:text-base leading-relaxed text-slate-600 font-sans border-t border-slate-100">
+                    <div className="pl-12">{item.a}</div>
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
 
-        {/* Footer Prompt */}
-        <div className="text-center pt-4">
-          <p className="text-xs font-mono text-zinc-400">
-            Have a technical or custom pipeline question?{" "}
+        {/* Bottom Help Note */}
+        <div className="mt-12 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-600">
+            <Mail className="w-4 h-4 text-[#0066FF]" />
+            <span>Still have questions?</span>
             <a
               href="mailto:kushagrrana7345@gmail.com"
-              className="text-[#89CFF0] underline hover:text-white"
+              className="text-[#0066FF] font-semibold hover:underline"
             >
               Email founder Kushagr Rana directly →
             </a>
-          </p>
+          </div>
         </div>
       </div>
     </section>
