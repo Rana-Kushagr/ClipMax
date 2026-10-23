@@ -137,7 +137,7 @@ export function App() {
         />
 
         {/* 3. Hero Section (Image 1 Mirror) */}
-        <section id="hero" className="relative z-[91] scroll-mt-20">
+        <section id="hero" className="relative scroll-mt-20">
           <HeroCommandCenter
             studioMode={studioMode}
             setStudioMode={setStudioMode}

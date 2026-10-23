@@ -290,11 +290,17 @@ export const VenomSymbioteEngine: React.FC<{
     const getTargetButtons = (): HTMLElement[] => {
       const all = Array.from(document.querySelectorAll<HTMLElement>('button, a'));
       return all.filter((el) => {
-        if (el.dataset.venomBtn === 'true') return true;
+        const isVenom = el.dataset.venomBtn === 'true';
         const txt = (el.textContent || '').trim().toLowerCase();
-        if (txt.includes('try sharko free') || txt.includes("let's collaborate")) {
+        const matchesText =
+          txt.includes('try sharko free') ||
+          txt.includes('try sharko for free') ||
+          txt.includes('try sharko') ||
+          txt.includes("let's collaborate");
+
+        if (isVenom || matchesText) {
           // Ensure button sits above canvas so tentacles emerge from INSIDE/BEHIND the button
-          if (!el.style.zIndex) {
+          if (!el.style.zIndex || el.style.zIndex !== '92') {
             el.style.position = el.style.position || 'relative';
             el.style.zIndex = '92';
           }
@@ -475,8 +481,7 @@ export const VenomSymbioteEngine: React.FC<{
         const shouldAttach =
           activeBtn !== null &&
           elapsedTrapMs >= t.staggerMs &&
-          nearestInfo.distFromEdge < individualMaxDist &&
-          nearestInfo.distFromEdge > 2;
+          nearestInfo.distFromEdge < individualMaxDist;
 
         if (shouldAttach) {
           // Smoothly extend reach from 0 -> 1 like a creeping symbiote trap

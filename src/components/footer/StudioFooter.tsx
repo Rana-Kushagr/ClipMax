@@ -55,7 +55,7 @@ export const StudioFooter: React.FC<StudioFooterProps> = ({
   };
 
   return (
-    <footer className="w-full relative z-[91] select-none transition-colors duration-300">
+    <footer className="w-full relative select-none transition-colors duration-300">
       {/* 1. Pre-Footer Call to Action (Image 7 Mirror) */}
       <div className="bg-white dark:bg-[#060913] py-24 px-4 sm:px-6 lg:px-8 text-center relative overflow-hidden border-t border-slate-100 dark:border-slate-800 transition-colors duration-300">
         <div className="max-w-3xl mx-auto space-y-6">
