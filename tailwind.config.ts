@@ -9,6 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        text: {
+          muted: "#94A3B8",
+          secondary: "#CBD5E1",
+          primary: "#FFFFFF",
+        },
         brand: {
           blue: "#0066FF",
           blueHover: "#0052CC",

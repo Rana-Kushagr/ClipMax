@@ -112,7 +112,7 @@ export function InteractiveStudioShowcase({
       </div>
 
       {/* Render Active Studio Workspace */}
-      <div className="rounded-3xl bg-slate-950 border border-slate-800 p-4 sm:p-7 shadow-2xl min-h-[480px] overflow-visible">
+      <div className="rounded-3xl bg-slate-950 border border-slate-800 p-4 sm:p-7 shadow-2xl min-h-[480px] overflow-visible text-white">
         <AnimatePresence mode="wait">
           {(activeStudioTab === "clips" || activeStudioTab === "strip") && (
             <motion.div
