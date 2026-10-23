@@ -1,14 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface VenomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  /** 'venom-black' = glossy black 3D pill from the viral video; 'sharko-blue' = #0066FF Electric Blue pill */
+  /** 'venom-black' = glossy 3D black pill from reference photo; 'sharko-blue' = #0066FF Electric Blue pill */
   variant?: 'venom-black' | 'sharko-blue';
   size?: 'sm' | 'md' | 'lg';
 }
 
 /**
- * Reusable "Try Sharko Free" button with 3D specular glass highlight & automatic Venom Symbiote registration
+ * Stationary 3D Glossy Pill Button.
+ * Layered at z-[92] so its crisp pill border sits cleanly ABOVE the symbiote tentacle roots (z-[90]),
+ * making the tentacles emerge directly from INSIDE/BEHIND the button body with zero rough edge artifacts.
  */
 export const VenomButton: React.FC<VenomButtonProps> = ({
   children,
@@ -26,18 +28,18 @@ export const VenomButton: React.FC<VenomButtonProps> = ({
 
   const variantClasses =
     variant === 'venom-black'
-      ? 'bg-[radial-gradient(circle_at_30%_22%,#262932_0%,#090A0E_58%,#040507_100%)] text-white shadow-[0_20px_38px_-10px_rgba(0,0,0,0.45),inset_0_2px_3px_rgba(255,255,255,0.32),inset_0_-4px_8px_rgba(0,0,0,0.85)]'
-      : 'bg-[radial-gradient(circle_at_30%_22%,#3385FF_0%,#0066FF_58%,#0047B3_100%)] text-white shadow-[0_20px_38px_-10px_rgba(0,102,255,0.5),inset_0_2px_3px_rgba(255,255,255,0.38),inset_0_-4px_8px_rgba(0,30,90,0.75)]';
+      ? 'bg-[radial-gradient(circle_at_30%_22%,#252830_0%,#0A0B10_58%,#040507_100%)] text-white shadow-[0_18px_34px_-10px_rgba(0,0,0,0.42),inset_0_2px_3px_rgba(255,255,255,0.32),inset_0_-4px_8px_rgba(0,0,0,0.85)] hover:shadow-[0_22px_40px_-8px_rgba(0,0,0,0.52),inset_0_2px_3px_rgba(255,255,255,0.38)]'
+      : 'bg-[radial-gradient(circle_at_30%_22%,#3385FF_0%,#0066FF_58%,#0047B3_100%)] text-white shadow-[0_18px_34px_-10px_rgba(0,102,255,0.45),inset_0_2px_3px_rgba(255,255,255,0.38),inset_0_-4px_8px_rgba(0,30,90,0.75)]';
 
   return (
     <button
       type="button"
       data-venom-btn="true"
       data-venom-variant={variant}
-      className={`venom-symbiote-target relative inline-flex items-center justify-center gap-2 rounded-full font-extrabold tracking-tight select-none transition-shadow duration-300 will-change-transform cursor-pointer ${sizeClasses} ${variantClasses} ${className}`}
+      className={`venom-symbiote-target relative z-[92] inline-flex items-center justify-center gap-2 rounded-full font-extrabold tracking-tight cursor-pointer select-none transition-shadow duration-300 ${sizeClasses} ${variantClasses} ${className}`}
       {...props}
     >
-      {/* Top-Left 3D Specular Glass Highlight */}
+      {/* Top-Left 3D Specular Glass Reflection (Matches Reference Photo) */}
       <span
         aria-hidden="true"
         className="pointer-events-none absolute top-1.5 left-4 right-10 h-3 rounded-full bg-gradient-to-r from-white/40 via-white/15 to-transparent blur-[0.4px]"
@@ -47,83 +49,266 @@ export const VenomButton: React.FC<VenomButtonProps> = ({
   );
 };
 
+interface TendrilStrand {
+  /** Horizontal/tangential offset inside the button interior (px) */
+  spreadOffset: number;
+  /** Depth inside the button border where the root is anchored (px) */
+  insetDepth: number;
+  /** Width of the tendril root inside the button (px) */
+  baseWidth: number;
+  /** Width at the cursor tip (px) */
+  tipWidth: number;
+  /** How much the strand bows inward toward the central core */
+  inwardSag: number;
+  /** Stagger delay (ms) after cursor enters range before this tendril shoots out ("one by one trap") */
+  staggerMs: number;
+  /** Individual max stretch distance factor (outer strands snap off earlier than the central core) */
+  snapFactor: number;
+  /** Spring stiffness & damping for organic Verlet motion */
+  stiffness: number;
+  damping: number;
+  /** Dynamic runtime state */
+  reach: number; // 0 = retracted inside button, 1 = locked onto cursor
+  tipX: number;
+  tipY: number;
+  vx: number;
+  vy: number;
+  ctrlX: number;
+  ctrlY: number;
+  cvx: number;
+  cvy: number;
+  phase: number;
+}
+
 /**
- * Single Global 60FPS Canvas Engine that powers the Venom Symbiote tendrils for ALL "Try Sharko Free" buttons on the page
+ * Global Butter-Smooth Venom Symbiote Canvas Engine.
+ * - Keeps native cursor 100% untouched.
+ * - Keeps buttons 100% stationary.
+ * - Roots tendrils deep INSIDE the button (z-[90] canvas behind z-[92] button) and attaches them one-by-one like a trap.
  */
-export const VenomSymbioteEngine: React.FC<{ snapDistance?: number }> = ({
-  snapDistance = 195,
-}) => {
+export const VenomSymbioteEngine: React.FC<{
+  engageDistance?: number;
+  maxStretchDistance?: number;
+}> = ({ engageDistance = 145, maxStretchDistance = 235 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [isAttached, setIsAttached] = useState(false);
-  const [handState, setHandState] = useState({ x: -100, y: -100, angle: 0 });
 
   useEffect(() => {
-    // Skip on touch-only mobile devices where there is no hover cursor
     if (typeof window === 'undefined' || window.matchMedia('(pointer: coarse)').matches) {
       return;
     }
 
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
     let rafId = 0;
-    let dpr = window.devicePixelRatio || 1;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2.5);
 
     const resizeCanvas = () => {
-      dpr = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
+      dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
       canvas.style.width = `${window.innerWidth}px`;
       canvas.style.height = `${window.innerHeight}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
     };
 
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    const mouse = { x: -9999, y: -9999 };
-    const tip = { x: 0, y: 0, vx: 0, vy: 0 };
-    const btnSpring = new Map<
-      HTMLElement,
-      { x: number; y: number; vx: number; vy: number }
-    >();
-
-    let activeBtn: HTMLElement | null = null;
-    let lastAnchor = { ax: 0, ay: 0, nx: 0, ny: 1, color: '#090A0E' };
-    let attached = false;
-    let recoil = 0;
-    let time = 0;
-
-    // 7 Symbiote Web Strands (central thick core + 6 flanking viscoelastic web filaments)
-    const strands = [
-      { spread: -32, sag: 0.35, width: 1.7, phase: 0.3 },
-      { spread: -21, sag: 0.22, width: 2.6, phase: 1.2 },
-      { spread: -10, sag: 0.12, width: 4.4, phase: 2.1 },
-      { spread: 0, sag: 0.04, width: 7.4, phase: 0.0 },
-      { spread: 10, sag: 0.14, width: 4.2, phase: 3.3 },
-      { spread: 22, sag: 0.25, width: 2.5, phase: 4.4 },
-      { spread: 33, sag: 0.38, width: 1.6, phase: 5.2 },
-    ];
+    // Raw & smoothed pointer coordinates for zero-jitter sub-pixel tracking
+    const rawMouse = { x: -9999, y: -9999 };
+    const smoothMouse = { x: -9999, y: -9999 };
+    let hasMouseMoved = false;
 
     const onMouseMove = (e: MouseEvent) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+      rawMouse.x = e.clientX;
+      rawMouse.y = e.clientY;
+      if (!hasMouseMoved) {
+        smoothMouse.x = e.clientX;
+        smoothMouse.y = e.clientY;
+        hasMouseMoved = true;
+      }
     };
     window.addEventListener('mousemove', onMouseMove, { passive: true });
 
-    // Discover all "Try Sharko Free" buttons or [data-venom-btn="true"] elements
+    // 8 Symbiote Tendrils ordered with staggered trap delays (0ms -> 360ms)
+    // Central scout latches first; flanking tendrils shoot out one by one from inside the button!
+    const tendrils: TendrilStrand[] = [
+      {
+        spreadOffset: 0,
+        insetDepth: 22,
+        baseWidth: 11.5,
+        tipWidth: 1.4,
+        inwardSag: 0.02,
+        staggerMs: 0, // #1: Central core scout shoots out immediately
+        snapFactor: 1.0, // Holds on the longest when pulling away
+        stiffness: 0.28,
+        damping: 0.72,
+        reach: 0,
+        tipX: 0,
+        tipY: 0,
+        vx: 0,
+        vy: 0,
+        ctrlX: 0,
+        ctrlY: 0,
+        cvx: 0,
+        cvy: 0,
+        phase: 0.0,
+      },
+      {
+        spreadOffset: -9,
+        insetDepth: 20,
+        baseWidth: 7.2,
+        tipWidth: 1.0,
+        inwardSag: 0.14,
+        staggerMs: 55, // #2: Inner-left tendril latches 55ms later
+        snapFactor: 0.94,
+        stiffness: 0.25,
+        damping: 0.74,
+        reach: 0,
+        tipX: 0,
+        tipY: 0,
+        vx: 0,
+        vy: 0,
+        ctrlX: 0,
+        ctrlY: 0,
+        cvx: 0,
+        cvy: 0,
+        phase: 1.1,
+      },
+      {
+        spreadOffset: 10,
+        insetDepth: 20,
+        baseWidth: 6.8,
+        tipWidth: 1.0,
+        inwardSag: 0.15,
+        staggerMs: 110, // #3: Inner-right tendril latches 110ms later
+        snapFactor: 0.91,
+        stiffness: 0.24,
+        damping: 0.74,
+        reach: 0,
+        tipX: 0,
+        tipY: 0,
+        vx: 0,
+        vy: 0,
+        ctrlX: 0,
+        ctrlY: 0,
+        cvx: 0,
+        cvy: 0,
+        phase: 2.3,
+      },
+      {
+        spreadOffset: -19,
+        insetDepth: 18,
+        baseWidth: 4.8,
+        tipWidth: 0.85,
+        inwardSag: 0.24,
+        staggerMs: 170, // #4: Mid-left tendril shoots out
+        snapFactor: 0.85,
+        stiffness: 0.22,
+        damping: 0.76,
+        reach: 0,
+        tipX: 0,
+        tipY: 0,
+        vx: 0,
+        vy: 0,
+        ctrlX: 0,
+        ctrlY: 0,
+        cvx: 0,
+        cvy: 0,
+        phase: 3.4,
+      },
+      {
+        spreadOffset: 21,
+        insetDepth: 18,
+        baseWidth: 4.5,
+        tipWidth: 0.85,
+        inwardSag: 0.26,
+        staggerMs: 230, // #5: Mid-right tendril shoots out
+        snapFactor: 0.82,
+        stiffness: 0.21,
+        damping: 0.76,
+        reach: 0,
+        tipX: 0,
+        tipY: 0,
+        vx: 0,
+        vy: 0,
+        ctrlX: 0,
+        ctrlY: 0,
+        cvx: 0,
+        cvy: 0,
+        phase: 4.5,
+      },
+      {
+        spreadOffset: -30,
+        insetDepth: 16,
+        baseWidth: 3.2,
+        tipWidth: 0.7,
+        inwardSag: 0.35,
+        staggerMs: 290, // #6: Outer-left web filament shoots out
+        snapFactor: 0.76,
+        stiffness: 0.19,
+        damping: 0.78,
+        reach: 0,
+        tipX: 0,
+        tipY: 0,
+        vx: 0,
+        vy: 0,
+        ctrlX: 0,
+        ctrlY: 0,
+        cvx: 0,
+        cvy: 0,
+        phase: 5.1,
+      },
+      {
+        spreadOffset: 32,
+        insetDepth: 16,
+        baseWidth: 3.0,
+        tipWidth: 0.7,
+        inwardSag: 0.38,
+        staggerMs: 350, // #7: Outer-right web filament shoots out
+        snapFactor: 0.73,
+        stiffness: 0.18,
+        damping: 0.78,
+        reach: 0,
+        tipX: 0,
+        tipY: 0,
+        vx: 0,
+        vy: 0,
+        ctrlX: 0,
+        ctrlY: 0,
+        cvx: 0,
+        cvy: 0,
+        phase: 5.9,
+      },
+    ];
+
     const getTargetButtons = (): HTMLElement[] => {
-      const allBtns = Array.from(document.querySelectorAll<HTMLElement>('button, a'));
-      return allBtns.filter((el) => {
+      const all = Array.from(document.querySelectorAll<HTMLElement>('button, a'));
+      return all.filter((el) => {
         if (el.dataset.venomBtn === 'true') return true;
-        const text = (el.textContent || '').trim().toLowerCase();
-        return text.includes('try sharko free') || text.includes("let's collaborate");
+        const txt = (el.textContent || '').trim().toLowerCase();
+        if (txt.includes('try sharko free') || txt.includes("let's collaborate")) {
+          // Ensure button sits above canvas so tentacles emerge from INSIDE/BEHIND the button
+          if (!el.style.zIndex) {
+            el.style.position = el.style.position || 'relative';
+            el.style.zIndex = '92';
+          }
+          return true;
+        }
+        return false;
       });
     };
 
-    const getClosestCapsulePoint = (rect: DOMRect, px: number, py: number) => {
+    /**
+     * Computes the anchor point INSIDE the capsule button so tentacles emerge from within the button body,
+     * never from a rough lump on the outer border.
+     */
+    const getCapsuleInteriorAnchor = (rect: DOMRect, px: number, py: number) => {
       const r = rect.height / 2;
       const clampedX = Math.max(rect.left + r, Math.min(rect.right - r, px));
       const cy = rect.top + r;
@@ -132,268 +317,315 @@ export const VenomSymbioteEngine: React.FC<{ snapDistance?: number }> = ({
       const len = Math.hypot(dx, dy) || 0.0001;
       const nx = dx / len;
       const ny = dy / len;
-      return {
-        ax: clampedX + nx * (r - 2),
-        ay: cy + ny * (r - 2),
-        nx,
-        ny,
-        dist: Math.max(0, len - r),
-      };
+
+      // Edge point on the perimeter
+      const edgeX = clampedX + nx * r;
+      const edgeY = cy + ny * r;
+      const distFromEdge = Math.max(0, len - r);
+
+      return { edgeX, edgeY, nx, ny, distFromEdge };
     };
 
-    const render = () => {
-      time += 0.065;
+    /**
+     * Draws a butter-smooth, filled, tapered cubic-Bezier symbiote ribbon from (sx, sy) to (ex, ey)
+     * with control point (cx, cy), tapering smoothly from startWidth to endWidth.
+     */
+    const drawTaperedTendril = (
+      sx: number,
+      sy: number,
+      cx: number,
+      cy: number,
+      ex: number,
+      ey: number,
+      startWidth: number,
+      endWidth: number,
+      fillStyle: string
+    ) => {
+      const dx = ex - sx;
+      const dy = ey - sy;
+      const len = Math.hypot(dx, dy) || 1;
+      // Perpendicular normal vector
+      const px = -dy / len;
+      const py = dx / len;
+
+      const halfStart = startWidth * 0.5;
+      const halfMid = (startWidth * 0.34 + endWidth * 0.66) * 0.5;
+      const halfEnd = endWidth * 0.5;
+
+      ctx.fillStyle = fillStyle;
+      ctx.beginPath();
+      // Left side of ribbon from root -> tip
+      ctx.moveTo(sx + px * halfStart, sy + py * halfStart);
+      ctx.quadraticCurveTo(
+        cx + px * halfMid,
+        cy + py * halfMid,
+        ex + px * halfEnd,
+        ey + py * halfEnd
+      );
+      // Rounded sub-pixel tip cap
+      ctx.arc(ex, ey, halfEnd, Math.atan2(py, px), Math.atan2(-py, -px), false);
+      // Right side of ribbon from tip -> root
+      ctx.quadraticCurveTo(
+        cx - px * halfMid,
+        cy - py * halfMid,
+        sx - px * halfStart,
+        sy - py * halfStart
+      );
+      ctx.closePath();
+      ctx.fill();
+    };
+
+    let activeBtn: HTMLElement | null = null;
+    let trapEngagedAt = 0;
+    let lastFrameTime = performance.now();
+    let lastAnchor = { edgeX: 0, edgeY: 0, nx: 0, ny: 1 };
+
+    const animate = (now: number) => {
+      const dt = Math.min(2.2, Math.max(0.5, (now - lastFrameTime) / 16.667));
+      lastFrameTime = now;
+
+      // Sub-pixel pointer smoothing
+      smoothMouse.x += (rawMouse.x - smoothMouse.x) * (1 - Math.pow(0.45, dt));
+      smoothMouse.y += (rawMouse.y - smoothMouse.y) * (1 - Math.pow(0.45, dt));
+
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-      const targets = getTargetButtons();
-      let closestBtn: HTMLElement | null = null;
-      let closestData = {
-        ax: 0,
-        ay: 0,
+      const buttons = getTargetButtons();
+      let nearestBtn: HTMLElement | null = null;
+      let nearestInfo = {
+        edgeX: 0,
+        edgeY: 0,
         nx: 0,
         ny: 1,
-        dist: Infinity,
-        rect: null as DOMRect | null,
+        distFromEdge: Infinity,
       };
 
-      for (const el of targets) {
-        const rect = el.getBoundingClientRect();
+      for (const btn of buttons) {
+        const rect = btn.getBoundingClientRect();
         if (rect.width === 0 || rect.height === 0) continue;
-        const pt = getClosestCapsulePoint(rect, mouse.x, mouse.y);
-        if (pt.dist < closestData.dist) {
-          closestBtn = el;
-          closestData = { ...pt, rect };
+        const info = getCapsuleInteriorAnchor(rect, smoothMouse.x, smoothMouse.y);
+        if (info.distFromEdge < nearestInfo.distFromEdge) {
+          nearestBtn = btn;
+          nearestInfo = info;
         }
       }
 
-      const limit = attached ? snapDistance : snapDistance * 0.7;
+      const isCurrentlyTrapped = activeBtn !== null;
+      const triggerLimit = isCurrentlyTrapped ? maxStretchDistance : engageDistance;
 
-      if (closestBtn && closestData.rect && closestData.dist < limit) {
-        activeBtn = closestBtn;
-        const isBlack = closestBtn.dataset.venomVariant === 'venom-black';
+      if (nearestBtn && nearestInfo.distFromEdge < triggerLimit) {
+        if (activeBtn !== nearestBtn) {
+          activeBtn = nearestBtn;
+          trapEngagedAt = now;
+          // Initialize tendril tips inside the button so they shoot OUT from inside the button!
+          const initX = nearestInfo.edgeX - nearestInfo.nx * 18;
+          const initY = nearestInfo.edgeY - nearestInfo.ny * 18;
+          tendrils.forEach((t) => {
+            if (t.reach < 0.05) {
+              t.tipX = initX;
+              t.tipY = initY;
+              t.ctrlX = initX;
+              t.ctrlY = initY;
+              t.vx = 0;
+              t.vy = 0;
+            }
+          });
+        }
         lastAnchor = {
-          ax: closestData.ax,
-          ay: closestData.ay,
-          nx: closestData.nx,
-          ny: closestData.ny,
-          color: isBlack ? '#090A0E' : '#090A0E', // Classic black Venom symbiote web strands
+          edgeX: nearestInfo.edgeX,
+          edgeY: nearestInfo.edgeY,
+          nx: nearestInfo.nx,
+          ny: nearestInfo.ny,
         };
-
-        if (!attached) {
-          attached = true;
-          setIsAttached(true);
-          document.body.style.cursor = 'none';
-        }
-        closestBtn.style.cursor = 'none';
-        recoil += (1 - recoil) * 0.26;
-
-        tip.vx = (tip.vx + (mouse.x - tip.x) * 0.36) * 0.62;
-        tip.vy = (tip.vy + (mouse.y - tip.y) * 0.36) * 0.62;
-        tip.x += tip.vx;
-        tip.y += tip.vy;
-
-        const angleDeg =
-          (Math.atan2(closestData.ay - mouse.y, closestData.ax - mouse.x) * 180) / Math.PI + 90;
-        setHandState({ x: mouse.x, y: mouse.y, angle: angleDeg * 0.25 });
       } else {
-        if (attached) {
-          attached = false;
-          setIsAttached(false);
-          document.body.style.cursor = '';
-        }
-        recoil *= 0.82;
-        tip.vx = (tip.vx + (lastAnchor.ax - tip.x) * 0.28) * 0.68;
-        tip.vy = (tip.vy + (lastAnchor.ay - tip.y) * 0.28) * 0.68;
-        tip.x += tip.vx;
-        tip.y += tip.vy;
+        activeBtn = null;
       }
 
-      // Update magnetic spring offset on all target buttons
-      for (const el of targets) {
-        if (!btnSpring.has(el)) {
-          btnSpring.set(el, { x: 0, y: 0, vx: 0, vy: 0 });
-        }
-        const sp = btnSpring.get(el)!;
-        if (attached && el === activeBtn && closestData.rect) {
-          const cx = closestData.rect.left + closestData.rect.width / 2;
-          const cy = closestData.rect.top + closestData.rect.height / 2;
-          const pull = Math.min(1, closestData.dist / snapDistance);
-          const tx = (mouse.x - cx) * 0.14 * pull;
-          const ty = (mouse.y - cy) * 0.18 * pull;
-          sp.vx = (sp.vx + (tx - sp.x) * 0.22) * 0.72;
-          sp.vy = (sp.vy + (ty - sp.y) * 0.22) * 0.72;
-        } else {
-          el.style.cursor = '';
-          sp.vx = (sp.vx - sp.x * 0.18) * 0.75;
-          sp.vy = (sp.vy - sp.y * 0.18) * 0.75;
-        }
-        sp.x += sp.vx;
-        sp.y += sp.vy;
-        if (Math.abs(sp.x) > 0.05 || Math.abs(sp.y) > 0.05) {
-          el.style.transform = `translate3d(${sp.x.toFixed(1)}px, ${sp.y.toFixed(1)}px, 0) rotate(${(
-            sp.x * 0.18
-          ).toFixed(2)}deg)`;
-        } else {
-          el.style.transform = '';
-        }
-      }
-
-      const { ax, ay, nx, ny, color } = lastAnchor;
+      const elapsedTrapMs = activeBtn ? now - trapEngagedAt : 0;
+      const { edgeX, edgeY, nx, ny } = lastAnchor;
+      // Tangent vector along the button's interior spine
       const tx = -ny;
       const ty = nx;
 
-      // Pre-attach symbiote edge spikes when cursor approaches a "Try Sharko Free" button
-      if (
-        !attached &&
-        closestBtn &&
-        closestData.dist < snapDistance * 1.3 &&
-        closestData.dist >= limit
-      ) {
-        const prox = 1 - (closestData.dist - limit) / (snapDistance * 0.6);
-        const cAx = closestData.ax;
-        const cAy = closestData.ay;
-        const cNx = closestData.nx;
-        const cNy = closestData.ny;
-        const cTx = -cNy;
-        const cTy = cNx;
+      // Track active strand midpoints for cross-webbing
+      const activeStrandData: {
+        rootX: number;
+        rootY: number;
+        ctrlX: number;
+        ctrlY: number;
+        tipX: number;
+        tipY: number;
+        reach: number;
+      }[] = [];
 
-        ctx.save();
-        ctx.fillStyle = '#090A0E';
-        for (let i = -2; i <= 2; i++) {
-          const bx = cAx + cTx * (i * 7);
-          const by = cAy + cTy * (i * 7);
-          const spike = (6 + Math.sin(time * 2 + i) * 2.5) * prox;
-          ctx.beginPath();
-          ctx.moveTo(bx - cTx * 3.5, by - cTy * 3.5);
-          ctx.quadraticCurveTo(
-            bx + cNx * spike,
-            by + cNy * spike,
-            bx + cTx * 3.5,
-            by + cTy * 3.5
-          );
-          ctx.fill();
-        }
-        ctx.restore();
-      }
+      // Soft ambient shadow under the symbiote web (matches the photo's soft shadow on light background)
+      ctx.save();
+      ctx.shadowColor = 'rgba(11, 15, 25, 0.16)';
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetX = 4;
+      ctx.shadowOffsetY = 8;
 
-      // Draw multi-strand Venom symbiote web tendrils when attached or recoiling
-      if (recoil > 0.02) {
-        const stretch = Math.min(1, Math.hypot(tip.x - ax, tip.y - ay) / snapDistance);
-        const thin = 1 - stretch * 0.42;
+      tendrils.forEach((t) => {
+        // Root is positioned DEEP INSIDE the button (edge - nx * insetDepth)
+        const rootX = edgeX - nx * t.insetDepth + tx * t.spreadOffset;
+        const rootY = edgeY - ny * t.insetDepth + ty * t.spreadOffset;
 
-        ctx.save();
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.24)';
-        ctx.shadowBlur = 12;
-        ctx.shadowOffsetX = 5;
-        ctx.shadowOffsetY = 9;
-        ctx.strokeStyle = color;
-        ctx.fillStyle = color;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
+        // Check if this specific tendril should be attached ("one by one trap" stagger + individual snap limit)
+        const individualMaxDist = maxStretchDistance * t.snapFactor;
+        const shouldAttach =
+          activeBtn !== null &&
+          elapsedTrapMs >= t.staggerMs &&
+          nearestInfo.distFromEdge < individualMaxDist &&
+          nearestInfo.distFromEdge > 2;
 
-        // Webbed Gooey Base on Button Edge
-        ctx.beginPath();
-        ctx.moveTo(ax - tx * 34 * recoil, ay - ty * 34 * recoil);
-        ctx.quadraticCurveTo(
-          ax + nx * 24 * recoil,
-          ay + ny * 24 * recoil,
-          ax + tx * 34 * recoil,
-          ay + ty * 34 * recoil
-        );
-        ctx.closePath();
-        ctx.fill();
+        if (shouldAttach) {
+          // Smoothly extend reach from 0 -> 1 like a creeping symbiote trap
+          t.reach += (1 - t.reach) * 0.14 * dt;
 
-        const mids: { sx: number; sy: number; mx: number; my: number }[] = [];
-
-        strands.forEach((s) => {
-          const sx = ax + tx * s.spread * recoil;
-          const sy = ay + ty * s.spread * recoil;
-          const mx =
-            (sx + tip.x) * 0.5 -
-            tx * s.spread * s.sag +
-            Math.sin(time + s.phase) * 1.6 * recoil;
-          const my =
-            (sy + tip.y) * 0.5 -
-            ty * s.spread * s.sag +
-            Math.cos(time + s.phase) * 1.6 * recoil;
-
-          mids.push({ sx, sy, mx, my });
-
-          ctx.beginPath();
-          ctx.lineWidth = Math.max(0.9, s.width * thin * recoil);
-          ctx.moveTo(sx, sy);
-          ctx.quadraticCurveTo(mx, my, tip.x, tip.y);
-          ctx.stroke();
-        });
-
-        // Cross-linked Venom Web Bridges
-        ctx.shadowColor = 'transparent';
-        ctx.lineWidth = 1.15 * recoil;
-        for (let i = 0; i < mids.length - 1; i++) {
-          ctx.beginPath();
-          ctx.moveTo((mids[i].sx + mids[i].mx) * 0.5, (mids[i].sy + mids[i].my) * 0.5);
-          ctx.quadraticCurveTo(
-            (mids[i].mx + mids[i + 1].mx) * 0.5,
-            (mids[i].my + mids[i + 1].my) * 0.5 + 5,
-            mids[i + 1].mx,
-            mids[i + 1].my
-          );
-          ctx.stroke();
+          // Spring tip toward cursor
+          const targetX = smoothMouse.x;
+          const targetY = smoothMouse.y;
+          t.vx = (t.vx + (targetX - t.tipX) * t.stiffness * dt) * Math.pow(t.damping, dt);
+          t.vy = (t.vy + (targetY - t.tipY) * t.stiffness * dt) * Math.pow(t.damping, dt);
+          t.tipX += t.vx * dt;
+          t.tipY += t.vy * dt;
+        } else {
+          // Smoothly retract back INSIDE the button root
+          t.reach *= Math.pow(0.84, dt);
+          t.vx = (t.vx + (rootX - t.tipX) * 0.26 * dt) * Math.pow(0.7, dt);
+          t.vy = (t.vy + (rootY - t.tipY) * 0.26 * dt) * Math.pow(0.7, dt);
+          t.tipX += t.vx * dt;
+          t.tipY += t.vy * dt;
         }
 
-        ctx.restore();
+        if (t.reach > 0.015) {
+          const currentDist = Math.hypot(t.tipX - rootX, t.tipY - rootY);
+          const stretchRatio = Math.min(1, currentDist / maxStretchDistance);
+          // Strands thin out organically as they stretch taut
+          const tensionScale = (1 - stretchRatio * 0.45) * Math.min(1, t.reach * 1.25);
+
+          // Organic control point that bows inward toward the central core strand
+          const idealCtrlX =
+            (rootX + t.tipX) * 0.5 -
+            tx * t.spreadOffset * t.inwardSag +
+            Math.sin(now * 0.004 + t.phase) * 1.4 * t.reach;
+          const idealCtrlY =
+            (rootY + t.tipY) * 0.5 -
+            ty * t.spreadOffset * t.inwardSag +
+            Math.cos(now * 0.004 + t.phase) * 1.4 * t.reach;
+
+          t.ctrlX += (idealCtrlX - t.ctrlX) * 0.24 * dt;
+          t.ctrlY += (idealCtrlY - t.ctrlY) * 0.24 * dt;
+
+          // 1. Subtle smoky secondary ghost strand (visible on the left side in the reference photo)
+          if (Math.abs(t.spreadOffset) > 8) {
+            drawTaperedTendril(
+              rootX + tx * 2,
+              rootY + ty * 2,
+              t.ctrlX + tx * 4,
+              t.ctrlY + ty * 4,
+              t.tipX,
+              t.tipY,
+              t.baseWidth * 0.55 * tensionScale,
+              t.tipWidth * 0.6,
+              'rgba(12, 14, 20, 0.22)'
+            );
+          }
+
+          // 2. Primary liquid-smooth tapered symbiote tendril
+          drawTaperedTendril(
+            rootX,
+            rootY,
+            t.ctrlX,
+            t.ctrlY,
+            t.tipX,
+            t.tipY,
+            t.baseWidth * tensionScale,
+            Math.max(0.55, t.tipWidth * tensionScale),
+            '#08090D'
+          );
+
+          activeStrandData.push({
+            rootX,
+            rootY,
+            ctrlX: t.ctrlX,
+            ctrlY: t.ctrlY,
+            tipX: t.tipX,
+            tipY: t.tipY,
+            reach: t.reach,
+          });
+        }
+      });
+
+      // 3. Draw Fine Diagonal Symbiote Web Bridges Between Adjacent Locked Tendrils
+      ctx.shadowColor = 'transparent';
+      if (activeStrandData.length >= 2) {
+        // Sort left-to-right by root position so web bridges connect neighboring strands cleanly
+        activeStrandData.sort((a, b) => a.rootX * tx + a.rootY * ty - (b.rootX * tx + b.rootY * ty));
+
+        for (let i = 0; i < activeStrandData.length - 1; i++) {
+          const s1 = activeStrandData[i];
+          const s2 = activeStrandData[i + 1];
+          const bridgeAlpha = Math.min(s1.reach, s2.reach);
+          if (bridgeAlpha < 0.35) continue;
+
+          // Upper web filament near the button exit
+          const p1x = s1.rootX * 0.55 + s1.ctrlX * 0.45;
+          const p1y = s1.rootY * 0.55 + s1.ctrlY * 0.45;
+          const p2x = s2.rootX * 0.4 + s2.ctrlX * 0.6;
+          const p2y = s2.rootY * 0.4 + s2.ctrlY * 0.6;
+
+          ctx.strokeStyle = `rgba(8, 9, 13, ${(0.75 * bridgeAlpha).toFixed(2)})`;
+          ctx.lineWidth = 1.05 * bridgeAlpha;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(p1x, p1y);
+          ctx.quadraticCurveTo(
+            (p1x + p2x) * 0.5 + nx * 5,
+            (p1y + p2y) * 0.5 + ny * 5,
+            p2x,
+            p2y
+          );
+          ctx.stroke();
+
+          // Lower diagonal web filament closer to the cursor
+          const q1x = s1.ctrlX * 0.65 + s1.tipX * 0.35;
+          const q1y = s1.ctrlY * 0.65 + s1.tipY * 0.35;
+          const q2x = s2.ctrlX * 0.5 + s2.tipX * 0.5;
+          const q2y = s2.ctrlY * 0.5 + s2.tipY * 0.5;
+
+          ctx.strokeStyle = `rgba(8, 9, 13, ${(0.52 * bridgeAlpha).toFixed(2)})`;
+          ctx.lineWidth = 0.75 * bridgeAlpha;
+          ctx.beginPath();
+          ctx.moveTo(q1x, q1y);
+          ctx.quadraticCurveTo(
+            (q1x + q2x) * 0.5 + nx * 3,
+            (q1y + q2y) * 0.5 + ny * 3,
+            q2x,
+            q2y
+          );
+          ctx.stroke();
+        }
       }
 
-      rafId = requestAnimationFrame(render);
+      ctx.restore();
+      rafId = requestAnimationFrame(animate);
     };
 
-    rafId = requestAnimationFrame(render);
+    rafId = requestAnimationFrame(animate);
 
     return () => {
       cancelAnimationFrame(rafId);
-      document.body.style.cursor = '';
       window.removeEventListener('resize', resizeCanvas);
       window.removeEventListener('mousemove', onMouseMove);
     };
-  }, [snapDistance]);
+  }, [engageDistance, maxStretchDistance]);
 
   return (
-    <>
-      <canvas
-        ref={canvasRef}
-        className="pointer-events-none fixed inset-0 z-[9998]"
-        aria-hidden="true"
-      />
-      {isAttached && (
-        <div
-          className="pointer-events-none fixed left-0 top-0 z-[9999] hidden md:block"
-          style={{
-            transform: `translate3d(${handState.x - 14}px, ${handState.y - 6}px, 0) rotate(${handState.angle}deg)`,
-          }}
-          aria-hidden="true"
-        >
-          <svg
-            width="44"
-            height="48"
-            viewBox="0 0 44 48"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="drop-shadow-[4px_8px_10px_rgba(0,0,0,0.28)]"
-          >
-            <path
-              d="M14 4C14 1.8 15.8 0 18 0C20.2 0 22 1.8 22 4V17H24.5C26.4 17 28 18.6 28 20.5V22H30.5C32.4 22 34 23.6 34 25.5V27.5H36C37.9 27.5 39.5 29.1 39.5 31V36.5C39.5 41.5 35.5 45.5 30.5 45.5H17.5C13.2 45.5 9.8 42.6 8.5 38.5L4.5 27.5C3.7 25.3 4.8 22.8 7 22C9.1 21.2 11.4 22.2 12.3 24.2L14 28V4Z"
-              fill="#FFFFFF"
-              stroke="#0B0C10"
-              strokeWidth="3.2"
-              strokeLinejoin="round"
-            />
-            <line x1="20" y1="30" x2="21" y2="38" stroke="#0B0C10" strokeWidth="2.6" strokeLinecap="round" />
-            <line x1="25.5" y1="30.5" x2="26.5" y2="38.5" stroke="#0B0C10" strokeWidth="2.6" strokeLinecap="round" />
-            <line x1="31" y1="31.5" x2="31.8" y2="38.5" stroke="#0B0C10" strokeWidth="2.6" strokeLinecap="round" />
-            <path d="M14 43.5H33" stroke="#0B0C10" strokeWidth="3" strokeLinecap="round" />
-          </svg>
-        </div>
-      )}
-    </>
+    <canvas
+      ref={canvasRef}
+      className="pointer-events-none fixed inset-0 z-[90]"
+      aria-hidden="true"
+    />
   );
 };

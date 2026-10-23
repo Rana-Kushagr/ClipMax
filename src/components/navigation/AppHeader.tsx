@@ -111,7 +111,7 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
   }, []);
 
   return (
-    <div className="sticky top-0 left-0 right-0 z-50">
+    <div className="sticky top-0 left-0 right-0 z-[95]">
       {/* 1. Top Hot-Pink Promo Marquee Banner (Images 1, 2, 3, 6, 7, 8) */}
       {showPromo && (
         <div className="relative h-[38px] bg-gradient-to-r from-[#FF0055] via-[#FF1464] to-[#FF0055] text-white flex items-center justify-between px-3 sm:px-6 overflow-hidden select-none text-[12px] sm:text-[13px] font-bold shadow-sm">

@@ -120,7 +120,7 @@ export function App() {
     <ThemeProvider>
       <div className="min-h-screen bg-white dark:bg-[#060913] text-slate-900 dark:text-slate-100 transition-colors duration-300 selection:bg-[#0066FF]/20 selection:text-[#0066FF] relative overflow-x-hidden font-sans">
         {/* Global Multi-Button Venom Symbiote Tendril Engine */}
-        <VenomSymbioteEngine snapDistance={195} />
+        <VenomSymbioteEngine engageDistance={145} maxStretchDistance={235} />
 
         {/* 1. Top Viewport GSAP Scroll Progress Ribbon */}
         <div
@@ -137,7 +137,7 @@ export function App() {
         />
 
         {/* 3. Hero Section (Image 1 Mirror) */}
-        <section id="hero" className="relative scroll-mt-20">
+        <section id="hero" className="relative z-[91] scroll-mt-20">
           <HeroCommandCenter
             studioMode={studioMode}
             setStudioMode={setStudioMode}
