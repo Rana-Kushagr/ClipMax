@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { SharkoBrandLogo } from "../brand/SharkoBrandLogo";
 import { DayNightToggleButton } from "../../context/ThemeContext";
+import { VenomButton } from "../ui/VenomSymbioteEngine";
 
 interface AppHeaderProps {
   freeExportsCount?: number;
@@ -200,15 +201,14 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
               Log in
             </button>
 
-            {/* Try Sharko Free → (Electric Blue CTA) */}
-            <button
-              type="button"
+            {/* Venom Symbiote Powered "Try Sharko Free →" Button */}
+            <VenomButton
+              size="sm"
+              variant="venom-black"
               onClick={() => onOpenAuth ? onOpenAuth("signup") : scrollToSection("hero")}
-              className="btn-electric-blue btn-sharko-shimmer rounded-xl px-4 sm:px-5 py-2.5 text-[14px] font-bold text-white flex items-center gap-1.5 active:scale-95 transition cursor-pointer"
             >
-              <span>Try Sharko Free</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+              Try Sharko Free <span>→</span>
+            </VenomButton>
 
             {/* Mobile Hamburger Button (44x44px touch target) */}
             <button
@@ -276,16 +276,17 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
 
               {/* Mobile Auth CTAs */}
               <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 space-y-2.5">
-                <button
-                  type="button"
+                <VenomButton
+                  size="md"
+                  variant="venom-black"
                   onClick={() => {
                     setMobileMenuOpen(false);
                     if (onOpenAuth) onOpenAuth("signup");
                   }}
-                  className="btn-electric-blue btn-sharko-shimmer w-full min-h-[50px] rounded-xl font-display text-[15px] font-bold flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full min-h-[50px]"
                 >
-                  <span>Try Sharko Free →</span>
-                </button>
+                  Try Sharko Free <span>→</span>
+                </VenomButton>
                 <button
                   type="button"
                   onClick={() => {

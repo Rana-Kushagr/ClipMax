@@ -17,6 +17,7 @@ import { StudioFooter } from './components/footer/StudioFooter';
 import { SharkoAuthModal } from './components/auth/SharkoAuthModal';
 import { SmartOptionsState } from './components/hero/SmartOptionsDrawer';
 import { useClipMaxGsap } from './hooks/useClipMaxGsap';
+import { VenomSymbioteEngine } from './components/ui/VenomSymbioteEngine';
 import { CheckCircle2, X } from 'lucide-react';
 
 export function App() {
@@ -118,6 +119,9 @@ export function App() {
   return (
     <ThemeProvider>
       <div className="min-h-screen bg-white dark:bg-[#060913] text-slate-900 dark:text-slate-100 transition-colors duration-300 selection:bg-[#0066FF]/20 selection:text-[#0066FF] relative overflow-x-hidden font-sans">
+        {/* Global Multi-Button Venom Symbiote Tendril Engine */}
+        <VenomSymbioteEngine snapDistance={195} />
+
         {/* 1. Top Viewport GSAP Scroll Progress Ribbon */}
         <div
           ref={progressBarRef}
@@ -144,6 +148,7 @@ export function App() {
             videoUrl={videoUrl}
             setVideoUrl={setVideoUrl}
             onSelectStudioTab={setActiveStudioTab}
+            onOpenAuth={handleOpenAuth}
           />
         </section>
 
@@ -168,19 +173,8 @@ export function App() {
         </section>
 
         {/* 6. Section 4: How It Works Walkthrough */}
-        <section id="walkthrough" className="py-20 bg-white dark:bg-[#060913] relative scroll-mt-20 transition-colors duration-300">
+        <section id="walkthrough" className="py-16 bg-white dark:bg-[#060913] relative scroll-mt-20 transition-colors duration-300">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto mb-12">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#0066FF] dark:text-[#89CFF0] mb-2 block">
-                AUTONOMOUS PIPELINE
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight font-display">
-                How Sharko Turns Raw Footage into Viral Gold
-              </h2>
-              <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mt-2">
-                From long YouTube podcast to 45 scheduled vertical shorts in less than 3 minutes.
-              </p>
-            </div>
             <HowItWorksWalkthrough onLoadWorkflowSample={handleLoadWorkflowSample} />
           </div>
         </section>

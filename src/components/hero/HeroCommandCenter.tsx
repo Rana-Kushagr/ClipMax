@@ -20,6 +20,7 @@ import { MarkerUnderline, SharkoBrandLogo } from "../brand/SharkoBrandLogo";
 import { StudioEditorModal } from "../studio/StudioEditorModal";
 import { VideoClip } from "../../types/studio";
 import { validateSafeVideoUrl, checkRateLimit } from "../../utils/security";
+import { VenomButton } from "../ui/VenomSymbioteEngine";
 
 interface HeroCommandCenterProps {
   onClipsGenerated?: () => void;
@@ -189,14 +190,13 @@ export function HeroCommandCenter({
 
             {/* CTA Button Row */}
             <div className="flex flex-wrap items-center gap-3.5 pt-2">
-              <button
-                type="button"
+              <VenomButton
+                size="lg"
+                variant="venom-black"
                 onClick={() => (onOpenAuth ? onOpenAuth("signup") : handleProcessUrl())}
-                className="btn-electric-blue btn-sharko-shimmer rounded-2xl px-7 py-4 text-[16px] font-bold text-white flex items-center gap-2 cursor-pointer"
               >
-                <span>Try Sharko Free</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+                Try Sharko Free <ArrowRight className="w-4 h-4 ml-1" />
+              </VenomButton>
 
               <button
                 type="button"

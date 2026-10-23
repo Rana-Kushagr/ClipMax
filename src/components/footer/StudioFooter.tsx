@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { SharkoBrandLogo, MarkerUnderline } from '../brand/SharkoBrandLogo';
 import { LegalTabId } from '../compliance/LegalCenterModal';
+import { VenomButton } from '../ui/VenomSymbioteEngine';
 
 interface StudioFooterProps {
   onOpenSupport?: () => void;
@@ -73,14 +74,14 @@ export const StudioFooter: React.FC<StudioFooterProps> = ({
           </p>
 
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
-              type="button"
+            <VenomButton
+              size="lg"
+              variant="venom-black"
               onClick={handleCta}
-              className="btn-sharko-shimmer w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white font-bold text-base shadow-[0_10px_25px_rgba(0,102,255,0.3)] hover:shadow-[0_14px_35px_rgba(0,102,255,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              className="w-full sm:w-auto"
             >
-              <span>Try Sharko Free</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
+              Try Sharko Free <ArrowRight className="w-5 h-5 ml-1" />
+            </VenomButton>
           </div>
 
           {/* Micro-perks strip */}

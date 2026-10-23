@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { Magnet } from "../react-bits/Magnet";
 import { ExpandableScreen } from "../ui/expandable-screen";
+import { MarkerUnderline } from "../brand/SharkoBrandLogo";
 
 interface HowItWorksWalkthroughProps {
   onLoadWorkflowSample: () => void;
@@ -36,7 +37,7 @@ export function HowItWorksWalkthrough({
 
   // High-performance direct DOM refs
   const timeRef = useRef<number>(0);
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const isVisibleRef = useRef<boolean>(true);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrubberRef = useRef<HTMLDivElement>(null);
@@ -270,26 +271,25 @@ export function HowItWorksWalkthrough({
   };
 
   return (
-    <section
+    <div
       ref={sectionRef}
-      id="walkthrough"
-      className="relative z-10 py-16 px-4 sm:px-6 max-w-[1240px] mx-auto select-none"
+      className="relative z-10 py-6 px-4 sm:px-6 max-w-[1240px] mx-auto select-none"
       aria-label="Cinema Walkthrough Player"
     >
-      {/* Section Header */}
-      <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
-        <motion.h2
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
-          className="font-display font-bold text-2xl sm:text-4xl text-[#FFFFFF] tracking-tight"
-        >
-          How Sharko works in{" "}
-          <span className="serif-italic text-[#89CFF0]">three simple steps.</span>
-        </motion.h2>
-        <p className="text-zinc-400 text-sm sm:text-base mt-2 font-sans">
-          Engineered with studio clarity so anyone can create viral shorts and claim escrow bounties in seconds.
+      {/* Section Header with Crisp, High-Contrast Marker Accent */}
+      <div className="text-center max-w-3xl mx-auto mb-10 space-y-3">
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#EBF3FF] dark:bg-[#0066FF]/20 border border-[#BFDBFE] dark:border-[#0066FF]/40 text-[#0066FF] dark:text-[#89CFF0] text-xs font-bold tracking-wider uppercase mb-1">
+          <Sparkles className="w-3.5 h-3.5 animate-spark" />
+          <span>AUTONOMOUS PIPELINE</span>
+        </div>
+        <h2 className="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-[#0B0F19] dark:text-white tracking-tight">
+          How Sharko works in{' '}
+          <MarkerUnderline color="pink" showSparks>
+            three simple steps.
+          </MarkerUnderline>
+        </h2>
+        <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base font-sans max-w-2xl mx-auto">
+          From long YouTube podcast to 45 scheduled vertical shorts in less than 3 minutes.
         </p>
       </div>
 
@@ -666,7 +666,7 @@ export function HowItWorksWalkthrough({
           </div>
         </ExpandableScreen>
       </div>
-    </section>
+    </div>
   );
 }
 
