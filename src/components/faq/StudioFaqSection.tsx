@@ -42,22 +42,22 @@ export const StudioFaqSection: React.FC = () => {
   };
 
   return (
-    <section id="faq" className="py-24 bg-white relative overflow-hidden select-none scroll-mt-20">
+    <section id="faq" className="py-24 bg-white dark:bg-[#060913] relative overflow-hidden select-none scroll-mt-20 transition-colors duration-300">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header: Image 6 Mirror */}
         <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#EBF3FF] border border-[#BFDBFE] text-[#0066FF] text-xs font-semibold tracking-wider uppercase mb-4">
-            <Sparkles className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#EBF3FF] dark:bg-[#0066FF]/20 border border-[#BFDBFE] dark:border-[#0066FF]/40 text-[#0066FF] dark:text-[#89CFF0] text-xs font-semibold tracking-wider uppercase mb-4">
+            <Sparkles className="w-3.5 h-3.5 animate-spark" />
             <span>Answers to common questions</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0B0F19] tracking-tight font-display mb-3">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0B0F19] dark:text-white tracking-tight font-display mb-3">
             Got Questions? We{' '}
             <MarkerUnderline color="pink" showSparks>
               Got Answers.
             </MarkerUnderline>
           </h2>
-          <p className="text-base sm:text-lg text-slate-500 font-sans">
+          <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 font-sans">
             Everything you need to know about Sharko and how it can help you start (and scale) your clipping side hustle.
           </p>
         </div>
@@ -69,10 +69,10 @@ export const StudioFaqSection: React.FC = () => {
             return (
               <div
                 key={idx}
-                className={`rounded-2xl border transition-all duration-200 bg-white ${
+                className={`rounded-2xl border transition-all duration-200 bg-white dark:bg-[#0F172A] ${
                   isOpen
                     ? 'border-[#0066FF]/40 shadow-[0_10px_30px_rgba(0,102,255,0.06)] ring-1 ring-[#0066FF]/20'
-                    : 'border-slate-200/90 shadow-[0_4px_16px_rgba(0,0,0,0.02)] hover:border-slate-300'
+                    : 'border-slate-200/90 dark:border-slate-800 shadow-[0_4px_16px_rgba(0,0,0,0.02)] hover:border-slate-300 dark:hover:border-slate-700'
                 } overflow-hidden`}
               >
                 <button
@@ -86,18 +86,20 @@ export const StudioFaqSection: React.FC = () => {
                       className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 transition-colors ${
                         isOpen
                           ? 'bg-[#0066FF] text-white'
-                          : 'bg-[#EBF3FF] text-[#0066FF]'
+                          : 'bg-[#EBF3FF] dark:bg-[#0066FF]/20 text-[#0066FF] dark:text-[#89CFF0]'
                       }`}
                     >
                       ?
                     </div>
-                    <span className="font-bold text-slate-900 text-base sm:text-lg leading-snug">
+                    <span className="font-bold text-slate-900 dark:text-white text-base sm:text-lg leading-snug">
                       {item.q}
                     </span>
                   </div>
                   <div
                     className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180 text-[#0066FF] bg-[#EBF3FF]' : 'text-slate-400 bg-slate-100'
+                      isOpen
+                        ? 'rotate-180 text-[#0066FF] dark:text-[#89CFF0] bg-[#EBF3FF] dark:bg-[#0066FF]/20'
+                        : 'text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800'
                     }`}
                   >
                     <ChevronDown className="w-4 h-4" />
@@ -105,7 +107,7 @@ export const StudioFaqSection: React.FC = () => {
                 </button>
 
                 {isOpen && (
-                  <div className="px-5 sm:px-7 pb-6 pt-1 text-sm sm:text-base leading-relaxed text-slate-600 font-sans border-t border-slate-100">
+                  <div className="px-5 sm:px-7 pb-6 pt-1 text-sm sm:text-base leading-relaxed text-slate-600 dark:text-slate-300 font-sans border-t border-slate-100 dark:border-slate-800/80">
                     <div className="pl-12">{item.a}</div>
                   </div>
                 )}
@@ -116,12 +118,12 @@ export const StudioFaqSection: React.FC = () => {
 
         {/* Bottom Help Note */}
         <div className="mt-12 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-600">
-            <Mail className="w-4 h-4 text-[#0066FF]" />
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 dark:bg-[#0B1120] border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            <Mail className="w-4 h-4 text-[#0066FF] dark:text-[#89CFF0]" />
             <span>Still have questions?</span>
             <a
               href="mailto:kushagrrana7345@gmail.com"
-              className="text-[#0066FF] font-semibold hover:underline"
+              className="text-[#0066FF] dark:text-[#89CFF0] font-semibold hover:underline"
             >
               Email founder Kushagr Rana directly →
             </a>

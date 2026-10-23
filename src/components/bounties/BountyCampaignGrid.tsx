@@ -56,18 +56,18 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
   };
 
   return (
-    <section id="bounties" className="py-16 sm:py-24 bg-white relative overflow-hidden">
+    <section id="bounties" className="py-16 sm:py-24 bg-white dark:bg-[#060913] relative overflow-hidden transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         
         {/* Section Headline Mirroring Image 2 */}
-        <h2 className="font-display text-[34px] sm:text-[48px] lg:text-[54px] font-extrabold tracking-[-0.035em] text-[#0B0F19] leading-[1.12]">
+        <h2 className="font-display text-[34px] sm:text-[48px] lg:text-[54px] font-extrabold tracking-[-0.035em] text-[#0B0F19] dark:text-white leading-[1.12]">
           Your first payout could happen <br className="hidden sm:inline" />
           sooner{" "}
-          <MarkerUnderline color="pink" showSparks className="text-[#0B0F19]">
+          <MarkerUnderline color="pink" showSparks className="text-[#0B0F19] dark:text-white">
             than you think.
           </MarkerUnderline>
         </h2>
-        <p className="mt-3 text-[16px] sm:text-[18px] text-[#475569] font-sans">
+        <p className="mt-3 text-[16px] sm:text-[18px] text-[#475569] dark:text-slate-300 font-sans">
           Real clippers are using short-form content to earn online.
         </p>
 
@@ -79,7 +79,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
           {/* -------------------------------------------------------------
               CARD 1: Ethan R. (White Card + PayPal Receipt)
               ------------------------------------------------------------- */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_4px_20px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-md transition">
+          <div className="sharko-card-hover rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0F172A] p-5 shadow-[0_4px_20px_rgba(15,23,42,0.04)] flex flex-col justify-between">
             <div>
               {/* User Header */}
               <div className="flex items-center justify-between">
@@ -126,7 +126,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
           {/* -------------------------------------------------------------
               CARD 2: Mike T. (Dark #0B0F17 Chat Card)
               ------------------------------------------------------------- */}
-          <div className="rounded-2xl border border-slate-900 bg-[#0B0F17] p-5 shadow-lg flex flex-col justify-between text-white">
+          <div className="sharko-card-hover rounded-2xl border border-slate-900 bg-[#0B0F17] p-5 shadow-lg flex flex-col justify-between text-white">
             {/* Header */}
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <div className="flex items-center gap-2.5">
@@ -172,7 +172,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
           {/* -------------------------------------------------------------
               CARD 3: YouTube Analytics (White Card + Blue Bar Chart)
               ------------------------------------------------------------- */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_4px_20px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-md transition">
+          <div className="sharko-card-hover rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0F172A] p-5 shadow-[0_4px_20px_rgba(15,23,42,0.04)] flex flex-col justify-between transition">
             <div>
               <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
                 <div className="flex items-center gap-1.5 font-bold text-slate-800">
@@ -225,7 +225,8 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
           {/* -------------------------------------------------------------
               CARD 4: Sophie L. (Dark #0B0F17 Chat Card)
               ------------------------------------------------------------- */}
-          <div className="rounded-2xl border border-slate-900 bg-[#0B0F17] p-5 shadow-lg flex flex-col justify-between text-white">
+          <div className="sharko-card-hover rounded-2xl border border-slate-900 bg-[#0B0F17] p-5 shadow-lg flex flex-col justify-between text-white">
+
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <div className="flex items-center gap-2.5">
                 <div className="relative">
@@ -263,7 +264,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
           {/* -------------------------------------------------------------
               CARD 5: TikTok Shop Creator Fund (White Card + Area Chart)
               ------------------------------------------------------------- */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_4px_20px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-md transition">
+          <div className="sharko-card-hover rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0F172A] p-5 shadow-[0_4px_20px_rgba(15,23,42,0.04)] flex flex-col justify-between transition">
             <div>
               <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
                 <div className="flex items-center gap-1.5 font-bold text-slate-800">
@@ -308,41 +309,41 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
           {/* -------------------------------------------------------------
               CARD 6: Daniel K. (White Card + TikTok Payout Box)
               ------------------------------------------------------------- */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_4px_20px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-md transition">
+          <div className="sharko-card-hover rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0F172A] p-5 shadow-[0_4px_20px_rgba(15,23,42,0.04)] flex flex-col justify-between transition">
             <div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <img
                     src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80"
                     alt="Daniel K."
-                    className="w-10 h-10 rounded-full object-cover border border-slate-200"
+                    className="w-10 h-10 rounded-full object-cover border border-slate-200 dark:border-slate-700"
                   />
                   <div>
-                    <h4 className="font-display font-bold text-[14px] text-[#0B0F19]">Daniel K.</h4>
-                    <p className="text-[11px] text-slate-500">London, UK</p>
+                    <h4 className="font-display font-bold text-[14px] text-[#0B0F19] dark:text-white">Daniel K.</h4>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">London, UK</p>
                   </div>
                 </div>
-                <span className="px-2.5 py-1 rounded-full bg-[#EBF3FF] text-[#0066FF] font-bold text-[11px]">
+                <span className="px-2.5 py-1 rounded-full bg-[#EBF3FF] dark:bg-blue-900/30 text-[#0066FF] font-bold text-[11px]">
                   Made $457
                 </span>
               </div>
 
-              <p className="mt-4 text-[13px] text-[#334155] leading-relaxed italic">
+              <p className="mt-4 text-[13px] text-[#334155] dark:text-slate-300 leading-relaxed italic">
                 &ldquo;I use Sharko to find viral moments, add captions, and post to TikTok. Just got my biggest payout yet!&rdquo;
               </p>
             </div>
 
-            <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50/70 p-3 flex items-center justify-between">
+            <div className="mt-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/80 p-3 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center text-white font-extrabold text-xs">
                   ♪
                 </div>
                 <div>
-                  <div className="text-[10px] text-slate-500">Creator Rewards Program &bull; Jan 8, 2025</div>
-                  <div className="font-extrabold text-[15px] text-[#0B0F19]">$457.32</div>
+                  <div className="text-[10px] text-slate-500 dark:text-slate-400">Creator Rewards Program &bull; Jan 8, 2025</div>
+                  <div className="font-extrabold text-[15px] text-[#0B0F19] dark:text-white">$457.32</div>
                 </div>
               </div>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[10px]">
+              <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 font-bold text-[10px]">
                 Completed
               </span>
             </div>
@@ -351,7 +352,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
           {/* -------------------------------------------------------------
               CARD 7: Google AdSense Notification (Dark #0B0F17 Card)
               ------------------------------------------------------------- */}
-          <div className="rounded-2xl border border-slate-900 bg-[#0B0F17] p-5 shadow-lg flex flex-col justify-between text-white">
+          <div className="sharko-card-hover rounded-2xl border border-slate-900 bg-[#0B0F17] p-5 shadow-lg flex flex-col justify-between text-white">
             {/* Top Gmail Notification Banner */}
             <div className="rounded-xl border border-slate-800 bg-[#141B26] p-3 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
@@ -380,7 +381,7 @@ export const BountyCampaignGrid: React.FC<Readonly<BountyCampaignGridProps>> = (
           {/* -------------------------------------------------------------
               CARD 8: Chris M. (White Card + AdSense Box)
               ------------------------------------------------------------- */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_4px_20px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-md transition">
+          <div className="sharko-card-hover rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0F172A] p-5 shadow-[0_4px_20px_rgba(15,23,42,0.04)] flex flex-col justify-between transition">
             <div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">

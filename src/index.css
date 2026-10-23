@@ -3,45 +3,183 @@
 @tailwind utilities;
 
 :root {
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F4F8FF;
+  --bg-card: #FFFFFF;
+  --text-primary: #0B0F19;
+  --text-secondary: #475569;
+  --border-subtle: #E2E8F0;
+  --brand-blue: #0066FF;
+  --brand-pink: #FF1464;
+  
   --bg-page: #FFFFFF;
   --bg-ice: #F4F8FF;
   --bg-ice-subtle: #FAFCFF;
   --bg-dark-card: #0B0F17;
-  
   --primary-blue: #0066FF;
   --primary-blue-hover: #0052CC;
   --primary-blue-subtle: #EBF3FF;
-  
   --accent-pink: #FF1464;
   --accent-pink-bright: #FF0055;
   --accent-pink-subtle: #FFF0F5;
-  
-  --text-primary: #0B0F19;
-  --text-secondary: #475569;
   --text-muted: #64748B;
-  
   --border-light: #E2E8F0;
-  --border-subtle: #F1F5F9;
   --border-blue: #D0E4FF;
+}
+
+html.dark {
+  --bg-primary: #060913;
+  --bg-secondary: #0B1120;
+  --bg-card: #0F172A;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --border-subtle: #1E293B;
+  --brand-blue: #0066FF;
+  --brand-pink: #FF1464;
+
+  --bg-page: #060913;
+  --bg-ice: #0B1120;
+  --bg-ice-subtle: #090D1A;
+  --bg-dark-card: #0A0F1D;
+  --primary-blue: #0066FF;
+  --primary-blue-hover: #1A75FF;
+  --primary-blue-subtle: #0B1E3F;
+  --text-muted: #94A3B8;
+  --border-light: #1E293B;
+  --border-blue: #1E3A8A;
+  color-scheme: dark;
 }
 
 html {
   color-scheme: light;
   scroll-behavior: smooth;
-  background-color: #FFFFFF;
-  color: #0B0F19;
 }
 
 body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: #FFFFFF;
-  color: #0B0F19;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* 1. Self-Drawing Hand-Drawn Marker Underline Animation */
+@keyframes drawMarker {
+  0% {
+    stroke-dashoffset: 320;
+    opacity: 0.2;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+.animate-draw-marker {
+  stroke-dasharray: 320;
+  stroke-dashoffset: 0;
+  animation: drawMarker 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* 2. Popping Spark Rays Animation */
+@keyframes sparkPulse {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.14) rotate(3deg);
+    opacity: 0.85;
+  }
+}
+
+.animate-spark {
+  animation: sparkPulse 2.8s ease-in-out infinite;
+}
+
+/* 3. Floating 3D Bobbing for Hero Progress Card, 9:16 Phone & Calculator Callouts */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(var(--tw-rotate, 0deg));
+  }
+  50% {
+    transform: translateY(-8px) rotate(var(--tw-rotate, 0deg));
+  }
+}
+
+@keyframes floatDelayed {
+  0%, 100% {
+    transform: translateY(0px) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(-2.5deg);
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 4.5s ease-in-out infinite;
+}
+
+.animate-float-phone {
+  animation: floatDelayed 5.2s ease-in-out infinite;
+}
+
+/* 4. Primary Blue CTA Button Shimmer Sweep Effect */
+.btn-sharko-shimmer {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-sharko-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 45%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(25deg);
+  animation: shimmerSweep 4s infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmerSweep {
+  0% {
+    left: -60%;
+  }
+  35%, 100% {
+    left: 140%;
+  }
+}
+
+.btn-sharko-shimmer:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px -6px rgba(0, 102, 255, 0.48);
+}
+
+/* 5. 3D SaaS Card Hover Lift */
+.sharko-card-hover {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+}
+
+.sharko-card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 48px -12px rgba(0, 102, 255, 0.14);
+}
+
+html.dark .sharko-card-hover:hover {
+  box-shadow: 0 22px 48px -12px rgba(0, 102, 255, 0.28);
 }
 
 /* Subtle SaaS Dot Grid Background */
@@ -50,13 +188,25 @@ body {
   background-size: 22px 22px;
 }
 
+html.dark .bg-dot-grid {
+  background-image: radial-gradient(#1E293B 1.2px, transparent 1.2px);
+}
+
 /* Soft Ice-Blue Gradient Washes */
 .bg-ice-gradient {
   background: linear-gradient(180deg, #FFFFFF 0%, #F4F8FF 55%, #FFFFFF 100%);
 }
 
+html.dark .bg-ice-gradient {
+  background: linear-gradient(180deg, #060913 0%, #0B1120 55%, #060913 100%);
+}
+
 .bg-hero-glow {
   background: radial-gradient(circle at 65% 30%, rgba(208, 228, 255, 0.45) 0%, rgba(244, 248, 255, 0.3) 45%, transparent 70%);
+}
+
+html.dark .bg-hero-glow {
+  background: radial-gradient(circle at 65% 30%, rgba(0, 102, 255, 0.18) 0%, rgba(11, 17, 32, 0.4) 45%, transparent 70%);
 }
 
 /* Primary Electric Blue Button with High-Elevation Shadow */
@@ -87,10 +237,21 @@ body {
   transition: all 0.2s ease;
 }
 
+html.dark .btn-white-pill {
+  background: #0F172A;
+  color: #F8FAFC;
+  border-color: #1E293B;
+}
+
 .btn-white-pill:hover {
   background: #F8FAFC;
   border-color: #CBD5E1;
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+html.dark .btn-white-pill:hover {
+  background: #1E293B;
+  border-color: #334155;
 }
 
 /* Top Hot-Pink Marquee Animation */
@@ -120,19 +281,23 @@ body {
   }
 }
 
-/* Clean Slender Scrollbar for light theme */
+/* Clean Slender Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F8FAFC;
+  background: var(--bg-primary);
 }
 
 ::-webkit-scrollbar-thumb {
   background: #CBD5E1;
   border-radius: 999px;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
 }
 
 ::-webkit-scrollbar-thumb:hover {

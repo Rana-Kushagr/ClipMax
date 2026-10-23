@@ -25,22 +25,22 @@ export const ProfitSimulator: React.FC<ProfitSimulatorProps> = ({ onStartClippin
   };
 
   return (
-    <section id="simulator" className="relative py-20 bg-white overflow-hidden">
+    <section id="simulator" className="relative py-20 bg-white dark:bg-[#060913] text-slate-900 dark:text-white transition-colors duration-300 overflow-hidden">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#EBF3FF] border border-[#BFDBFE] text-[#0066FF] text-xs font-semibold tracking-wider uppercase mb-4">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#EBF3FF] dark:bg-blue-900/30 border border-[#BFDBFE] dark:border-blue-800 text-[#0066FF] text-xs font-semibold tracking-wider uppercase mb-4">
             <Sparkles className="w-3.5 h-3.5" />
             <span>TURN VIEWS INTO INCOME</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0B0F19] tracking-tight font-display mb-3">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0B0F19] dark:text-white tracking-tight font-display mb-3">
             Estimate your monthly{' '}
             <MarkerUnderline color="pink" showSparks>
               clipping income.
             </MarkerUnderline>
           </h2>
-          <p className="text-base sm:text-lg text-slate-500 font-sans">
+          <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 font-sans">
             See how clipping can turn views into revenue.
           </p>
         </div>
@@ -48,8 +48,8 @@ export const ProfitSimulator: React.FC<ProfitSimulatorProps> = ({ onStartClippin
         {/* Outer Container with Decorative Tilted Badges */}
         <div className="relative">
           {/* Left Tilted Badge (Desktop) */}
-          <div className="hidden lg:flex absolute -left-12 top-12 -rotate-12 flex-col items-center pointer-events-none select-none z-10">
-            <div className="px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-md text-xs font-bold text-slate-800">
+          <div className="hidden lg:flex absolute -left-12 top-12 -rotate-12 flex-col items-center pointer-events-none select-none z-10 animate-float-slow">
+            <div className="px-3.5 py-1.5 rounded-full bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-700 shadow-md text-xs font-bold text-slate-800 dark:text-slate-200">
               More views more income
             </div>
             {/* Curved pink arrow pointing down-right */}
@@ -72,8 +72,8 @@ export const ProfitSimulator: React.FC<ProfitSimulatorProps> = ({ onStartClippin
           </div>
 
           {/* Right Tilted Badge (Desktop) */}
-          <div className="hidden lg:flex absolute -right-10 top-24 rotate-12 flex-col items-center pointer-events-none select-none z-10">
-            <div className="px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-md text-xs font-bold text-slate-800">
+          <div className="hidden lg:flex absolute -right-10 top-24 rotate-12 flex-col items-center pointer-events-none select-none z-10 animate-float-slow">
+            <div className="px-3.5 py-1.5 rounded-full bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-700 shadow-md text-xs font-bold text-slate-800 dark:text-slate-200">
               Turn your content into cash
             </div>
             {/* Curved pink arrow pointing down-left */}
@@ -96,13 +96,13 @@ export const ProfitSimulator: React.FC<ProfitSimulatorProps> = ({ onStartClippin
           </div>
 
           {/* Calculator Card */}
-          <div className="bg-white rounded-3xl border border-slate-200/90 shadow-[0_20px_60px_-15px_rgba(0,102,255,0.08)] p-6 sm:p-10 relative">
+          <div className="bg-white dark:bg-[#0F172A] rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-[0_20px_60px_-15px_rgba(0,102,255,0.08)] p-6 sm:p-10 relative">
             <div className="space-y-8">
               {/* Slider 1: Monthly short-form views */}
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-sm sm:text-base">
-                  <span className="font-semibold text-slate-900">Monthly short-form views</span>
-                  <span className="font-bold text-slate-900">
+                  <span className="font-semibold text-slate-900 dark:text-white">Monthly short-form views</span>
+                  <span className="font-bold text-slate-900 dark:text-white">
                     {views.toLocaleString('en-US')} views / month
                   </span>
                 </div>
@@ -115,7 +115,7 @@ export const ProfitSimulator: React.FC<ProfitSimulatorProps> = ({ onStartClippin
                     value={views}
                     onChange={(e) => setViews(Number(e.target.value))}
                     aria-label="Monthly short-form views"
-                    className="w-full h-2.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0066FF]"
+                    className="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#0066FF]"
                   />
                 </div>
                 <div className="flex justify-between items-center text-xs text-slate-400 font-medium">
@@ -127,8 +127,8 @@ export const ProfitSimulator: React.FC<ProfitSimulatorProps> = ({ onStartClippin
               {/* Slider 2: Estimated RPM */}
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-sm sm:text-base">
-                  <span className="font-semibold text-slate-900">Estimated RPM</span>
-                  <span className="font-bold text-slate-900">
+                  <span className="font-semibold text-slate-900 dark:text-white">Estimated RPM</span>
+                  <span className="font-bold text-slate-900 dark:text-white">
                     ${rpm.toFixed(2)} per 1,000 views
                   </span>
                 </div>
@@ -141,7 +141,7 @@ export const ProfitSimulator: React.FC<ProfitSimulatorProps> = ({ onStartClippin
                     value={rpm}
                     onChange={(e) => setRpm(Number(e.target.value))}
                     aria-label="Estimated RPM"
-                    className="w-full h-2.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0066FF]"
+                    className="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#0066FF]"
                   />
                 </div>
                 <div className="flex justify-between items-center text-xs text-slate-400 font-medium">
@@ -153,8 +153,8 @@ export const ProfitSimulator: React.FC<ProfitSimulatorProps> = ({ onStartClippin
               {/* Slider 3: Monthly clips posted */}
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-sm sm:text-base">
-                  <span className="font-semibold text-slate-900">Monthly clips posted</span>
-                  <span className="font-bold text-slate-900">{clips} clips / month</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">Monthly clips posted</span>
+                  <span className="font-bold text-slate-900 dark:text-white">{clips} clips / month</span>
                 </div>
                 <div className="relative">
                   <input
@@ -165,7 +165,7 @@ export const ProfitSimulator: React.FC<ProfitSimulatorProps> = ({ onStartClippin
                     value={clips}
                     onChange={(e) => setClips(Number(e.target.value))}
                     aria-label="Monthly clips posted"
-                    className="w-full h-2.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0066FF]"
+                    className="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#0066FF]"
                   />
                 </div>
                 <div className="flex justify-between items-center text-xs text-slate-400 font-medium">
@@ -175,9 +175,9 @@ export const ProfitSimulator: React.FC<ProfitSimulatorProps> = ({ onStartClippin
               </div>
 
               {/* Bottom Payout Bar */}
-              <div className="mt-8 rounded-2xl bg-[#EEF6FF] border border-[#BFDBFE]/70 p-5 sm:p-7 flex flex-col md:flex-row items-center justify-between gap-5">
+              <div className="mt-8 rounded-2xl bg-[#EEF6FF] dark:bg-slate-900/90 border border-[#BFDBFE]/70 dark:border-slate-800 p-5 sm:p-7 flex flex-col md:flex-row items-center justify-between gap-5">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-center sm:text-left">
-                  <span className="text-sm font-semibold text-slate-700">
+                  <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                     Estimated monthly payout:
                   </span>
                   <div className="flex items-center justify-center gap-2">
@@ -185,7 +185,7 @@ export const ProfitSimulator: React.FC<ProfitSimulatorProps> = ({ onStartClippin
                       ${estimatedPayout.toLocaleString('en-US')}
                     </span>
                     {/* Pink Spark Rays */}
-                    <div className="text-[#FF1464] select-none">
+                    <div className="text-[#FF1464] select-none animate-spark">
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                         <line x1="8" y1="16" x2="18" y2="6" />
                         <line x1="12" y1="20" x2="20" y2="12" />
@@ -204,7 +204,7 @@ export const ProfitSimulator: React.FC<ProfitSimulatorProps> = ({ onStartClippin
                       document.getElementById('command-center')?.scrollIntoView({ behavior: 'smooth' });
                     }
                   }}
-                  className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold text-sm sm:text-base shadow-[0_8px_20px_rgba(0,102,255,0.25)] hover:shadow-[0_12px_28px_rgba(0,102,255,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                  className="btn-electric-blue btn-sharko-shimmer w-full md:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm sm:text-base text-white transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                 >
                   <span>Start clipping now</span>
                   <ArrowRight className="w-4 h-4" />

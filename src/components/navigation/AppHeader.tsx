@@ -9,6 +9,7 @@ import {
   Zap,
 } from "lucide-react";
 import { SharkoBrandLogo } from "../brand/SharkoBrandLogo";
+import { DayNightToggleButton } from "../../context/ThemeContext";
 
 interface AppHeaderProps {
   freeExportsCount?: number;
@@ -151,8 +152,8 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
       <header
         className={`w-full transition-all duration-200 ${
           isScrolled
-            ? "bg-white/95 backdrop-blur-md shadow-[0_4px_20px_rgba(15,23,42,0.06)] border-b border-slate-100"
-            : "bg-white border-b border-slate-100/80"
+            ? "bg-white/95 dark:bg-[#060913]/95 backdrop-blur-md shadow-[0_4px_20px_rgba(15,23,42,0.06)] border-b border-slate-100 dark:border-slate-800"
+            : "bg-white dark:bg-[#060913] border-b border-slate-100/80 dark:border-slate-800/80"
         }`}
       >
         <div className="max-w-7xl mx-auto h-[70px] sm:h-[72px] px-4 sm:px-6 lg:px-8 flex items-center justify-between">
@@ -160,14 +161,14 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
           <button
             type="button"
             onClick={() => scrollToSection("hero")}
-            className="text-left group transition-transform active:scale-95 touch-manipulation focus:outline-none"
+            className="text-left group transition-transform active:scale-95 touch-manipulation focus:outline-none cursor-pointer"
             aria-label="Sharko — Hunt the Moment"
           >
             <SharkoBrandLogo />
           </button>
 
           {/* Center Navigation Links (Desktop) */}
-          <nav className="hidden md:flex items-center gap-7 lg:gap-8 text-[15px] font-medium text-[#334155]">
+          <nav className="hidden md:flex items-center gap-7 lg:gap-8 text-[15px] font-medium text-[#334155] dark:text-slate-300">
             {navLinks.map((link) => {
               const isActive = activeSection === link.id || activeSection === link.target;
               return (
@@ -175,8 +176,8 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
                   key={link.id}
                   type="button"
                   onClick={() => scrollToSection(link.target)}
-                  className={`transition-colors hover:text-[#0066FF] ${
-                    isActive ? "text-[#0066FF] font-semibold" : "text-[#334155]"
+                  className={`transition-colors hover:text-[#0066FF] cursor-pointer ${
+                    isActive ? "text-[#0066FF] font-semibold" : "text-[#334155] dark:text-slate-300"
                   }`}
                 >
                   {link.label}
@@ -187,11 +188,14 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
 
           {/* Right Action Buttons */}
           <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Day / Night Mode Toggle Button */}
+            <DayNightToggleButton />
+
             {/* Log in Button */}
             <button
               type="button"
               onClick={() => onOpenAuth ? onOpenAuth("login") : scrollToSection("hero")}
-              className="hidden sm:inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 lg:px-5 py-2.5 text-[14px] font-semibold text-[#0B0F19] shadow-sm hover:bg-slate-50 active:scale-95 transition"
+              className="hidden sm:inline-flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0F172A] px-4 lg:px-5 py-2.5 text-[14px] font-semibold text-[#0B0F19] dark:text-white shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 transition cursor-pointer"
             >
               Log in
             </button>
@@ -200,7 +204,7 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
             <button
               type="button"
               onClick={() => onOpenAuth ? onOpenAuth("signup") : scrollToSection("hero")}
-              className="btn-electric-blue rounded-xl px-4 sm:px-5 py-2.5 text-[14px] font-bold text-white flex items-center gap-1.5 active:scale-95 transition"
+              className="btn-electric-blue btn-sharko-shimmer rounded-xl px-4 sm:px-5 py-2.5 text-[14px] font-bold text-white flex items-center gap-1.5 active:scale-95 transition cursor-pointer"
             >
               <span>Try Sharko Free</span>
               <ArrowRight className="w-4 h-4" />
@@ -210,7 +214,7 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="md:hidden flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#0B0F19] hover:bg-slate-50 active:scale-95 transition"
+              className="md:hidden flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0F172A] text-[#0B0F19] dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 transition cursor-pointer"
               aria-label="Open mobile menu"
             >
               <Menu className="w-5 h-5" />
@@ -227,27 +231,30 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 320 }}
-            className="fixed inset-0 z-[99998] bg-white p-5 sm:p-6 flex flex-col justify-between md:hidden overflow-y-auto"
+            className="fixed inset-0 z-[99998] bg-white dark:bg-[#060913] text-[#0B0F19] dark:text-white p-5 sm:p-6 flex flex-col justify-between md:hidden overflow-y-auto"
           >
             <div>
               {/* Drawer Header */}
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                 <SharkoBrandLogo />
-                <button
-                  type="button"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 active:scale-95 transition"
-                  aria-label="Close menu"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+                <div className="flex items-center gap-2">
+                  <DayNightToggleButton />
+                  <button
+                    type="button"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 active:scale-95 transition cursor-pointer"
+                    aria-label="Close menu"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
 
               {/* Free HD Credit Balance */}
-              <div className="mt-4 flex items-center justify-between p-3.5 rounded-2xl bg-[#EBF3FF] border border-[#D0E4FF] font-sans text-xs">
+              <div className="mt-4 flex items-center justify-between p-3.5 rounded-2xl bg-[#EBF3FF] dark:bg-slate-800/80 border border-[#D0E4FF] dark:border-slate-700 font-sans text-xs">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-[#0066FF] animate-pulse" />
-                  <span className="text-[#334155] font-medium">Free Exports Left:</span>
+                  <span className="text-[#334155] dark:text-slate-300 font-medium">Free Exports Left:</span>
                 </div>
                 <span className="text-[#0066FF] font-bold">{freeExportsCount} / 3 HD Exports</span>
               </div>
@@ -259,7 +266,7 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
                     key={link.id}
                     type="button"
                     onClick={() => scrollToSection(link.target)}
-                    className="w-full min-h-[48px] px-4 rounded-xl text-left font-display text-[16px] font-bold text-[#0B0F19] hover:bg-slate-50 flex items-center justify-between transition"
+                    className="w-full min-h-[48px] px-4 rounded-xl text-left font-display text-[16px] font-bold text-[#0B0F19] dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60 flex items-center justify-between transition cursor-pointer"
                   >
                     <span>{link.label}</span>
                     <ArrowRight className="w-4 h-4 text-slate-400" />
@@ -268,14 +275,14 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
               </nav>
 
               {/* Mobile Auth CTAs */}
-              <div className="mt-6 pt-5 border-t border-slate-100 space-y-2.5">
+              <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 space-y-2.5">
                 <button
                   type="button"
                   onClick={() => {
                     setMobileMenuOpen(false);
                     if (onOpenAuth) onOpenAuth("signup");
                   }}
-                  className="btn-electric-blue w-full min-h-[50px] rounded-xl font-display text-[15px] font-bold flex items-center justify-center gap-2"
+                  className="btn-electric-blue btn-sharko-shimmer w-full min-h-[50px] rounded-xl font-display text-[15px] font-bold flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>Try Sharko Free →</span>
                 </button>
@@ -285,7 +292,7 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
                     setMobileMenuOpen(false);
                     if (onOpenAuth) onOpenAuth("login");
                   }}
-                  className="w-full min-h-[46px] rounded-xl border border-slate-200 bg-white text-[#0B0F19] font-sans text-[14px] font-semibold flex items-center justify-center gap-2 shadow-sm hover:bg-slate-50"
+                  className="w-full min-h-[46px] rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[#0B0F19] dark:text-white font-sans text-[14px] font-semibold flex items-center justify-center gap-2 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer"
                 >
                   <LogIn className="w-4 h-4 text-[#0066FF]" />
                   <span>Log in</span>
@@ -294,7 +301,7 @@ export const AppHeader: React.FC<Readonly<AppHeaderProps>> = ({
             </div>
 
             {/* Drawer Bottom Support Channels */}
-            <div className="pt-4 border-t border-slate-100 font-sans text-[12px] text-slate-500 space-y-2">
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 font-sans text-[12px] text-slate-500 dark:text-slate-400 space-y-2">
               <div className="flex items-center justify-between text-[11px] font-semibold text-[#0066FF]">
                 <span>DIRECT FOUNDER DESK</span>
                 <span>Kushagr Rana</span>

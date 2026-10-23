@@ -106,17 +106,17 @@ export const OutputOnlyPricing: React.FC<OutputOnlyPricingProps> = ({ onSelectPl
   ];
 
   return (
-    <section id="pricing" className="py-24 bg-white relative overflow-hidden select-none">
+    <section id="pricing" className="py-24 bg-white dark:bg-[#060913] relative overflow-hidden select-none transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header: Image 3 Mirror */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0B0F19] tracking-tight font-display mb-3">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0B0F19] dark:text-white tracking-tight font-display mb-3">
             Choose your{' '}
             <MarkerUnderline color="pink" showSparks>
               clipping plan.
             </MarkerUnderline>
           </h2>
-          <p className="text-base sm:text-lg text-slate-500 font-sans">
+          <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 font-sans">
             Start free, then scale your clipping side hustle.
           </p>
         </div>
@@ -126,10 +126,10 @@ export const OutputOnlyPricing: React.FC<OutputOnlyPricingProps> = ({ onSelectPl
           {tiers.map((tier) => (
             <div
               key={tier.id}
-              className={`relative rounded-3xl bg-white transition-all duration-300 flex flex-col justify-between ${
+              className={`relative rounded-3xl bg-white dark:bg-[#0F172A] sharko-card-hover transition-all duration-300 flex flex-col justify-between ${
                 tier.highlight
                   ? 'border-2 border-[#0066FF] shadow-[0_20px_50px_rgba(0,102,255,0.12)] -translate-y-2 lg:-translate-y-3'
-                  : 'border border-slate-200/90 shadow-[0_10px_30px_rgba(0,0,0,0.04)] hover:shadow-lg'
+                  : 'border border-slate-200/90 dark:border-slate-800 shadow-[0_10px_30px_rgba(0,0,0,0.04)] hover:shadow-lg'
               } p-7 sm:p-9`}
             >
               {/* Highlight Badge */}
@@ -144,30 +144,30 @@ export const OutputOnlyPricing: React.FC<OutputOnlyPricingProps> = ({ onSelectPl
               {/* Spark accents on recommended card corners */}
               {tier.highlight && (
                 <div className="absolute top-4 right-4 text-[#FF1464] pointer-events-none select-none">
-                  <Sparkles className="w-5 h-5" />
+                  <Sparkles className="w-5 h-5 animate-spark" />
                 </div>
               )}
 
               <div>
                 {/* Header: Tier Name & Discount Pill */}
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-display">
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white font-display">
                     {tier.name}
                   </h3>
-                  <span className="px-2.5 py-1 rounded-full bg-[#FFEBF0] text-[#FF1464] text-xs font-bold">
+                  <span className="px-2.5 py-1 rounded-full bg-[#FFEBF0] dark:bg-[#FF1464]/20 text-[#FF1464] text-xs font-bold">
                     {tier.discount}
                   </span>
                 </div>
 
                 {/* Price Display */}
-                <div className="mb-6 pb-6 border-b border-slate-100">
+                <div className="mb-6 pb-6 border-b border-slate-100 dark:border-slate-800/80">
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-4xl sm:text-5xl font-black text-slate-900 font-display">
+                    <span className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white font-display">
                       {tier.price}
                     </span>
-                    <span className="text-sm font-semibold text-slate-400">/month</span>
+                    <span className="text-sm font-semibold text-slate-400 dark:text-slate-500">/month</span>
                   </div>
-                  <div className="mt-1 text-xs text-slate-400 font-medium">
+                  <div className="mt-1 text-xs text-slate-400 dark:text-slate-500 font-medium">
                     <span className="line-through">{tier.originalPrice}/month</span>
                   </div>
                 </div>
@@ -176,10 +176,10 @@ export const OutputOnlyPricing: React.FC<OutputOnlyPricingProps> = ({ onSelectPl
                 <div className="space-y-3.5 mb-8">
                   {tier.features.map((feat, idx) => (
                     <div key={idx} className="flex items-start gap-3">
-                      <div className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                      <div className="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
                         <Check className="w-3 h-3 stroke-[3]" />
                       </div>
-                      <span className="text-xs sm:text-sm text-slate-700 font-medium leading-tight">
+                      <span className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium leading-tight">
                         {feat}
                       </span>
                     </div>
@@ -188,22 +188,22 @@ export const OutputOnlyPricing: React.FC<OutputOnlyPricingProps> = ({ onSelectPl
               </div>
 
               {/* Bottom CTA & Urgency */}
-              <div className="space-y-4 pt-4 border-t border-slate-100">
+              <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800/80">
                 <button
                   type="button"
                   disabled={submittingTierId === tier.id}
                   onClick={() => handleTierAction(tier.id)}
                   className={`w-full py-3.5 px-6 rounded-xl font-semibold text-sm sm:text-base flex items-center justify-center gap-2 transition-all cursor-pointer ${
                     tier.ctaType === 'primary'
-                      ? 'bg-[#0066FF] hover:bg-[#0052CC] text-white shadow-[0_8px_20px_rgba(0,102,255,0.25)] hover:shadow-[0_12px_28px_rgba(0,102,255,0.35)] transform hover:-translate-y-0.5'
-                      : 'bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 hover:border-slate-400 shadow-sm'
+                      ? 'btn-sharko-shimmer bg-[#0066FF] hover:bg-[#0052CC] text-white shadow-[0_8px_20px_rgba(0,102,255,0.25)] hover:shadow-[0_12px_28px_rgba(0,102,255,0.35)] transform hover:-translate-y-0.5'
+                      : 'bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-300 dark:border-slate-700 shadow-sm'
                   } disabled:opacity-75 disabled:cursor-wait`}
                 >
                   <span>{submittingTierId === tier.id ? 'Connecting...' : `${tier.cta} →`}</span>
                 </button>
 
                 {/* Discount Expiry Urgency Footer */}
-                <div className="flex items-center justify-center gap-1.5 text-xs text-slate-400 font-medium">
+                <div className="flex items-center justify-center gap-1.5 text-xs text-slate-400 dark:text-slate-500 font-medium">
                   <Clock className="w-3.5 h-3.5 text-[#FF1464]" />
                   <span>Discount expires in 22h 50m</span>
                 </div>

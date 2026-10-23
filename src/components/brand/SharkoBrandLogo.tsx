@@ -87,7 +87,7 @@ export const MarkerUnderline: React.FC<{
   return (
     <span className={`relative inline-block ${className}`}>
       {showBothSparks && (
-        <span className="absolute -left-6 top-1/2 -translate-y-1/2 text-[#0066FF] pointer-events-none select-none">
+        <span className="absolute -left-6 top-1/2 -translate-y-1/2 text-[#0066FF] pointer-events-none select-none animate-spark">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <line x1="16" y1="8" x2="6" y2="6" />
             <line x1="18" y1="12" x2="4" y2="12" />
@@ -96,7 +96,7 @@ export const MarkerUnderline: React.FC<{
         </span>
       )}
       <span className="relative z-10">{children}</span>
-      {/* Hand-drawn marker underline SVG */}
+      {/* Hand-drawn marker underline SVG with self-drawing stroke animation */}
       <svg
         className="absolute -bottom-1.5 left-0 w-full h-[12px] sm:h-[15px] pointer-events-none overflow-visible"
         viewBox="0 0 100 14"
@@ -110,10 +110,11 @@ export const MarkerUnderline: React.FC<{
           strokeWidth="4.5"
           strokeLinecap="round"
           strokeLinejoin="round"
+          className="animate-draw-marker"
         />
       </svg>
       {showSparks && (
-        <span className="absolute -top-3.5 -right-6 text-[#FF1464] pointer-events-none select-none">
+        <span className="absolute -top-3.5 -right-6 text-[#FF1464] pointer-events-none select-none animate-spark">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <line x1="8" y1="16" x2="18" y2="6" />
             <line x1="12" y1="20" x2="20" y2="12" />
@@ -122,7 +123,7 @@ export const MarkerUnderline: React.FC<{
         </span>
       )}
       {showBothSparks && (
-        <span className="absolute -right-6 top-1/2 -translate-y-1/2 text-[#0066FF] pointer-events-none select-none">
+        <span className="absolute -right-6 top-1/2 -translate-y-1/2 text-[#0066FF] pointer-events-none select-none animate-spark">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <line x1="8" y1="8" x2="18" y2="6" />
             <line x1="6" y1="12" x2="20" y2="12" />

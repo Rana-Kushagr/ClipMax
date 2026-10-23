@@ -209,17 +209,17 @@ export const WhySharkoComparison: React.FC = () => {
   const [showMatrix, setShowMatrix] = useState<boolean>(false);
 
   return (
-    <section id="why-sharko" className="py-24 bg-white relative overflow-hidden select-none">
+    <section id="why-sharko" className="py-24 bg-white dark:bg-[#060913] text-slate-900 dark:text-white transition-colors duration-300 relative overflow-hidden select-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
         {/* Section Header: Image 5 Mirror */}
         <div className="text-center max-w-3xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0B0F19] tracking-tight font-display mb-3">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0B0F19] dark:text-white tracking-tight font-display mb-3">
             Clippers who{' '}
             <MarkerUnderline color="pink" showSparks>
               stayed.
             </MarkerUnderline>
           </h2>
-          <p className="text-base sm:text-lg text-slate-500 font-sans">
+          <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 font-sans">
             Real reviews from real Sharko users.
           </p>
         </div>
@@ -229,7 +229,7 @@ export const WhySharkoComparison: React.FC = () => {
           {REVIEWS.map((rev) => (
             <div
               key={rev.id}
-              className="bg-white rounded-2xl border border-slate-200/90 shadow-[0_10px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_40px_rgba(0,102,255,0.08)] transition-all duration-300 p-6 flex flex-col justify-between group"
+              className="sharko-card-hover bg-white dark:bg-[#0F172A] rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-[0_10px_30px_rgba(0,0,0,0.04)] p-6 flex flex-col justify-between group"
             >
               <div>
                 {/* Header: User Info & Rating */}
@@ -245,7 +245,7 @@ export const WhySharkoComparison: React.FC = () => {
                     </div>
                     <div>
                       <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-slate-900 text-sm">{rev.name}</span>
+                        <span className="font-bold text-slate-900 dark:text-white text-sm">{rev.name}</span>
                         <span className="w-4 h-4 rounded-full bg-[#0066FF] text-white flex items-center justify-center text-[10px]">
                           ✓
                         </span>
@@ -263,7 +263,7 @@ export const WhySharkoComparison: React.FC = () => {
                 </div>
 
                 {/* Quote */}
-                <p className="text-sm text-slate-700 leading-relaxed mb-5 font-sans">
+                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-5 font-sans">
                   "{rev.quote}"
                 </p>
 
@@ -305,9 +305,9 @@ export const WhySharkoComparison: React.FC = () => {
               </div>
 
               {/* Bottom Verified Strip */}
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span className="font-mono">{rev.handle}</span>
-                <span className="text-emerald-600 font-semibold flex items-center gap-1">
+                <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
                   <Check className="w-3.5 h-3.5" /> Verified Payout
                 </span>
               </div>
@@ -317,16 +317,16 @@ export const WhySharkoComparison: React.FC = () => {
 
         {/* Head-to-Head Specification Matrix Toggle & Section */}
         <div className="pt-10">
-          <div className="bg-[#F8FAFC] rounded-3xl border border-slate-200/90 p-6 sm:p-10 shadow-sm">
+          <div className="bg-[#F8FAFC] dark:bg-[#0B1120] rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 sm:p-10 shadow-sm">
             <div className="text-center max-w-2xl mx-auto mb-8">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EBF3FF] border border-[#BFDBFE] text-xs font-semibold text-[#0066FF] mb-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EBF3FF] dark:bg-blue-900/30 border border-[#BFDBFE] dark:border-blue-800 text-xs font-semibold text-[#0066FF] mb-3">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#0066FF]" />
                 <span>Architecture & Competitive Benchmark</span>
               </div>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-display mb-2">
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight font-display mb-2">
                 Why creator teams choose Sharko over OpusClip & Vizard
               </h3>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 Traditional AI clippers bill you for input duration and expire unused credits. Sharko
                 charges only for finished HD exports.
               </p>
@@ -334,42 +334,42 @@ export const WhySharkoComparison: React.FC = () => {
 
             {/* 4 Feature Pillars in White Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-2">
-                <div className="w-9 h-9 rounded-xl bg-[#EBF3FF] text-[#0066FF] flex items-center justify-center font-bold">
+              <div className="bg-white dark:bg-[#0F172A] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
+                <div className="w-9 h-9 rounded-xl bg-[#EBF3FF] dark:bg-blue-900/30 text-[#0066FF] flex items-center justify-center font-bold">
                   <Zap className="w-5 h-5" />
                 </div>
-                <h4 className="font-bold text-sm text-slate-900">Output-Only Metering</h4>
-                <p className="text-xs text-slate-500 leading-relaxed">
+                <h4 className="font-bold text-sm text-slate-900 dark:text-white">Output-Only Metering</h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                   0 credits burned on upload or preview. Pay only when exporting 1080p/4K clips.
                 </p>
               </div>
 
-              <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-2">
-                <div className="w-9 h-9 rounded-xl bg-[#EBF3FF] text-[#0066FF] flex items-center justify-center font-bold">
+              <div className="bg-white dark:bg-[#0F172A] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
+                <div className="w-9 h-9 rounded-xl bg-[#EBF3FF] dark:bg-blue-900/30 text-[#0066FF] flex items-center justify-center font-bold">
                   <Camera className="w-5 h-5" />
                 </div>
-                <h4 className="font-bold text-sm text-slate-900">3 Neural Camera Modes</h4>
-                <p className="text-xs text-slate-500 leading-relaxed">
+                <h4 className="font-bold text-sm text-slate-900 dark:text-white">3 Neural Camera Modes</h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                   2-Speaker Split, Solo Face-Track, and Auto Scene Switch across 5 aspect ratios.
                 </p>
               </div>
 
-              <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-2">
-                <div className="w-9 h-9 rounded-xl bg-[#EBF3FF] text-[#0066FF] flex items-center justify-center font-bold">
+              <div className="bg-white dark:bg-[#0F172A] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
+                <div className="w-9 h-9 rounded-xl bg-[#EBF3FF] dark:bg-blue-900/30 text-[#0066FF] flex items-center justify-center font-bold">
                   <Smartphone className="w-5 h-5" />
                 </div>
-                <h4 className="font-bold text-sm text-slate-900">Telegram Safety Gate</h4>
-                <p className="text-xs text-slate-500 leading-relaxed">
+                <h4 className="font-bold text-sm text-slate-900 dark:text-white">Telegram Safety Gate</h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                   Instant mobile push approval to review clips before auto-posting to TikTok & YouTube.
                 </p>
               </div>
 
-              <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-2">
-                <div className="w-9 h-9 rounded-xl bg-[#EBF3FF] text-[#0066FF] flex items-center justify-center font-bold">
+              <div className="bg-white dark:bg-[#0F172A] rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
+                <div className="w-9 h-9 rounded-xl bg-[#EBF3FF] dark:bg-blue-900/30 text-[#0066FF] flex items-center justify-center font-bold">
                   <Coins className="w-5 h-5" />
                 </div>
-                <h4 className="font-bold text-sm text-slate-900">Creator Escrow Bounties</h4>
-                <p className="text-xs text-slate-500 leading-relaxed">
+                <h4 className="font-bold text-sm text-slate-900 dark:text-white">Creator Escrow Bounties</h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                   Built-in verified CPM brand campaigns and direct sponsor intake for clippers.
                 </p>
               </div>
@@ -380,7 +380,7 @@ export const WhySharkoComparison: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowMatrix(!showMatrix)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-800 font-semibold text-xs hover:border-[#0066FF] hover:text-[#0066FF] transition-colors shadow-sm cursor-pointer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs hover:border-[#0066FF] hover:text-[#0066FF] transition-colors shadow-sm cursor-pointer"
               >
                 <span>{showMatrix ? 'Hide Specification Matrix' : 'Show Full Head-to-Head Specification Matrix'}</span>
                 <span className="text-xs font-mono">{showMatrix ? '▲' : '▼'}</span>
@@ -389,42 +389,42 @@ export const WhySharkoComparison: React.FC = () => {
 
             {/* Matrix Table */}
             {showMatrix && (
-              <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-md">
+              <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] shadow-md">
                 <table className="w-full text-left text-xs font-sans border-collapse min-w-[760px]">
                   <thead>
-                    <tr className="border-b border-slate-200 bg-slate-50">
-                      <th className="py-4 px-5 text-slate-500 uppercase tracking-wider w-[28%] font-semibold">
+                    <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+                      <th className="py-4 px-5 text-slate-500 dark:text-slate-400 uppercase tracking-wider w-[28%] font-semibold">
                         Feature / Capability
                       </th>
-                      <th className="py-4 px-5 text-[#0066FF] font-bold w-[34%] bg-[#EEF6FF] border-x border-[#BFDBFE]">
+                      <th className="py-4 px-5 text-[#0066FF] font-bold w-[34%] bg-[#EEF6FF] dark:bg-blue-950/40 border-x border-[#BFDBFE] dark:border-blue-900/60">
                         Sharko ("Hunt the Moment")
                       </th>
-                      <th className="py-4 px-5 text-slate-500 w-[19%]">OpusClip</th>
-                      <th className="py-4 px-5 text-slate-500 w-[19%]">Vizard AI</th>
+                      <th className="py-4 px-5 text-slate-500 dark:text-slate-400 w-[19%]">OpusClip</th>
+                      <th className="py-4 px-5 text-slate-500 dark:text-slate-400 w-[19%]">Vizard AI</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 text-xs">
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
                     {COMPARISON_DATA.map((row) => (
                       <tr
                         key={row.feature}
-                        className={`transition-colors hover:bg-slate-50/60 ${
-                          row.highlight ? 'bg-blue-50/20' : ''
+                        className={`transition-colors hover:bg-slate-50/60 dark:hover:bg-slate-800/40 ${
+                          row.highlight ? 'bg-blue-50/20 dark:bg-blue-950/20' : ''
                         }`}
                       >
-                        <td className="py-3.5 px-5 font-semibold text-slate-800">{row.feature}</td>
-                        <td className="py-3.5 px-5 text-[#0066FF] font-bold bg-[#EEF6FF]/60 border-x border-[#BFDBFE]/60">
+                        <td className="py-3.5 px-5 font-semibold text-slate-800 dark:text-slate-200">{row.feature}</td>
+                        <td className="py-3.5 px-5 text-[#0066FF] font-bold bg-[#EEF6FF]/60 dark:bg-blue-950/30 border-x border-[#BFDBFE]/60 dark:border-blue-900/40">
                           <div className="flex items-start gap-1.5">
                             <CheckCircle2 className="w-3.5 h-3.5 text-[#0066FF] shrink-0 mt-0.5" />
                             <span>{row.sharko}</span>
                           </div>
                         </td>
-                        <td className="py-3.5 px-5 text-slate-500">
+                        <td className="py-3.5 px-5 text-slate-500 dark:text-slate-400">
                           <div className="flex items-start gap-1.5">
                             <XCircle className="w-3.5 h-3.5 text-rose-400 shrink-0 mt-0.5" />
                             <span>{row.opus}</span>
                           </div>
                         </td>
-                        <td className="py-3.5 px-5 text-slate-500">
+                        <td className="py-3.5 px-5 text-slate-500 dark:text-slate-400">
                           <div className="flex items-start gap-1.5">
                             <XCircle className="w-3.5 h-3.5 text-rose-400 shrink-0 mt-0.5" />
                             <span>{row.vizard}</span>
